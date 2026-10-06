@@ -16,8 +16,8 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
   return (
     <footer className="bg-[#050d1f] text-white border-t border-white/10 mt-12 sm:mt-20 lg:mt-24">
-      <div className="w-full max-w-[1536px] mx-auto px-4 sm:px-6 xl:px-12 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+      <div className="w-full max-w-[1536px] mx-auto px-4 sm:px-6 xl:px-12 py-10 lg:py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
           {/* Brand */}
           <div className="lg:col-span-2 pr-0 lg:pr-10">
             <div className="flex items-center gap-4 mb-6">
@@ -102,7 +102,7 @@ export default function Footer() {
 
       {/* Bottom bar */}
       <div className="border-t border-white/10">
-        <div className="w-full max-w-[1536px] mx-auto px-4 sm:px-6 xl:px-12 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="w-full max-w-[1536px] mx-auto px-4 sm:px-6 xl:px-12 py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-white/40 text-xs text-center sm:text-left">
             &copy; {currentYear} IC-MEMS 2027 | Alva&rsquo;s Institute of Engineering and Technology. All rights reserved.
           </p>
