@@ -21,7 +21,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="lg:col-span-2 pr-0 lg:pr-10">
             <div className="flex items-center gap-4 mb-6">
-              <img src="/alvaslogo.png" alt="AIET Logo" className="h-14 sm:h-16 w-auto object-contain rounded" />
+              <img src="/alvaslogo.png" alt="AIET Logo" className="h-25 sm:h-25 w-auto object-contain rounded" />
               <div>
                 <div className="font-bold text-xl leading-tight">IC-MEMS 2027</div>
                 <div className="text-white/50 text-sm font-medium tracking-wide mt-1">AIET, Moodbidri</div>
