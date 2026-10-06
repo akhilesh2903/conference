@@ -61,7 +61,7 @@ export default function Navbar() {
       }`}
     >
       {/* Top bar */}
-      <div className="border-b border-white/5">
+      <div className={`overflow-hidden transition-all duration-300 ease-in-out border-white/5 ${scrolled ? 'max-h-0 opacity-0 border-b-0' : 'max-h-[50px] opacity-100 border-b'}`}>
         <div className="w-full max-w-[1536px] mx-auto px-4 sm:px-6 xl:px-12 flex items-center justify-between py-2.5">
           <span className="text-teal-400 text-[11px] md:text-xs font-medium tracking-wide">
             16–17 September 2027 | Hybrid Mode | Moodbidri, Karnataka, India
