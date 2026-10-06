@@ -42,7 +42,7 @@ export default function Footer() {
           {/* Quick Links */}
           <div>
             <h3 className="text-white font-semibold mb-5 text-sm uppercase tracking-widest">Quick Links</h3>
-            <ul className="space-y-2.5">
+            <ul className="grid grid-cols-2 gap-x-4 gap-y-2.5">
               {footerLinks.map((link) => (
                 <li key={link.href}>
                   <Link
