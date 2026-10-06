@@ -16,15 +16,15 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
   return (
     <footer className="bg-[#050d1f] text-white border-t border-white/10">
-      <div className="container-custom py-16">
+      <div className="w-full max-w-[1536px] mx-auto px-4 sm:px-6 xl:px-12 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* Brand */}
-          <div className="lg:col-span-2">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center font-bold text-white text-base shadow">IC</div>
+          <div className="lg:col-span-2 pr-0 lg:pr-10">
+            <div className="flex items-center gap-4 mb-6">
+              <img src="/alvaslogo.png" alt="AIET Logo" className="h-14 sm:h-16 w-auto object-contain rounded" />
               <div>
-                <div className="font-bold text-lg leading-tight">IC-MEMS 2027</div>
-                <div className="text-white/50 text-xs">AIET, Moodbidri</div>
+                <div className="font-bold text-xl leading-tight">IC-MEMS 2027</div>
+                <div className="text-white/50 text-sm font-medium tracking-wide mt-1">AIET, Moodbidri</div>
               </div>
             </div>
             <p className="text-white/60 text-sm leading-relaxed mb-4 max-w-xs">
@@ -102,7 +102,7 @@ export default function Footer() {
 
       {/* Bottom bar */}
       <div className="border-t border-white/10">
-        <div className="container-custom py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="w-full max-w-[1536px] mx-auto px-4 sm:px-6 xl:px-12 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-white/40 text-xs text-center sm:text-left">
             &copy; {currentYear} IC-MEMS 2027 | Alva&rsquo;s Institute of Engineering and Technology. All rights reserved.
           </p>
