@@ -62,8 +62,8 @@ export default function Navbar() {
     >
       {/* Top bar */}
       <div className="border-b border-white/5">
-        <div className="container-custom flex items-center justify-between py-2.5">
-          <span className="text-teal-400 text-xs font-medium tracking-wide">
+        <div className="w-full max-w-[1536px] mx-auto px-4 sm:px-6 xl:px-12 flex items-center justify-between py-2.5">
+          <span className="text-teal-400 text-[11px] md:text-xs font-medium tracking-wide">
             16–17 September 2027 | Hybrid Mode | Moodbidri, Karnataka, India
           </span>
           <span className="text-white/50 text-xs hidden md:block">aiet.org.in/icmems2027</span>
@@ -71,19 +71,19 @@ export default function Navbar() {
       </div>
 
       {/* Main nav */}
-      <nav className="container-custom" aria-label="Main navigation">
-        <div className="flex items-center justify-between h-20 md:h-24 transition-all duration-300">
+      <nav className="w-full max-w-[1536px] mx-auto px-4 sm:px-6 xl:px-12" aria-label="Main navigation">
+        <div className="flex items-center justify-between h-16 md:h-20 transition-all duration-300">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-4 group flex-shrink-0 mr-4">
-            <img src="/alvaslogo.png" alt="AIET Logo" className="h-[52px] sm:h-[68px] xl:h-[76px] w-auto object-contain rounded transition-all duration-300" />
+          <Link href="/" className="flex items-center gap-2.5 group flex-shrink-0 mr-2 xl:mr-6">
+            <img src="/alvaslogo.png" alt="AIET Logo" className="h-10 sm:h-12 xl:h-14 w-auto object-contain rounded transition-all duration-300" />
             <div className="hidden sm:block">
-              <div className="text-white font-bold text-base tracking-wide leading-tight group-hover:text-teal-400 transition-colors">IC-MEMS 2027</div>
-              <div className="text-white/50 text-xs font-medium tracking-wider mt-0.5 leading-tight">AIET, Moodbidri</div>
+              <div className="text-white font-bold text-sm tracking-wide leading-tight group-hover:text-teal-400 transition-colors">IC-MEMS 2027</div>
+              <div className="text-white/50 text-[11px] font-medium tracking-wider mt-0.5 leading-tight">AIET, Moodbidri</div>
             </div>
           </Link>
 
           {/* Desktop nav */}
-          <div className="hidden xl:flex items-center gap-2 2xl:gap-3">
+          <div className="hidden xl:flex items-center gap-0.5 2xl:gap-1">
             {navLinks.map((link) =>
               link.children ? (
                 <div
@@ -93,7 +93,7 @@ export default function Navbar() {
                   onMouseLeave={() => setActiveDropdown(null)}
                 >
                   <button
-                    className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium tracking-wide transition-all duration-300 ${
+                    className={`flex items-center gap-1 px-3 py-2 rounded-lg text-[13px] font-medium tracking-wide transition-all duration-300 ${
                       isActive(link.href)
                         ? 'text-teal-400 bg-white/10'
                         : 'text-white/80 hover:text-white hover:bg-white/10'
@@ -124,7 +124,7 @@ export default function Navbar() {
                 <div key={link.label} className="relative group">
                   <Link
                     href={link.href}
-                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium tracking-wide text-white/50 hover:text-white/70 transition-all duration-300"
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-[13px] font-medium tracking-wide text-white/50 hover:text-white/70 transition-all duration-300"
                   >
                     {link.label}
                     <span className="text-[9px] bg-amber-500/20 text-amber-400 px-1.5 py-0.5 rounded-full font-semibold">TBA</span>
@@ -134,7 +134,7 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`px-4 py-2.5 rounded-xl text-sm font-medium tracking-wide transition-all duration-300 whitespace-nowrap ${
+                  className={`px-3 py-2 rounded-lg text-[13px] font-medium tracking-wide transition-all duration-300 whitespace-nowrap ${
                     isActive(link.href)
                       ? 'text-teal-400 bg-white/10'
                       : 'text-white/80 hover:text-white hover:bg-white/10'
@@ -147,18 +147,18 @@ export default function Navbar() {
           </div>
 
           {/* CTA + hamburger */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             {isRegistered ? (
               <button
                 onClick={handleLogout}
-                className="hidden sm:inline-flex items-center px-6 py-2.5 rounded-xl bg-red-500/90 hover:bg-red-500 text-white text-sm font-bold tracking-wide transition-all shadow-lg hover:shadow-red-500/25"
+                className="hidden sm:inline-flex items-center px-4 py-2 rounded-lg bg-red-500/90 hover:bg-red-500 text-white text-[13px] font-bold tracking-wide transition-all shadow-md hover:shadow-red-500/25"
               >
                 Logout
               </button>
             ) : (
               <Link
                 href="/registration"
-                className="hidden sm:inline-flex items-center px-6 py-2.5 rounded-xl bg-teal-500/90 hover:bg-teal-400 text-white text-sm font-bold tracking-wide transition-all shadow-lg hover:shadow-teal-500/25"
+                className="hidden sm:inline-flex items-center px-4 py-2 rounded-lg bg-teal-500/90 hover:bg-teal-400 text-white text-[13px] font-bold tracking-wide transition-all shadow-md hover:shadow-teal-500/25"
               >
                 Register
               </Link>
