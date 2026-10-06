@@ -15,7 +15,7 @@ const footerLinks = [
 export default function Footer() {
   const currentYear = new Date().getFullYear();
   return (
-    <footer className="bg-[#050d1f] text-white border-t border-white/10">
+    <footer className="bg-[#050d1f] text-white border-t border-white/10 mt-12 sm:mt-20 lg:mt-24">
       <div className="w-full max-w-[1536px] mx-auto px-4 sm:px-6 xl:px-12 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* Brand */}
