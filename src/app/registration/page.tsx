@@ -65,7 +65,15 @@ export default function RegistrationPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
-      const data = await response.json();
+      
+      const contentType = response.headers.get("content-type");
+      let data;
+      if (contentType && contentType.indexOf("application/json") !== -1) {
+        data = await response.json();
+      } else {
+        data = { error: "Server error: Check if MONGODB_URI is properly configured." };
+      }
+
       if (!response.ok) {
         throw new Error(data.error || 'Registration failed');
       }

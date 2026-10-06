@@ -20,7 +20,15 @@ export default function AdminPage() {
           'Authorization': authHeader
         }
       });
-      const data = await res.json();
+      
+      const contentType = res.headers.get("content-type");
+      let data;
+      if (contentType && contentType.indexOf("application/json") !== -1) {
+        data = await res.json();
+      } else {
+        data = { error: "Server error: Check if MONGODB_URI is properly configured." };
+      }
+
       if (!res.ok) {
         throw new Error(data.error || 'Failed to authenticate');
       }
