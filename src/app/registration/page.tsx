@@ -1,7 +1,7 @@
-import type { Metadata } from 'next';
-import Link from 'next/link';
+'use client';
 
-export const metadata: Metadata = { title: 'Registration | IC-MEMS 2027' };
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 const fees = [
   { category: 'Research Scholars / Postgraduate Students', amount: '₹6,000', currency: 'INR', icon: '🎓' },
@@ -20,6 +20,67 @@ const comparison = [
 ];
 
 export default function RegistrationPage() {
+  const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    phoneNumber: '',
+    institution: '',
+    category: fees[0].category,
+    presentationType: 'Oral Presenter',
+    paperId: '',
+    paymentReference: '',
+  });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+  const [registeredName, setRegisteredName] = useState('');
+
+  useEffect(() => {
+    if (localStorage.getItem('isRegistered') === 'true') {
+      setSubmitSuccess(true);
+      setRegisteredName(localStorage.getItem('registeredName') || '');
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('isRegistered');
+    localStorage.removeItem('registeredName');
+    window.dispatchEvent(new Event('registrationStatusChanged'));
+    setSubmitSuccess(false);
+    setRegisteredName('');
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setErrorMsg('');
+    try {
+      const response = await fetch('/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || 'Registration failed');
+      }
+      localStorage.setItem('isRegistered', 'true');
+      localStorage.setItem('registeredName', formData.fullName);
+      window.dispatchEvent(new Event('registrationStatusChanged'));
+      setRegisteredName(formData.fullName);
+      setSubmitSuccess(true);
+    } catch (err: any) {
+      setErrorMsg(err.message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="page-enter">
       <nav aria-label="Breadcrumb" className="bg-gray-50 border-b border-gray-100">
@@ -39,17 +100,90 @@ export default function RegistrationPage() {
           <div className="flex flex-wrap gap-6 mt-4 text-sm">
             <div className="flex items-center gap-2 text-white/70">
               <span className="w-2 h-2 rounded-full bg-teal-400" />
-              Opens: 1 June 2027
-            </div>
-            <div className="flex items-center gap-2 text-white/70">
-              <span className="w-2 h-2 rounded-full bg-amber-400" />
-              Closes: 5 September 2027
+              Status: Open
             </div>
           </div>
         </div>
       </div>
 
       <div className="container-custom max-w-5xl py-16 space-y-16">
+        
+        {/* Registration Form Section */}
+        <section id="registration-form" aria-labelledby="form-heading">
+          <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-sm">
+            <h2 id="form-heading" className="text-2xl font-bold mb-6" style={{ color: '#0a192f' }}>Submit Registration</h2>
+            
+            {submitSuccess ? (
+              <div className="bg-teal-50 border border-teal-200 text-teal-800 rounded-lg p-6 text-center">
+                <div className="text-4xl mb-4">✅</div>
+                <h3 className="text-xl font-bold mb-2">Registration Successful</h3>
+                <p className="mb-6">Thank you for registering for IC-MEMS 2027, {registeredName}. We have received your details.</p>
+                <button onClick={handleLogout} className="px-6 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors font-medium">Log out</button>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {errorMsg && (
+                  <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg text-sm">
+                    {errorMsg}
+                  </div>
+                )}
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
+                    <input required type="text" name="fullName" value={formData.fullName} onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none" placeholder="Dr. Jane Doe" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Email Address *</label>
+                    <input required type="email" name="email" value={formData.email} onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none" placeholder="jane@example.com" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
+                    <input required type="tel" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none" placeholder="+91 9876543210" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Institution/Organization *</label>
+                    <input required type="text" name="institution" value={formData.institution} onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none" placeholder="University of Example" />
+                  </div>
+                  <div className="md:col-span-2 text-sm text-gray-500 italic">
+                    Note: Payment gateway is not yet integrated. Please mention your offline payment reference below if available.
+                  </div>
+                  <div className="space-y-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Registration Category *</label>
+                    <select required name="category" value={formData.category} onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none">
+                      {fees.map(fee => (
+                        <option key={fee.category} value={fee.category}>{fee.category} - {fee.amount}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Type of Participation *</label>
+                    <select required name="presentationType" value={formData.presentationType} onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none">
+                      <option value="Oral Presenter">Oral Presenter</option>
+                      <option value="Poster Presenter">Poster Presenter</option>
+                      <option value="Attendee Only">Attendee Only</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Paper ID (If presenting)</label>
+                    <input type="text" name="paperId" value={formData.paperId} onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none" placeholder="e.g. ICMEMS-1024" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Payment Reference Number</label>
+                    <input type="text" name="paymentReference" value={formData.paymentReference} onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none" placeholder="e.g. UPI/Bank Reference" />
+                  </div>
+                </div>
+
+                <div className="pt-4">
+                  <button type="submit" disabled={isSubmitting} className="w-full md:w-auto px-8 py-3 bg-teal-600 hover:bg-teal-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50">
+                    {isSubmitting ? 'Submitting...' : 'Register Now'}
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        </section>
+
         {/* Registration Fee Table */}
         <section aria-labelledby="fees-heading">
           <h2 id="fees-heading" className="text-2xl font-bold mb-2" style={{ color: '#0a192f' }}>Registration Fees</h2>
@@ -120,19 +254,6 @@ export default function RegistrationPage() {
                 ))}
               </tbody>
             </table>
-          </div>
-        </section>
-
-        {/* Register Now CTA */}
-        <section>
-          <div className="rounded-2xl gradient-navy p-8 md:p-10 text-white text-center">
-            <h3 className="text-xl font-bold mb-3">Ready to Register?</h3>
-            <p className="text-white/70 text-sm mb-2">Registration opens: <strong className="text-white">1 June 2027</strong></p>
-            <p className="text-white/60 text-sm mb-6">Payment will be processed through the AIET portal payment gateway.</p>
-            <div className="coming-soon mx-auto w-fit">
-              🎫 Registration Portal — Opens 1 June 2027
-            </div>
-            <p className="text-white/40 text-xs mt-4">Contact: icmems2027@gmail.com | +91 96119 45201</p>
           </div>
         </section>
       </div>

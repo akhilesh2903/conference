@@ -29,12 +29,28 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const pathname = usePathname();
+  const [isRegistered, setIsRegistered] = useState(false);
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handler);
-    return () => window.removeEventListener('scroll', handler);
+    
+    // Check registration status
+    const checkReg = () => setIsRegistered(localStorage.getItem('isRegistered') === 'true');
+    checkReg();
+    window.addEventListener('registrationStatusChanged', checkReg);
+
+    return () => {
+      window.removeEventListener('scroll', handler);
+      window.removeEventListener('registrationStatusChanged', checkReg);
+    }
   }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('isRegistered');
+    localStorage.removeItem('registeredName');
+    window.dispatchEvent(new Event('registrationStatusChanged'));
+  };
 
   const isActive = (href: string) => pathname === href || (href !== '/' && pathname.startsWith(href));
 
@@ -132,12 +148,21 @@ export default function Navbar() {
 
           {/* CTA + hamburger */}
           <div className="flex items-center gap-3">
-            <Link
-              href="/registration"
-              className="hidden sm:inline-flex items-center px-4 py-2 rounded-lg bg-teal-500 hover:bg-teal-400 text-white text-sm font-semibold transition-colors shadow-lg"
-            >
-              Register
-            </Link>
+            {isRegistered ? (
+              <button
+                onClick={handleLogout}
+                className="hidden sm:inline-flex items-center px-4 py-2 rounded-lg bg-red-500 hover:bg-red-400 text-white text-sm font-semibold transition-colors shadow-lg"
+              >
+                Logout
+              </button>
+            ) : (
+              <Link
+                href="/registration"
+                className="hidden sm:inline-flex items-center px-4 py-2 rounded-lg bg-teal-500 hover:bg-teal-400 text-white text-sm font-semibold transition-colors shadow-lg"
+              >
+                Register
+              </Link>
+            )}
             <button
               className="xl:hidden p-2 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-colors"
               onClick={() => setIsOpen(!isOpen)}
@@ -201,13 +226,22 @@ export default function Navbar() {
               )
             )}
             <div className="pt-2 px-4">
-              <Link
-                href="/registration"
-                onClick={() => setIsOpen(false)}
-                className="block text-center w-full px-4 py-2.5 rounded-lg bg-teal-500 hover:bg-teal-400 text-white text-sm font-semibold transition-colors"
-              >
-                Register Now
-              </Link>
+              {isRegistered ? (
+                <button
+                  onClick={() => { setIsOpen(false); handleLogout(); }}
+                  className="block w-full text-center px-4 py-2.5 rounded-lg bg-red-500 hover:bg-red-400 text-white text-sm font-semibold transition-colors"
+                >
+                  Logout
+                </button>
+              ) : (
+                <Link
+                  href="/registration"
+                  onClick={() => setIsOpen(false)}
+                  className="block text-center w-full px-4 py-2.5 rounded-lg bg-teal-500 hover:bg-teal-400 text-white text-sm font-semibold transition-colors"
+                >
+                  Register Now
+                </Link>
+              )}
             </div>
           </div>
         )}
