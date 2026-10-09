@@ -9,7 +9,7 @@ const dates = [
   { label: 'Full-Paper Submission Deadline', date: '31 July 2027', icon: '06', highlight: true },
   { label: 'Full-Paper Acceptance Notification', date: '16 August 2027', icon: '07', highlight: false },
   { label: 'Registration Closes', date: '5 September 2027', icon: '08', highlight: true },
-  { label: 'Conference', date: '16–17 September 2027', icon: '09', highlight: true },
+  { label: 'Conference', date: '16 to 18 September 2027', icon: '09', highlight: true },
 ];
 
 export default function ImportantDatesStrip() {

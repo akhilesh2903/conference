@@ -106,7 +106,7 @@ export default function VenueContactPage() {
         {/* Contact */}
         <section>
           <h2 className="text-2xl font-bold mb-8" style={{ color: '#0a192f' }}>Contact</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-10">
             {[
               {
                 icon: '✉️',
@@ -117,14 +117,14 @@ export default function VenueContactPage() {
               {
                 icon: '📞',
                 label: 'Phone',
-                value: '+91 96119 45201',
-                href: 'tel:+919611945201',
-              },
-              {
-                icon: '💬',
-                label: 'WhatsApp',
-                value: '+91 98928 18760',
-                href: 'https://wa.me/919892818760',
+                value: (
+                  <>
+                    +91 89041 42098<br />
+                    +91 96119 45201<br />
+                    +91 98928 18760
+                  </>
+                ),
+                href: 'tel:+918904142098',
               },
             ].map((contact) => (
               <a

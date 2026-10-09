@@ -18,7 +18,7 @@ export default function HeroSection() {
       </div>
 
       <div className="container-custom relative z-10 py-24 lg:py-32 w-full">
-        <div className="max-w-4xl mx-auto xl:mx-0">
+        <div className="w-full max-w-7xl mx-auto flex flex-col items-center text-center">
           {/* Conference badge */}
           <div className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full border border-teal-500/30 bg-teal-500/10 mb-8 backdrop-blur-sm">
             <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse" />
@@ -33,7 +33,7 @@ export default function HeroSection() {
           </div>
 
           {/* Full name */}
-          <h1 className="text-white text-xl md:text-3xl font-light leading-relaxed mb-8 max-w-2xl">
+          <h1 className="text-white text-xl md:text-3xl font-light leading-relaxed mb-8 text-center max-w-none lg:whitespace-nowrap mx-auto">
             International Conference on{" "}
             <span className="text-white font-semibold">Materials, Energy</span>{" "}
             and{" "}
@@ -43,8 +43,8 @@ export default function HeroSection() {
           </h1>
 
           {/* Date & mode */}
-          <div className="flex flex-wrap items-center gap-4 mb-4">
-            <div className="flex items-center gap-2 text-white/90">
+          <div className="flex flex-wrap justify-center items-center gap-4 mb-4 w-full">
+            <div className="flex items-center justify-center gap-2 text-white/90">
               <svg
                 className="w-4 h-4 text-teal-400 flex-shrink-0"
                 fill="none"
@@ -59,7 +59,7 @@ export default function HeroSection() {
                 />
               </svg>
               <span className="font-semibold text-white">
-                16–17 September 2027
+                16 to 18 September 2027
               </span>
             </div>
             <span className="text-white/40 hidden sm:block">|</span>
@@ -82,7 +82,7 @@ export default function HeroSection() {
           </div>
 
           {/* Organiser */}
-          <div className="flex items-center gap-2 text-white/80 mb-10">
+          <div className="flex flex-wrap justify-center items-center gap-2 text-white/80 mb-10 w-full">
             <svg
               className="w-4 h-4 text-teal-400 flex-shrink-0"
               fill="none"
@@ -113,7 +113,7 @@ export default function HeroSection() {
           </div>
 
           {/* CTA Buttons */}
-          <div className="flex flex-wrap gap-4 items-center">
+          <div className="flex flex-wrap justify-center gap-4 items-center w-full">
             {/* Submit Abstract — Coming Soon */}
             <div className="coming-soon backdrop-blur-sm" title="Submission portal opening soon">
               <svg
@@ -175,22 +175,7 @@ export default function HeroSection() {
             </div>
           </div>
 
-          {/* Theme pills */}
-          <div className="mt-12 flex flex-wrap gap-2.5">
-            {[
-              "Advanced Materials",
-              "Energy Systems & Hydrogen",
-              "Environment & Climate",
-              "Sustainable Management",
-            ].map((t) => (
-              <span
-                key={t}
-                className="px-3.5 py-1.5 rounded-full border border-white/20 bg-white/10 text-white/90 text-xs font-medium backdrop-blur-sm shadow-sm"
-              >
-                {t}
-              </span>
-            ))}
-          </div>
+
         </div>
       </div>
 

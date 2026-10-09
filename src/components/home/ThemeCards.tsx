@@ -57,16 +57,16 @@ const themes = [
 
 export default function ThemeCards() {
   return (
-    <section className="section-padding bg-white" aria-label="Conference themes">
+    <section className="section-padding bg-white" aria-label="Conference tracks">
       <div className="container-custom">
         {/* Heading */}
         <div className="text-center mb-14">
           <span className="badge bg-teal-50 text-teal-700 mb-3">Interdisciplinary Research</span>
           <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: '#0a192f' }}>
-            Conference Themes
+            Conference Tracks
           </h2>
           <p className="text-gray-500 max-w-xl mx-auto text-sm leading-relaxed">
-            IC-MEMS 2027 covers four interconnected themes bridging materials science, energy engineering, environmental sustainability and management.
+            IC-MEMS 2027 covers four interconnected tracks bridging materials science, energy engineering, environmental sustainability and management.
           </p>
         </div>
 
@@ -108,12 +108,12 @@ export default function ThemeCards() {
 
               {/* CTA */}
               <Link
-                href={`/themes#${theme.id}`}
+                href={`/tracks#${theme.id}`}
                 className="inline-flex items-center gap-2 text-sm font-semibold transition-colors"
                 style={{ color: theme.accent }}
                 aria-label={`Explore ${theme.title}`}
               >
-                Explore Theme
+                Explore Track
                 <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
@@ -125,10 +125,10 @@ export default function ThemeCards() {
         {/* Bottom CTA */}
         <div className="mt-12 text-center">
           <Link
-            href="/themes"
+            href="/tracks"
             className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-[#0a192f] hover:bg-[#163560] text-white font-semibold transition-all hover:-translate-y-0.5 shadow-lg"
           >
-            View All Themes & Subtopics
+            View All Tracks & Subtopics
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>

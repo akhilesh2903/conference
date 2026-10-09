@@ -16,7 +16,7 @@ export default function WelcomeSection() {
             <div className="space-y-4 text-gray-600 leading-relaxed">
               <p>
                 The <strong className="text-gray-800">International Conference on Materials, Energy and Management for Sustainability (IC-MEMS 2027)</strong>, organised by Alva&rsquo;s Institute of Engineering and Technology, Moodbidri, Karnataka, will be held on{' '}
-                <strong className="text-gray-800">16–17 September 2027</strong> in hybrid mode.
+                <strong className="text-gray-800">16 to 18 September 2027</strong> in hybrid mode.
               </p>
               <p>
                 The conference brings together researchers, academicians, scientists, engineers, management professionals, industry representatives and policymakers to share research and discuss practical responses to sustainability challenges.
@@ -27,7 +27,7 @@ export default function WelcomeSection() {
             </div>
 
             <div className="mt-8">
-              <p className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">Conference Themes</p>
+              <p className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">Conference Tracks</p>
               <div className="space-y-3">
                 {[
                   ['01', 'Advanced and Sustainable Materials'],
@@ -59,10 +59,10 @@ export default function WelcomeSection() {
                 </svg>
               </Link>
               <Link
-                href="/themes"
+                href="/tracks"
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-teal-200 text-teal-700 hover:bg-teal-50 text-sm font-medium transition-colors"
               >
-                Explore Themes
+                Explore Tracks
               </Link>
             </div>
           </div>
@@ -70,9 +70,9 @@ export default function WelcomeSection() {
           {/* Stats / visual panel */}
           <div className="grid grid-cols-2 gap-5">
             {[
-              { value: '4', label: 'Conference Themes', icon: '01', color: 'blue' },
+              { value: '4', label: 'Conference Tracks', icon: '01', color: 'blue' },
               { value: 'Hybrid', label: 'Mode of Conference', icon: '02', color: 'teal' },
-              { value: '2 Days', label: 'Full Conference', icon: '03', color: 'green' },
+              { value: '3 Days', label: 'Full Conference', icon: '03', color: 'green' },
               { value: 'Scopus', label: 'Indexed Publication', icon: '04', color: 'purple' },
               { value: '4000+', label: 'AIET Academic Community', icon: '05', color: 'orange' },
               { value: 'Sep 2027', label: 'Conference Date', icon: '06', color: 'teal' },

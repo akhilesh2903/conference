@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 const navLinks = [
   { label: 'Home', href: '/' },
   { label: 'About', href: '/about' },
-  { label: 'Themes', href: '/themes' },
+  { label: 'Tracks', href: '/tracks' },
   { label: 'Publication', href: '/publication' },
   {
     label: 'For Authors',
@@ -107,16 +107,19 @@ export default function Navbar() {
                     </svg>
                   </button>
                   {activeDropdown === link.label && (
-                    <div className="absolute top-full left-0 mt-1 w-52 bg-[#0a192f] border border-white/10 rounded-xl shadow-2xl py-2 z-50">
-                      {link.children.map((child) => (
-                        <Link
-                          key={child.href}
-                          href={child.href}
-                          className="block px-4 py-2.5 text-sm text-white/70 hover:text-white hover:bg-white/10 transition-colors"
-                        >
-                          {child.label}
-                        </Link>
-                      ))}
+                    <div className="absolute top-full left-0 pt-2 w-52 z-50">
+                      <div className="bg-[#0a192f] border border-white/10 rounded-xl shadow-2xl py-2">
+                        {link.children.map((child) => (
+                          <Link
+                            key={child.href}
+                            href={child.href}
+                            className="block px-4 py-2.5 text-sm text-white/70 hover:text-white hover:bg-white/10 transition-colors"
+                            onClick={() => setActiveDropdown(null)}
+                          >
+                            {child.label}
+                          </Link>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>

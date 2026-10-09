@@ -13,7 +13,8 @@ const dates = [
   { id: 7, label: 'Full-Paper Acceptance Notification', date: '16 August 2027', icon: '🏆', note: 'Final decision communicated.' },
   { id: 8, label: 'Registration Closes', date: '5 September 2027', icon: '⏰', highlight: true, note: 'Last date to register.' },
   { id: 9, label: 'Conference Day 1', date: '16 September 2027', icon: '🎓', highlight: true, note: 'Inaugural session and technical presentations.' },
-  { id: 10, label: 'Conference Day 2', date: '17 September 2027', icon: '🎓', highlight: true, note: 'Technical sessions and closing ceremony.' },
+  { id: 10, label: 'Conference Day 2', date: '17 September 2027', icon: '🎓', highlight: true, note: 'Technical sessions.' },
+  { id: 11, label: 'Conference Day 3', date: '18 September 2027', icon: '🏆', highlight: true, note: 'Technical sessions and closing ceremony.' },
 ];
 
 export default function ImportantDatesPage() {

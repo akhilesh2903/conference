@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
-export const metadata: Metadata = { title: 'Themes | IC-MEMS 2027' };
+export const metadata: Metadata = { title: 'Tracks | IC-MEMS 2027' };
 
-const themes = [
+const tracks = [
   {
-    id: 'theme-1',
+    id: 'track-1',
     number: '01',
     title: 'Advanced and Sustainable Materials',
     color: '#2563eb',
@@ -22,7 +22,7 @@ const themes = [
     ],
   },
   {
-    id: 'theme-2',
+    id: 'track-2',
     number: '02',
     title: 'Energy Systems, Hydrogen & Sustainable Energy',
     color: '#0d9488',
@@ -37,7 +37,7 @@ const themes = [
     ],
   },
   {
-    id: 'theme-3',
+    id: 'track-3',
     number: '03',
     title: 'Environment, Climate & Sustainable Engineering',
     color: '#16a34a',
@@ -51,7 +51,7 @@ const themes = [
     ],
   },
   {
-    id: 'theme-4',
+    id: 'track-4',
     number: '04',
     title: 'Sustainable Management, Business & Finance',
     color: '#7c3aed',
@@ -70,7 +70,7 @@ const themes = [
   },
 ];
 
-export default function ThemesPage() {
+export default function TracksPage() {
   return (
     <div className="page-enter">
       {/* Breadcrumb */}
@@ -79,76 +79,76 @@ export default function ThemesPage() {
           <ol className="flex items-center gap-2 text-sm text-gray-500">
             <li><Link href="/" className="hover:text-teal-600 transition-colors">Home</Link></li>
             <li aria-hidden><span className="mx-1">/</span></li>
-            <li className="text-gray-800 font-medium">Themes</li>
+            <li className="text-gray-800 font-medium">Tracks</li>
           </ol>
         </div>
       </nav>
 
       {/* Page header */}
-      <div className="gradient-navy text-white py-16">
+      <div className="gradient-navy text-white py-20 lg:py-24 mb-6">
         <div className="container-custom">
           <span className="badge bg-white/10 text-teal-300 mb-4">Interdisciplinary Research</span>
-          <h1 className="font-display text-4xl md:text-5xl font-bold text-white mb-4">Conference Themes</h1>
+          <h1 className="font-display text-4xl md:text-5xl font-bold text-white mb-4">Conference Tracks</h1>
           <p className="text-white/70 max-w-2xl">
-            IC-MEMS 2027 covers four major interdisciplinary themes. Explore the sub-topics and find where your research fits.
+            IC-MEMS 2027 covers four major interdisciplinary tracks. Explore the sub-topics and find where your research fits.
           </p>
           {/* Jump links */}
           <div className="flex flex-wrap gap-3 mt-8">
-            {themes.map((t) => (
+            {tracks.map((t) => (
               <a
                 key={t.id}
                 href={`#${t.id}`}
                 className="px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white/80 hover:text-white text-xs font-medium transition-all border border-white/10"
               >
-                Theme {t.number}: {t.title.split(' ').slice(0, 3).join(' ')}…
+                Track {t.number}: {t.title.split(' ').slice(0, 3).join(' ')}…
               </a>
             ))}
           </div>
         </div>
       </div>
 
-      {/* Themes */}
-      <div className="container-custom max-w-5xl py-16 space-y-16">
-        {themes.map((theme, idx) => (
+      {/* Tracks */}
+      <div className="container-custom max-w-5xl py-12 lg:py-16 space-y-16">
+        {tracks.map((track, idx) => (
           <section
-            key={theme.id}
-            id={theme.id}
+            key={track.id}
+            id={track.id}
             className="scroll-mt-24"
-            aria-labelledby={`heading-${theme.id}`}
+            aria-labelledby={`heading-${track.id}`}
           >
             <div className="flex items-start gap-5 mb-8">
               <div
                 className="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl flex-shrink-0 shadow-sm"
-                style={{ backgroundColor: theme.bg, border: `1px solid ${theme.border}` }}
+                style={{ backgroundColor: track.bg, border: `1px solid ${track.border}` }}
                 role="img" aria-hidden="true"
               >
-                {theme.icon}
+                {track.icon}
               </div>
               <div>
-                <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: theme.color }}>
-                  Theme {theme.number}
+                <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: track.color }}>
+                  Track {track.number}
                 </p>
                 <h2
-                  id={`heading-${theme.id}`}
+                  id={`heading-${track.id}`}
                   className="text-2xl md:text-3xl font-bold"
                   style={{ color: '#0a192f' }}
                 >
-                  {theme.title}
+                  {track.title}
                 </h2>
               </div>
             </div>
 
             <div
               className="rounded-2xl p-6 border"
-              style={{ backgroundColor: theme.bg, borderColor: theme.border }}
+              style={{ backgroundColor: track.bg, borderColor: track.border }}
             >
-              <p className="text-sm font-semibold mb-4" style={{ color: theme.color }}>
+              <p className="text-sm font-semibold mb-4" style={{ color: track.color }}>
                 Subtopics include:
               </p>
               <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-2.5">
-                {theme.subtopics.map((sub) => (
+                {track.subtopics.map((sub) => (
                   <li key={sub} className="flex items-start gap-2 text-sm text-gray-700">
-                    <svg className="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{ color: theme.color }}>
+                    <svg className="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{ color: track.color }}>
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                     {sub}
@@ -157,7 +157,7 @@ export default function ThemesPage() {
               </ul>
             </div>
 
-            {idx < themes.length - 1 && <div className="mt-12 border-t border-gray-100" />}
+            {idx < tracks.length - 1 && <div className="mt-12 border-t border-gray-100" />}
           </section>
         ))}
 

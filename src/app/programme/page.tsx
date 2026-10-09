@@ -6,6 +6,7 @@ export const metadata: Metadata = { title: 'Programme | IC-MEMS 2027' };
 const days = [
   { day: 1, date: '16 September 2027', label: 'Day 1' },
   { day: 2, date: '17 September 2027', label: 'Day 2' },
+  { day: 3, date: '18 September 2027', label: 'Day 3' },
 ];
 
 export default function ProgrammePage() {

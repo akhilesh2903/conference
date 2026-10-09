@@ -90,23 +90,11 @@ export default function ForAuthorsPage() {
         {/* Submission */}
         <section id="submission" className="scroll-mt-24">
           <h2 className="text-2xl font-bold mb-6" style={{ color: '#0a192f' }}>Abstract Submission</h2>
-          <div className="rounded-2xl border border-amber-200 bg-amber-50 p-6 mb-6 flex gap-4">
-            <div className="text-3xl flex-shrink-0">ℹ️</div>
+          <div className="rounded-2xl border border-teal-200 bg-teal-50 p-6 mb-6 flex gap-4">
+            <div className="text-3xl flex-shrink-0">📝</div>
             <div>
-              <h3 className="font-bold text-amber-900 mb-1">Submission Method</h3>
-              <p className="text-amber-800 text-sm">The exact abstract submission method is being finalised. The system will support either direct text entry or Word document upload. Details will be updated once confirmed.</p>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div className="rounded-2xl border border-gray-200 bg-white p-6">
-              <div className="text-3xl mb-3">📝</div>
-              <h3 className="font-bold mb-2" style={{ color: '#0a192f' }}>Option A: Text Entry</h3>
-              <p className="text-sm text-gray-600">Enter your abstract title, body text, keywords and author details directly in the online form on the AIET portal.</p>
-            </div>
-            <div className="rounded-2xl border border-gray-200 bg-white p-6">
-              <div className="text-3xl mb-3">📄</div>
-              <h3 className="font-bold mb-2" style={{ color: '#0a192f' }}>Option B: File Upload</h3>
-              <p className="text-sm text-gray-600">Upload your abstract as a Word document using the provided template from the Downloads section through the AIET portal.</p>
+              <h3 className="font-bold text-teal-900 mb-1">Direct Text Entry Method</h3>
+              <p className="text-teal-800 text-sm">The abstract submission system supports direct text entry. Enter your abstract title, body text, keywords and author details directly in the online form on the AIET portal.</p>
             </div>
           </div>
           <p className="text-sm text-gray-500 mt-4 text-center">Submission portal opens 16 June 2027. Check back for updates.</p>
