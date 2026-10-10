@@ -9,6 +9,7 @@ export interface ICandidate {
   presentationType: string;
   paperId?: string;
   paymentReference?: string;
+  status: 'pending' | 'accepted' | 'rejected';
   createdAt: Date;
 }
 
@@ -21,6 +22,7 @@ const CandidateSchema = new Schema<ICandidate>({
   presentationType: { type: String, required: true },
   paperId: { type: String, required: false },
   paymentReference: { type: String, required: false },
+  status: { type: String, enum: ['pending', 'accepted', 'rejected'], default: 'pending' },
   createdAt: { type: Date, default: Date.now },
 });
 

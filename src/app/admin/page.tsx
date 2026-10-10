@@ -1,6 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+
+type Status = 'pending' | 'accepted' | 'rejected';
+type CandidateSubTab = 'pending' | 'accepted' | 'rejected';
 
 type Candidate = {
   _id: string;
@@ -12,6 +15,7 @@ type Candidate = {
   presentationType: string;
   paperId?: string;
   paymentReference?: string;
+  status: Status;
   createdAt: string;
 };
 
@@ -35,6 +39,12 @@ export default function AdminPage() {
   // Candidates state
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [fetchLoading, setFetchLoading] = useState(false);
+  const [candidateSubTab, setCandidateSubTab] = useState<CandidateSubTab>('pending');
+  const [statusLoading, setStatusLoading] = useState<string | null>(null);
+
+  // Accepted-tab filters
+  const [filterCategory, setFilterCategory] = useState('');
+  const [filterType, setFilterType] = useState('');
 
   // Tracks state
   const [tracks, setTracks] = useState<Track[]>([]);
@@ -47,6 +57,7 @@ export default function AdminPage() {
   const authHeader = () =>
     'Basic ' + Buffer.from(username + ':' + password).toString('base64');
 
+  /* ─── Fetch helpers ────────────────────────────────────────────────── */
   const fetchCandidates = async (user: string, pass: string) => {
     setFetchLoading(true);
     try {
@@ -62,7 +73,12 @@ export default function AdminPage() {
         data = { error: 'Server error: Check if MONGODB_URI is properly configured.' };
       }
       if (!res.ok) throw new Error(data.error || 'Failed to authenticate');
-      setCandidates(data.candidates || []);
+      // Ensure existing candidates without status are treated as pending
+      const list: Candidate[] = (data.candidates || []).map((c: any) => ({
+        ...c,
+        status: c.status || 'pending',
+      }));
+      setCandidates(list);
       setIsLoggedIn(true);
       setErrorMsg('');
     } catch (err: any) {
@@ -89,6 +105,30 @@ export default function AdminPage() {
     }
   };
 
+  /* ─── Status update ────────────────────────────────────────────────── */
+  const updateStatus = async (id: string, newStatus: Status) => {
+    setStatusLoading(id);
+    try {
+      const res = await fetch(`/api/admin/candidates/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: authHeader(),
+        },
+        body: JSON.stringify({ status: newStatus }),
+      });
+      if (!res.ok) throw new Error('Failed to update status');
+      setCandidates((prev) =>
+        prev.map((c) => (c._id === id ? { ...c, status: newStatus } : c))
+      );
+    } catch (err: any) {
+      alert(err.message || 'Error updating status');
+    } finally {
+      setStatusLoading(null);
+    }
+  };
+
+  /* ─── Login ────────────────────────────────────────────────────────── */
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -99,9 +139,10 @@ export default function AdminPage() {
     if (isLoggedIn && activeTab === 'tracks') {
       fetchTracks();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoggedIn, activeTab]);
 
+  /* ─── Track handlers ───────────────────────────────────────────────── */
   const handleAddTrack = async (e: React.FormEvent) => {
     e.preventDefault();
     setTrackFormLoading(true);
@@ -150,6 +191,110 @@ export default function AdminPage() {
     setUsername('');
     setPassword('');
     setActiveTab('candidates');
+  };
+
+  /* ─── Derived candidate lists ─────────────────────────────────────── */
+  const pending = useMemo(() => candidates.filter((c) => c.status === 'pending'), [candidates]);
+  const accepted = useMemo(() => candidates.filter((c) => c.status === 'accepted'), [candidates]);
+  const rejected = useMemo(() => candidates.filter((c) => c.status === 'rejected'), [candidates]);
+
+  // Unique filter options from accepted list
+  const categoryOptions = useMemo(
+    () => Array.from(new Set(accepted.map((c) => c.category))).sort(),
+    [accepted]
+  );
+  const typeOptions = useMemo(
+    () => Array.from(new Set(accepted.map((c) => c.presentationType))).sort(),
+    [accepted]
+  );
+
+  const filteredAccepted = useMemo(
+    () =>
+      accepted.filter(
+        (c) =>
+          (filterCategory === '' || c.category === filterCategory) &&
+          (filterType === '' || c.presentationType === filterType)
+      ),
+    [accepted, filterCategory, filterType]
+  );
+
+  const subTabCandidates: Candidate[] =
+    candidateSubTab === 'pending'
+      ? pending
+      : candidateSubTab === 'accepted'
+      ? filteredAccepted
+      : rejected;
+
+  /* ─── Status badge ─────────────────────────────────────────────────── */
+  const StatusBadge = ({ status }: { status: Status }) => {
+    const styles: Record<Status, string> = {
+      pending: 'bg-yellow-100 text-yellow-800',
+      accepted: 'bg-green-100 text-green-800',
+      rejected: 'bg-red-100 text-red-800',
+    };
+    return (
+      <span className={`px-2 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full ${styles[status]}`}>
+        {status.charAt(0).toUpperCase() + status.slice(1)}
+      </span>
+    );
+  };
+
+  /* ─── Action buttons per sub-tab ───────────────────────────────────── */
+  const ActionButtons = ({ candidate }: { candidate: Candidate }) => {
+    const isUpdating = statusLoading === candidate._id;
+
+    if (candidateSubTab === 'pending') {
+      return (
+        <div className="flex gap-2">
+          <button
+            disabled={isUpdating}
+            onClick={() => updateStatus(candidate._id, 'accepted')}
+            className="inline-flex items-center px-3 py-1.5 rounded-md text-xs font-semibold bg-green-600 text-white hover:bg-green-700 disabled:opacity-50 transition-colors"
+          >
+            {isUpdating ? '…' : '✓ Accept'}
+          </button>
+          <button
+            disabled={isUpdating}
+            onClick={() => updateStatus(candidate._id, 'rejected')}
+            className="inline-flex items-center px-3 py-1.5 rounded-md text-xs font-semibold bg-red-600 text-white hover:bg-red-700 disabled:opacity-50 transition-colors"
+          >
+            {isUpdating ? '…' : '✕ Reject'}
+          </button>
+        </div>
+      );
+    }
+
+    if (candidateSubTab === 'accepted') {
+      return (
+        <div className="flex gap-2">
+          <button
+            disabled={isUpdating}
+            onClick={() => updateStatus(candidate._id, 'pending')}
+            className="inline-flex items-center px-3 py-1.5 rounded-md text-xs font-semibold bg-yellow-500 text-white hover:bg-yellow-600 disabled:opacity-50 transition-colors"
+          >
+            {isUpdating ? '…' : '↩ Undo'}
+          </button>
+          <button
+            disabled={isUpdating}
+            onClick={() => updateStatus(candidate._id, 'rejected')}
+            className="inline-flex items-center px-3 py-1.5 rounded-md text-xs font-semibold bg-red-600 text-white hover:bg-red-700 disabled:opacity-50 transition-colors"
+          >
+            {isUpdating ? '…' : '✕ Reject'}
+          </button>
+        </div>
+      );
+    }
+
+    // rejected tab
+    return (
+      <button
+        disabled={isUpdating}
+        onClick={() => updateStatus(candidate._id, 'pending')}
+        className="inline-flex items-center px-3 py-1.5 rounded-md text-xs font-semibold bg-yellow-500 text-white hover:bg-yellow-600 disabled:opacity-50 transition-colors"
+      >
+        {isUpdating ? '…' : '↩ Undo Reject'}
+      </button>
+    );
   };
 
   /* ─── Login screen ─────────────────────────────────────────────────── */
@@ -221,7 +366,7 @@ export default function AdminPage() {
           </button>
         </div>
 
-        {/* Tab bar */}
+        {/* Main tab bar */}
         <div className="border-b border-gray-200">
           <nav className="-mb-px flex gap-6">
             <button
@@ -249,50 +394,202 @@ export default function AdminPage() {
 
         {/* ── Candidates Tab ── */}
         {activeTab === 'candidates' && (
-          <div className="bg-white shadow overflow-hidden sm:rounded-lg">
+          <div className="space-y-4">
             {fetchLoading ? (
-              <div className="p-8 text-center text-gray-500">Loading candidates...</div>
-            ) : candidates.length === 0 ? (
-              <div className="p-8 text-center text-gray-500">No candidates registered yet.</div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name &amp; Email</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Institution</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category &amp; Type</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Paper ID</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment Ref</th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {candidates.map((candidate, idx) => (
-                      <tr key={candidate._id || idx} className="hover:bg-gray-50 transition-colors">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {new Date(candidate.createdAt).toLocaleDateString()}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-medium text-gray-900">{candidate.fullName}</div>
-                          <div className="text-sm text-gray-500">{candidate.email}</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{candidate.phoneNumber}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 max-w-xs truncate">{candidate.institution}</td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-teal-100 text-teal-800 break-words max-w-[200px] whitespace-normal">
-                            {candidate.category}
-                          </span>
-                          <div className="text-xs text-gray-500 mt-1">{candidate.presentationType}</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{candidate.paperId || '-'}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{candidate.paymentReference || '-'}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div className="bg-white shadow sm:rounded-lg p-8 text-center text-gray-500">
+                Loading candidates…
               </div>
+            ) : (
+              <>
+                {/* Candidate Sub-tabs with counts */}
+                <div className="flex gap-2 flex-wrap">
+                  {(
+                    [
+                      { key: 'pending', label: 'Pending', count: pending.length, color: 'yellow' },
+                      { key: 'accepted', label: 'Accepted', count: accepted.length, color: 'green' },
+                      { key: 'rejected', label: 'Rejected', count: rejected.length, color: 'red' },
+                    ] as const
+                  ).map(({ key, label, count, color }) => {
+                    const active = candidateSubTab === key;
+                    const colorMap: Record<string, { active: string; inact: string }> = {
+                      yellow: {
+                        active: 'bg-yellow-500 text-white shadow',
+                        inact: 'bg-white text-yellow-700 border border-yellow-300 hover:bg-yellow-50',
+                      },
+                      green: {
+                        active: 'bg-green-600 text-white shadow',
+                        inact: 'bg-white text-green-700 border border-green-300 hover:bg-green-50',
+                      },
+                      red: {
+                        active: 'bg-red-600 text-white shadow',
+                        inact: 'bg-white text-red-700 border border-red-300 hover:bg-red-50',
+                      },
+                    };
+                    return (
+                      <button
+                        key={key}
+                        onClick={() => {
+                          setCandidateSubTab(key);
+                          setFilterCategory('');
+                          setFilterType('');
+                        }}
+                        className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-150 flex items-center gap-2 ${
+                          active ? colorMap[color].active : colorMap[color].inact
+                        }`}
+                      >
+                        {label}
+                        <span
+                          className={`inline-flex items-center justify-center w-5 h-5 rounded-full text-xs font-bold ${
+                            active ? 'bg-white/25 text-white' : 'bg-gray-100 text-gray-600'
+                          }`}
+                        >
+                          {count}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Accepted-tab: Filters */}
+                {candidateSubTab === 'accepted' && accepted.length > 0 && (
+                  <div className="bg-white shadow sm:rounded-lg p-4 flex flex-wrap gap-4 items-end">
+                    <div>
+                      <label className="block text-xs font-medium text-gray-600 mb-1">
+                        Filter by Category
+                      </label>
+                      <select
+                        value={filterCategory}
+                        onChange={(e) => setFilterCategory(e.target.value)}
+                        className="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500"
+                      >
+                        <option value="">All Categories</option>
+                        {categoryOptions.map((c) => (
+                          <option key={c} value={c}>
+                            {c}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-600 mb-1">
+                        Filter by Presentation Type
+                      </label>
+                      <select
+                        value={filterType}
+                        onChange={(e) => setFilterType(e.target.value)}
+                        className="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500"
+                      >
+                        <option value="">All Types</option>
+                        {typeOptions.map((t) => (
+                          <option key={t} value={t}>
+                            {t}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    {(filterCategory || filterType) && (
+                      <button
+                        onClick={() => { setFilterCategory(''); setFilterType(''); }}
+                        className="text-xs text-teal-600 hover:underline self-end pb-1"
+                      >
+                        Clear filters
+                      </button>
+                    )}
+                    <span className="text-xs text-gray-400 self-end pb-1">
+                      Showing {filteredAccepted.length} of {accepted.length} accepted
+                    </span>
+                  </div>
+                )}
+
+                {/* Candidates table */}
+                <div className="bg-white shadow overflow-hidden sm:rounded-lg">
+                  {subTabCandidates.length === 0 ? (
+                    <div className="p-8 text-center text-gray-500">
+                      {candidateSubTab === 'pending' && 'No pending candidates.'}
+                      {candidateSubTab === 'accepted' && (filterCategory || filterType)
+                        ? 'No candidates match the selected filters.'
+                        : candidateSubTab === 'accepted'
+                        ? 'No accepted candidates yet.'
+                        : null}
+                      {candidateSubTab === 'rejected' && 'No rejected candidates.'}
+                    </div>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Date
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Name & Email
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Phone
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Institution
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Category & Type
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Paper ID
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Payment Ref
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Actions
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                          {subTabCandidates.map((candidate, idx) => (
+                            <tr
+                              key={candidate._id || idx}
+                              className="hover:bg-gray-50 transition-colors"
+                            >
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {new Date(candidate.createdAt).toLocaleDateString()}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <div className="text-sm font-medium text-gray-900">
+                                  {candidate.fullName}
+                                </div>
+                                <div className="text-sm text-gray-500">{candidate.email}</div>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {candidate.phoneNumber}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 max-w-xs truncate">
+                                {candidate.institution}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-teal-100 text-teal-800 break-words max-w-[200px] whitespace-normal">
+                                  {candidate.category}
+                                </span>
+                                <div className="text-xs text-gray-500 mt-1">
+                                  {candidate.presentationType}
+                                </div>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {candidate.paperId || '-'}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {candidate.paymentReference || '-'}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <ActionButtons candidate={candidate} />
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+              </>
             )}
           </div>
         )}
@@ -368,23 +665,37 @@ export default function AdminPage() {
               {tracksLoading ? (
                 <div className="p-8 text-center text-gray-500">Loading tracks...</div>
               ) : tracks.length === 0 ? (
-                <div className="p-8 text-center text-gray-500">No tracks in the database yet. Add one above.</div>
+                <div className="p-8 text-center text-gray-500">
+                  No tracks in the database yet. Add one above.
+                </div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">No.</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description / Subtopics</th>
-                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">
+                          No.
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Title
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Description / Subtopics
+                        </th>
+                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Actions
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                       {tracks.map((track) => (
                         <tr key={track._id} className="hover:bg-gray-50 transition-colors">
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-teal-700">{track.trackNumber}</td>
-                          <td className="px-6 py-4 text-sm font-medium text-gray-900 max-w-xs">{track.title}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-teal-700">
+                            {track.trackNumber}
+                          </td>
+                          <td className="px-6 py-4 text-sm font-medium text-gray-900 max-w-xs">
+                            {track.title}
+                          </td>
                           <td className="px-6 py-4 text-sm text-gray-500 max-w-md">
                             <p className="line-clamp-3 whitespace-pre-line">{track.text}</p>
                           </td>
