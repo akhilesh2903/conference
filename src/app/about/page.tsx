@@ -25,10 +25,10 @@ export default function AboutPage() {
 
       {/* Page header */}
       <div className="gradient-navy text-white py-16">
-        <div className="container-custom">
+        <div className="container-custom text-center">
           <span className="badge bg-white/10 text-teal-300 mb-4">IC-MEMS 2027</span>
           <h1 className="font-display text-4xl md:text-5xl font-bold text-white mb-4">About the Conference</h1>
-          <p className="text-white/70 max-w-2xl text-lg">
+          <p className="text-white/70 max-w-2xl text-lg mx-auto">
             An interdisciplinary international platform for sustainable innovation
           </p>
         </div>

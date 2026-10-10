@@ -28,10 +28,10 @@ export default function PublicationPage() {
       </nav>
 
       <div className="gradient-navy text-white py-16">
-        <div className="container-custom">
+        <div className="container-custom text-center">
           <span className="badge bg-white/10 text-teal-300 mb-4">Research Output</span>
           <h1 className="font-display text-4xl md:text-5xl font-bold text-white mb-4">Publication</h1>
-          <p className="text-white/70 max-w-2xl">Selected papers will be considered for publication in Scopus-indexed journals.</p>
+          <p className="text-white/70 max-w-2xl mx-auto">Selected papers will be considered for publication in Scopus-indexed journals.</p>
         </div>
       </div>
 

@@ -92,10 +92,10 @@ export default function CommitteesPage() {
       </nav>
 
       <div className="gradient-navy text-white py-16">
-        <div className="container-custom">
+        <div className="container-custom text-center">
           <span className="badge bg-white/10 text-teal-300 mb-4">Organising Team</span>
           <h1 className="font-display text-4xl md:text-5xl font-bold text-white mb-4">Committees</h1>
-          <div className="flex flex-wrap gap-3 mt-6">
+          <div className="flex flex-wrap gap-3 mt-6 justify-center">
             {['leadership', 'international', 'national', 'organising', 'editorial'].map((id) => (
               <a key={id} href={`#${id}`} className="px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white/80 text-xs font-medium border border-white/10 transition-all capitalize">
                 {id === 'international' ? 'International Advisory' : id === 'national' ? 'National Advisory' : id}

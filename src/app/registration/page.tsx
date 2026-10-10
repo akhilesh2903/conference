@@ -102,10 +102,10 @@ export default function RegistrationPage() {
       </nav>
 
       <div className="gradient-navy text-white py-16">
-        <div className="container-custom">
+        <div className="container-custom text-center">
           <span className="badge bg-white/10 text-teal-300 mb-4">Join IC-MEMS 2027</span>
           <h1 className="font-display text-4xl md:text-5xl font-bold text-white mb-4">Registration</h1>
-          <div className="flex flex-wrap gap-6 mt-4 text-sm">
+          <div className="flex flex-wrap gap-6 mt-4 text-sm justify-center">
             <div className="flex items-center gap-2 text-white/70">
               <span className="w-2 h-2 rounded-full bg-teal-400" />
               Status: Open

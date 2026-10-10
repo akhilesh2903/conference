@@ -86,14 +86,14 @@ export default function TracksPage() {
 
       {/* Page header */}
       <div className="gradient-navy text-white py-20 lg:py-24 mb-6">
-        <div className="container-custom">
+        <div className="container-custom text-center">
           <span className="badge bg-white/10 text-teal-300 mb-4">Interdisciplinary Research</span>
           <h1 className="font-display text-4xl md:text-5xl font-bold text-white mb-4">Conference Tracks</h1>
-          <p className="text-white/70 max-w-2xl">
+          <p className="text-white/70 max-w-2xl mx-auto">
             IC-MEMS 2027 covers four major interdisciplinary tracks. Explore the sub-topics and find where your research fits.
           </p>
           {/* Jump links */}
-          <div className="flex flex-wrap gap-3 mt-8">
+          <div className="flex flex-wrap gap-3 mt-8 justify-center">
             {tracks.map((t) => (
               <a
                 key={t.id}

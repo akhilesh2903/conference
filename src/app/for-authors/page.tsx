@@ -18,12 +18,12 @@ export default function ForAuthorsPage() {
       </nav>
 
       <div className="gradient-navy text-white py-16">
-        <div className="container-custom">
+        <div className="container-custom text-center">
           <span className="badge bg-white/10 text-teal-300 mb-4">Author Guidance</span>
           <h1 className="font-display text-4xl md:text-5xl font-bold text-white mb-4">For Authors</h1>
-          <p className="text-white/70 max-w-2xl">Everything you need to submit your abstract and full paper to IC-MEMS 2027.</p>
+          <p className="text-white/70 max-w-2xl mx-auto">Everything you need to submit your abstract and full paper to IC-MEMS 2027.</p>
           {/* Jump links */}
-          <div className="flex flex-wrap gap-3 mt-8">
+          <div className="flex flex-wrap gap-3 mt-8 justify-center">
             {['call-for-papers', 'abstract-requirements', 'submission', 'full-paper', 'downloads'].map((id) => (
               <a key={id} href={`#${id}`} className="px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white/80 text-xs font-medium border border-white/10 transition-all capitalize">
                 {id.replace(/-/g, ' ')}
