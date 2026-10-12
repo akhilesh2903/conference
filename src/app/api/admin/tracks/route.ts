@@ -38,7 +38,13 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     await connectToDatabase();
-    const tracks = await Track.find({}).sort({ trackNumber: 1 });
+    const rawTracks = await Track.find({}).lean();
+    const tracks = [...rawTracks].sort((a: any, b: any) => {
+      const numA = parseInt(a.trackNumber, 10);
+      const numB = parseInt(b.trackNumber, 10);
+      if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
+      return String(a.trackNumber || '').localeCompare(String(b.trackNumber || ''), undefined, { numeric: true, sensitivity: 'base' });
+    });
     return NextResponse.json({ success: true, tracks });
   } catch (error: any) {
     return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });

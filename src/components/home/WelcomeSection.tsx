@@ -1,6 +1,13 @@
 import Link from 'next/link';
+import { FormattedTrack, getTracks } from '@/lib/tracks';
 
-export default function WelcomeSection() {
+interface WelcomeSectionProps {
+  tracks?: FormattedTrack[];
+}
+
+export default async function WelcomeSection({ tracks: propTracks }: WelcomeSectionProps) {
+  const tracks = propTracks || (await getTracks());
+
   return (
     <section className="section-padding bg-gray-50 border-b border-gray-100" aria-label="Welcome">
       <div className="container-custom">
@@ -29,21 +36,22 @@ export default function WelcomeSection() {
             <div className="mt-8">
               <p className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">Conference Tracks</p>
               <div className="space-y-3">
-                {[
-                  ['01', 'Advanced and Sustainable Materials'],
-                  ['02', 'Energy Systems, Hydrogen and Sustainable Energy'],
-                  ['03', 'Environment, Climate and Sustainable Engineering'],
-                  ['04', 'Sustainable Management, Business and Finance'],
-                ].map(([num, title]) => (
-                  <div key={num} className="flex items-center gap-4 p-3.5 rounded-xl bg-white border border-gray-100 hover:border-teal-200 hover:bg-teal-50/30 transition-all group">
+                {tracks.map((t) => (
+                  <Link
+                    key={t.id}
+                    href={`/tracks#${t.id}`}
+                    className="flex items-center gap-4 p-3.5 rounded-xl bg-white border border-gray-100 hover:border-teal-200 hover:bg-teal-50/30 transition-all group block"
+                  >
                     <span
                       className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold text-teal-600 flex-shrink-0"
                       style={{ backgroundColor: '#f0fdf4' }}
                     >
-                      {num}
+                      {t.number}
                     </span>
-                    <span className="text-gray-700 font-medium text-sm group-hover:text-teal-700 transition-colors">{title}</span>
-                  </div>
+                    <span className="text-gray-700 font-medium text-sm group-hover:text-teal-700 transition-colors">
+                      {t.title}
+                    </span>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -70,7 +78,7 @@ export default function WelcomeSection() {
           {/* Stats / visual panel */}
           <div className="grid grid-cols-2 gap-5">
             {[
-              { value: '4', label: 'Conference Tracks', icon: '01', color: 'blue' },
+              { value: String(tracks.length), label: 'Conference Tracks', icon: '01', color: 'blue' },
               { value: 'Hybrid', label: 'Mode of Conference', icon: '02', color: 'teal' },
               { value: '3 Days', label: 'Full Conference', icon: '03', color: 'green' },
               { value: 'Scopus', label: 'Indexed Publication', icon: '04', color: 'purple' },

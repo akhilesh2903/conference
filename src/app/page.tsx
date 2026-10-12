@@ -8,18 +8,23 @@ import RegistrationPreview from '@/components/home/RegistrationPreview';
 import SpeakersPreview from '@/components/home/SpeakersPreview';
 import VenueContactPreview from '@/components/home/VenueContactPreview';
 import DownloadsPreview from '@/components/home/DownloadsPreview';
+import { getTracks } from '@/lib/tracks';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'IC-MEMS 2027 | Home',
 };
 
-export default function HomePage() {
+export default async function HomePage() {
+  const tracks = await getTracks();
+
   return (
     <>
       <HeroSection />
       <ImportantDatesStrip />
-      <WelcomeSection />
-      <ThemeCards />
+      <WelcomeSection tracks={tracks} />
+      <ThemeCards tracks={tracks} />
       <PublicationHighlight />
       <RegistrationPreview />
       <SpeakersPreview />

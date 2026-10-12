@@ -1,61 +1,13 @@
 import Link from 'next/link';
+import { FormattedTrack, getTracks } from '@/lib/tracks';
 
-const themes = [
-  {
-    number: '01',
-    title: 'Advanced and Sustainable Materials',
-    shortTitle: 'Advanced Materials',
-    icon: 'MAT',
-    description:
-      'Exploring energy materials, nanomaterials, smart materials, biodegradable polymers, advanced coatings, thermoelectric and optical/electronic materials for a sustainable future.',
-    color: 'from-blue-600 to-blue-700',
-    bg: 'bg-blue-50',
-    border: 'border-blue-100',
-    accent: '#2563eb',
-    id: 'theme-1',
-  },
-  {
-    number: '02',
-    title: 'Energy Systems, Hydrogen & Sustainable Energy',
-    shortTitle: 'Energy & Hydrogen',
-    icon: 'ENG',
-    description:
-      'Covering renewable energy, green hydrogen, fuel cells, energy management, AI-enabled systems and hydrogen mobility for a low-carbon energy transition.',
-    color: 'from-teal-600 to-teal-700',
-    bg: 'bg-teal-50',
-    border: 'border-teal-100',
-    accent: '#0d9488',
-    id: 'theme-2',
-  },
-  {
-    number: '03',
-    title: 'Environment, Climate & Sustainable Engineering',
-    shortTitle: 'Environment & Climate',
-    icon: 'ENV',
-    description:
-      'Addressing environmental engineering, climate change mitigation, carbon capture, waste-to-energy, GIS, remote sensing, and circular economy principles.',
-    color: 'from-green-600 to-green-700',
-    bg: 'bg-green-50',
-    border: 'border-green-100',
-    accent: '#16a34a',
-    id: 'theme-3',
-  },
-  {
-    number: '04',
-    title: 'Sustainable Management, Business & Finance',
-    shortTitle: 'Sustainable Management',
-    icon: 'MGT',
-    description:
-      'Integrating ESG, green finance, circular business models, AI for sustainability, SDGs, responsible investment, and ethical leadership into business practice.',
-    color: 'from-purple-600 to-purple-700',
-    bg: 'bg-purple-50',
-    border: 'border-purple-100',
-    accent: '#7c3aed',
-    id: 'theme-4',
-  },
-];
+interface ThemeCardsProps {
+  tracks?: FormattedTrack[];
+}
 
-export default function ThemeCards() {
+export default async function ThemeCards({ tracks: propTracks }: ThemeCardsProps) {
+  const tracks = propTracks || (await getTracks());
+
   return (
     <section className="section-padding bg-white" aria-label="Conference tracks">
       <div className="container-custom">
@@ -66,16 +18,20 @@ export default function ThemeCards() {
             Conference Tracks
           </h2>
           <p className="text-gray-500 max-w-xl mx-auto text-sm leading-relaxed">
-            IC-MEMS 2027 covers four interconnected tracks bridging materials science, energy engineering, environmental sustainability and management.
+            IC-MEMS 2027 covers {tracks.length} major interdisciplinary {tracks.length === 1 ? 'track' : 'tracks'} bridging materials science, energy engineering, environmental sustainability and management.
           </p>
         </div>
 
         {/* Cards grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
-          {themes.map((theme) => (
+          {tracks.map((theme) => (
             <div
               key={theme.id}
-              className={`group relative rounded-2xl border ${theme.border} ${theme.bg} p-8 card-hover`}
+              className="group relative rounded-2xl border p-8 card-hover"
+              style={{
+                backgroundColor: theme.bg,
+                borderColor: theme.border,
+              }}
             >
               {/* Number + icon row */}
               <div className="flex items-start justify-between mb-6">
@@ -85,7 +41,7 @@ export default function ThemeCards() {
                     style={{ backgroundColor: 'white' }}
                     aria-hidden="true"
                   >
-                    {theme.icon}
+                    {theme.shortIcon}
                   </span>
                   <span
                     className="text-4xl font-black leading-none select-none"
@@ -102,7 +58,7 @@ export default function ThemeCards() {
               </h3>
 
               {/* Description */}
-              <p className="text-gray-600 text-sm leading-relaxed mb-6">
+              <p className="text-gray-600 text-sm leading-relaxed mb-6 line-clamp-3">
                 {theme.description}
               </p>
 

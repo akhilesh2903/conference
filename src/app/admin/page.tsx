@@ -53,6 +53,7 @@ export default function AdminPage() {
   const [trackFormLoading, setTrackFormLoading] = useState(false);
   const [trackFormError, setTrackFormError] = useState('');
   const [trackFormSuccess, setTrackFormSuccess] = useState('');
+  const [seedLoading, setSeedLoading] = useState(false);
 
   const authHeader = () =>
     'Basic ' + Buffer.from(username + ':' + password).toString('base64');
@@ -181,6 +182,25 @@ export default function AdminPage() {
       }
     } catch {
       // silent
+    }
+  };
+
+  const handleSeedDefaultTracks = async () => {
+    if (!confirm('Load or restore the 4 official conference tracks into the database?')) return;
+    setSeedLoading(true);
+    try {
+      const res = await fetch('/api/admin/tracks/seed', {
+        method: 'POST',
+        headers: { Authorization: authHeader() },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to seed tracks');
+      alert('4 official conference tracks loaded successfully!');
+      fetchTracks();
+    } catch (err: any) {
+      alert(err.message || 'Error seeding tracks');
+    } finally {
+      setSeedLoading(false);
     }
   };
 
@@ -656,11 +676,21 @@ export default function AdminPage() {
 
             {/* Existing Tracks */}
             <div className="bg-white shadow sm:rounded-lg overflow-hidden">
-              <div className="px-6 py-4 border-b border-gray-200">
-                <h2 className="text-lg font-semibold text-gray-900">Existing DB Tracks</h2>
-                <p className="text-xs text-gray-500 mt-1">
-                  These tracks are stored in the database and appear on the public Tracks page.
-                </p>
+              <div className="px-6 py-4 border-b border-gray-200 flex flex-wrap items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-900">Existing DB Tracks</h2>
+                  <p className="text-xs text-gray-500 mt-1">
+                    These tracks are stored in the database and appear on the public Tracks page.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleSeedDefaultTracks}
+                  disabled={seedLoading}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-teal-300 text-teal-700 hover:bg-teal-50 rounded-md text-xs font-semibold transition-colors disabled:opacity-50"
+                >
+                  {seedLoading ? 'Loading...' : '⚡ Load / Restore 4 Official Tracks'}
+                </button>
               </div>
               {tracksLoading ? (
                 <div className="p-8 text-center text-gray-500">Loading tracks...</div>

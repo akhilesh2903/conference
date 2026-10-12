@@ -1,76 +1,14 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { getTracks } from '@/lib/tracks';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = { title: 'Tracks | IC-MEMS 2027' };
 
-const tracks = [
-  {
-    id: 'track-1',
-    number: '01',
-    title: 'Advanced and Sustainable Materials',
-    color: '#2563eb',
-    bg: '#eff6ff',
-    border: '#bfdbfe',
-    icon: '⚗️',
-    subtopics: [
-      'Energy materials', 'Solar cell materials', 'Fuel cell materials',
-      'Battery materials', 'Supercapacitors', 'Hydrogen storage materials',
-      'Thermoelectric materials', 'Energy harvesting materials', 'Smart materials',
-      'Biodegradable polymers', 'Green and natural fiber composites', 'Nanomaterials',
-      'Optical/electronic materials', 'Advanced coatings', 'Recycled and sustainable materials',
-      'Functional thin films',
-    ],
-  },
-  {
-    id: 'track-2',
-    number: '02',
-    title: 'Energy Systems, Hydrogen & Sustainable Energy',
-    color: '#0d9488',
-    bg: '#f0fdfa',
-    border: '#99f6e4',
-    icon: '⚡',
-    subtopics: [
-      'Renewable energy', 'Solar energy', 'Wind energy', 'Bioenergy',
-      'Green hydrogen', 'Hydrogen storage', 'Hydrogen utilization',
-      'PEM fuel cells', 'Energy management', 'Energy efficiency',
-      'AI-enabled energy systems', 'Hydrogen mobility',
-    ],
-  },
-  {
-    id: 'track-3',
-    number: '03',
-    title: 'Environment, Climate & Sustainable Engineering',
-    color: '#16a34a',
-    bg: '#f0fdf4',
-    border: '#bbf7d0',
-    icon: '🌿',
-    subtopics: [
-      'Environmental engineering', 'Waste management', 'Waste-to-energy',
-      'Climate change mitigation', 'Carbon capture and utilization', 'GIS',
-      'Remote sensing', 'Environmental sustainability', 'Circular economy',
-    ],
-  },
-  {
-    id: 'track-4',
-    number: '04',
-    title: 'Sustainable Management, Business & Finance',
-    color: '#7c3aed',
-    bg: '#faf5ff',
-    border: '#e9d5ff',
-    icon: '📊',
-    subtopics: [
-      'Sustainable business', 'Strategic management', 'Green banking', 'Green finance',
-      'Green marketing', 'ESG', 'Entrepreneurship', 'AI for sustainability',
-      'Sustainable supply chains', 'Circular business models', 'Innovation management',
-      'Technology management', 'CSR', 'Sustainable consumption', 'SDGs',
-      'Stakeholder management', 'Responsible investment', 'Corporate governance',
-      'Social entrepreneurship', 'Ethical leadership', 'Societal resilience',
-      'Responsible AI', 'Innovation', 'Interdisciplinary approaches',
-    ],
-  },
-];
+export default async function TracksPage() {
+  const tracks = await getTracks();
 
-export default function TracksPage() {
   return (
     <div className="page-enter">
       {/* Breadcrumb */}
@@ -90,7 +28,7 @@ export default function TracksPage() {
           <span className="badge bg-white/10 text-teal-300 mb-4">Interdisciplinary Research</span>
           <h1 className="font-display text-4xl md:text-5xl font-bold text-white mb-4">Conference Tracks</h1>
           <p className="text-white/70 max-w-2xl mx-auto">
-            IC-MEMS 2027 covers four major interdisciplinary tracks. Explore the sub-topics and find where your research fits.
+            IC-MEMS 2027 covers {tracks.length} major interdisciplinary {tracks.length === 1 ? 'track' : 'tracks'}. Explore the sub-topics and find where your research fits.
           </p>
           {/* Jump links */}
           <div className="flex flex-wrap gap-3 mt-8 justify-center">
@@ -100,7 +38,7 @@ export default function TracksPage() {
                 href={`#${t.id}`}
                 className="px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white/80 hover:text-white text-xs font-medium transition-all border border-white/10"
               >
-                Track {t.number}: {t.title.split(' ').slice(0, 3).join(' ')}…
+                Track {t.number}: {t.shortTitle}
               </a>
             ))}
           </div>
@@ -143,18 +81,24 @@ export default function TracksPage() {
               style={{ backgroundColor: track.bg, borderColor: track.border }}
             >
               <p className="text-sm font-semibold mb-4" style={{ color: track.color }}>
-                Subtopics include:
+                Subtopics & Scope:
               </p>
-              <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-2.5">
-                {track.subtopics.map((sub) => (
-                  <li key={sub} className="flex items-start gap-2 text-sm text-gray-700">
-                    <svg className="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{ color: track.color }}>
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                    {sub}
-                  </li>
-                ))}
-              </ul>
+              {track.subtopics.length > 0 ? (
+                <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-2.5">
+                  {track.subtopics.map((sub, sIdx) => (
+                    <li key={sIdx} className="flex items-start gap-2 text-sm text-gray-700">
+                      <svg className="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{ color: track.color }}>
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span>{sub}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-sm text-gray-700 whitespace-pre-line leading-relaxed">
+                  {track.description || 'Details and subtopics will be announced soon.'}
+                </p>
+              )}
             </div>
 
             {idx < tracks.length - 1 && <div className="mt-12 border-t border-gray-100" />}
