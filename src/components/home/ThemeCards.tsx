@@ -79,7 +79,7 @@ export default async function ThemeCards({ tracks: propTracks }: ThemeCardsProps
               </div>
 
               {/* Action Link */}
-              <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+              <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
                 <Link
                   href={`/tracks#${theme.id}`}
                   className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-teal-700 hover:text-teal-900 transition-colors"

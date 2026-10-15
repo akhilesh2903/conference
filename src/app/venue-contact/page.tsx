@@ -6,10 +6,10 @@ export const metadata: Metadata = { title: 'Venue & Contact | IC-MEMS 2027' };
 export default function VenueContactPage() {
   return (
     <div className="page-enter">
-      <div className="gradient-navy text-white pt-8 pb-16">
+      <div className="gradient-navy text-white pt-6 pb-12 sm:pt-8 sm:pb-16">
         <div className="container-custom">
           {/* Breadcrumb */}
-          <nav aria-label="Breadcrumb" className="mb-6">
+          <nav aria-label="Breadcrumb" className="mb-4 sm:mb-6">
             <ol className="flex items-center justify-center gap-2 text-xs sm:text-sm text-slate-400">
               <li><Link href="/" className="hover:text-teal-300 transition-colors">Home</Link></li>
               <li><span className="mx-1 text-slate-600">/</span></li>
@@ -18,25 +18,25 @@ export default function VenueContactPage() {
           </nav>
 
           <div className="text-center">
-            <span className="badge bg-white/10 text-teal-300 mb-4">Where &amp; How</span>
-            <h1 className="font-display text-4xl md:text-5xl font-bold text-white mb-4">Venue &amp; Contact</h1>
-            <p className="text-white/70 max-w-xl mx-auto">IC-MEMS 2027 is hosted at the Shobhavana Campus, AIET, Moodbidri.</p>
+            <span className="badge bg-white/10 text-teal-300 mb-3 sm:mb-4">Where &amp; How</span>
+            <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 sm:mb-4">Venue &amp; Contact</h1>
+            <p className="text-white/70 text-sm sm:text-base max-w-xl mx-auto px-2 sm:px-0">IC-MEMS 2027 is hosted at the Shobhavana Campus, AIET, Moodbidri.</p>
           </div>
         </div>
       </div>
 
-      <div className="container-custom max-w-5xl py-16 space-y-16">
+      <div className="container-custom max-w-5xl py-10 sm:py-16 space-y-10 sm:space-y-16">
         {/* Venue */}
         <section>
-          <h2 className="text-2xl font-bold mb-8" style={{ color: '#0a192f' }}>Conference Venue</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <h2 className="text-xl sm:text-2xl font-bold mb-6 sm:mb-8" style={{ color: '#0a192f' }}>Conference Venue</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
             <div>
-              <div className="rounded-2xl bg-teal-50 border border-teal-100 p-8 mb-6">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-teal-100 flex items-center justify-center text-2xl flex-shrink-0">📍</div>
+              <div className="rounded-xl sm:rounded-2xl bg-teal-50 border border-teal-100 p-5 sm:p-8 mb-6">
+                <div className="flex items-start gap-3.5 sm:gap-4">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-teal-100 flex items-center justify-center text-xl sm:text-2xl shrink-0">📍</div>
                   <div>
-                    <h3 className="font-bold text-gray-900 text-lg mb-2">Alva&rsquo;s Institute of Engineering and Technology</h3>
-                    <p className="text-gray-600 text-sm leading-relaxed">
+                    <h3 className="font-bold text-gray-900 text-base sm:text-lg mb-1.5 sm:mb-2">Alva&rsquo;s Institute of Engineering and Technology</h3>
+                    <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
                       Shobhavana Campus, Mijar<br />
                       Moodbidri – 574225<br />
                       Dakshina Kannada, Karnataka<br />
@@ -145,27 +145,27 @@ export default function VenueContactPage() {
           </div>
 
           {/* Contact form */}
-          <div className="rounded-2xl border border-gray-200 bg-white p-8">
-            <h3 className="text-xl font-bold mb-6" style={{ color: '#0a192f' }}>Send a Message</h3>
-            <form className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <div className="rounded-xl sm:rounded-2xl border border-gray-200 bg-white p-5 sm:p-8">
+            <h3 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6" style={{ color: '#0a192f' }}>Send a Message</h3>
+            <form className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
               <div>
-                <label htmlFor="contact-name" className="block text-sm font-medium text-gray-700 mb-1.5">Full Name *</label>
-                <input id="contact-name" type="text" required placeholder="Your full name" className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-teal-300 focus:border-transparent transition" />
+                <label htmlFor="contact-name" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">Full Name *</label>
+                <input id="contact-name" type="text" required placeholder="Your full name" className="w-full px-3.5 sm:px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-teal-300 focus:border-transparent transition" />
               </div>
               <div>
-                <label htmlFor="contact-email" className="block text-sm font-medium text-gray-700 mb-1.5">Email Address *</label>
-                <input id="contact-email" type="email" required placeholder="your@email.com" className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-teal-300 focus:border-transparent transition" />
+                <label htmlFor="contact-email" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">Email Address *</label>
+                <input id="contact-email" type="email" required placeholder="your@email.com" className="w-full px-3.5 sm:px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-teal-300 focus:border-transparent transition" />
               </div>
               <div className="sm:col-span-2">
-                <label htmlFor="contact-subject" className="block text-sm font-medium text-gray-700 mb-1.5">Subject</label>
-                <input id="contact-subject" type="text" placeholder="Query subject" className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-teal-300 focus:border-transparent transition" />
+                <label htmlFor="contact-subject" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">Subject</label>
+                <input id="contact-subject" type="text" placeholder="Query subject" className="w-full px-3.5 sm:px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-teal-300 focus:border-transparent transition" />
               </div>
               <div className="sm:col-span-2">
-                <label htmlFor="contact-message" className="block text-sm font-medium text-gray-700 mb-1.5">Message *</label>
-                <textarea id="contact-message" required rows={4} placeholder="Your message" className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-teal-300 focus:border-transparent transition resize-none" />
+                <label htmlFor="contact-message" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">Message *</label>
+                <textarea id="contact-message" required rows={4} placeholder="Your message" className="w-full px-3.5 sm:px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-teal-300 focus:border-transparent transition resize-none" />
               </div>
               <div className="sm:col-span-2">
-                <button type="submit" className="px-7 py-2.5 rounded-xl bg-[#0a192f] hover:bg-[#163560] text-white font-semibold text-sm transition-colors">
+                <button type="submit" className="w-full sm:w-auto px-7 py-3 rounded-xl bg-[#0a192f] hover:bg-[#163560] text-white font-semibold text-sm transition-colors shadow-sm">
                   Send Message
                 </button>
               </div>

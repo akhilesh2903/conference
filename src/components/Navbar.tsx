@@ -167,14 +167,14 @@ export default function Navbar() {
               <img
                 src="/alvaslogo.png"
                 alt="AIET Logo"
-                className="h-9 xl:h-11 w-auto object-contain rounded-sm"
+                className="h-8 sm:h-9 xl:h-11 w-auto object-contain rounded-sm"
               />
-              <div className="hidden sm:block border-l border-white/10 pl-2">
-                <div className="flex items-center gap-1 font-bold text-[14px] xl:text-[15px] tracking-tight leading-none group-hover:text-blue-200 transition-colors">
+              <div className="border-l border-white/10 pl-2">
+                <div className="flex items-center gap-1 font-bold text-[13px] sm:text-[14px] xl:text-[15px] tracking-tight leading-none group-hover:text-blue-200 transition-colors">
                   <span className="text-white">IC-MEMS</span>
                   <span className="text-teal-400">2027</span>
                 </div>
-                <div className="text-white/40 text-[11px] font-medium tracking-wide mt-1 leading-none">
+                <div className="hidden min-[420px]:block text-white/40 text-[10px] xl:text-[11px] font-medium tracking-wide mt-1 leading-none">
                   AIET, Moodbidri
                 </div>
               </div>
@@ -291,7 +291,7 @@ export default function Navbar() {
           {/* Mobile Menu */}
           {isOpen && (
             <div
-              className="xl:hidden mt-2 py-4 space-y-1 bg-[#050f20] border-t border-white/10 shadow-2xl rounded-b-xl absolute left-0 right-0 w-full"
+              className="xl:hidden mt-2 py-4 space-y-1 bg-[#061224] border-t border-b border-teal-500/20 shadow-2xl rounded-b-2xl absolute left-0 right-0 w-full max-h-[calc(100vh-80px)] overflow-y-auto overscroll-contain pb-6 z-50"
             >
               {navLinks.map((link) =>
                 link.children ? (

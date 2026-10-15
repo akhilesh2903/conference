@@ -18,19 +18,19 @@ export default function SpeakersPage() {
           </nav>
 
           <div className="text-center">
-            <span className="badge bg-white/10 text-teal-300 mb-4">Keynote Speakers</span>
-            <h1 className="font-display text-4xl md:text-5xl font-bold text-white mb-4">Speakers</h1>
-            <p className="text-white/70 max-w-xl mx-auto">Distinguished researchers and practitioners will be announced soon.</p>
+            <span className="badge bg-white/10 text-teal-300 mb-3 sm:mb-4">Keynote Speakers</span>
+            <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 sm:mb-4">Speakers</h1>
+            <p className="text-white/70 text-sm sm:text-base max-w-xl mx-auto px-2 sm:px-0">Distinguished researchers and practitioners will be announced soon.</p>
           </div>
         </div>
       </div>
 
-      <div className="container-custom max-w-4xl py-24 text-center">
+      <div className="container-custom max-w-4xl py-12 sm:py-20 md:py-24 text-center">
         {/* Placeholder state */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-12">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="rounded-2xl border-2 border-dashed border-gray-200 p-10 flex flex-col items-center gap-4">
-              <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 text-3xl">
+            <div key={i} className="rounded-2xl border-2 border-dashed border-gray-200 p-6 sm:p-10 flex flex-col items-center gap-4">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 text-2xl sm:text-3xl">
                 👤
               </div>
               <div className="space-y-2 w-full">
@@ -42,11 +42,11 @@ export default function SpeakersPage() {
           ))}
         </div>
 
-        <div className="inline-flex flex-col items-center gap-4 p-8 rounded-2xl bg-amber-50 border border-amber-200 max-w-md">
-          <div className="text-4xl">📢</div>
+        <div className="inline-flex flex-col items-center gap-4 p-5 sm:p-8 rounded-2xl bg-amber-50 border border-amber-200 max-w-md mx-auto">
+          <div className="text-3xl sm:text-4xl">📢</div>
           <div>
-            <h2 className="text-xl font-bold text-amber-900 mb-2">Speakers To Be Announced</h2>
-            <p className="text-amber-700 text-sm leading-relaxed">
+            <h2 className="text-lg sm:text-xl font-bold text-amber-900 mb-2">Speakers To Be Announced</h2>
+            <p className="text-amber-700 text-xs sm:text-sm leading-relaxed">
               Confirmed keynote and invited speakers will be announced soon. Check back for updates.
             </p>
           </div>
