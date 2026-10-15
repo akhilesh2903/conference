@@ -37,7 +37,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="bg-[#030a17] text-gray-900 antialiased">
         <Navbar />
-        <main className="pt-[72px] min-h-screen bg-slate-50">
+        <main className="pt-[96px] xl:pt-[108px] min-h-screen bg-slate-50">
           {children}
         </main>
         <Footer />
