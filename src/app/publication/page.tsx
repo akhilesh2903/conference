@@ -1,92 +1,113 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import ReviewProcessTimeline from '@/components/publication/ReviewProcessTimeline';
 
-export const metadata: Metadata = { title: 'Publication | IC-MEMS 2027' };
-
-const reviewSteps = [
-  { step: '01', title: 'Technical Screening', desc: 'All submitted papers are screened for scope, originality and completeness.' },
-  { step: '02', title: 'Reviewer Assignment', desc: 'Papers are assigned to domain experts from the editorial board.' },
-  { step: '03', title: 'First Review', desc: 'Independent review and evaluation by assigned reviewers.' },
-  { step: '04', title: 'Revision / Re-review', desc: 'Authors revise and resubmit based on reviewer comments if required.' },
-  { step: '05', title: 'Second Review', desc: 'Revised papers are reviewed to confirm satisfactory revision.' },
-  { step: '06', title: 'Final Editorial Decision', desc: 'Editorial board makes the final acceptance or rejection decision.' },
-  { step: '07', title: 'Preparation of Accepted Manuscripts', desc: 'Accepted authors prepare manuscripts for journal publication.' },
-];
+export const metadata: Metadata = {
+  title: 'Publication | IC-MEMS 2027',
+  description: 'Publication details and peer review process for IC-MEMS 2027.',
+};
 
 export default function PublicationPage() {
   return (
-    <div className="page-enter">
-      {/* Breadcrumb */}
-      <nav aria-label="Breadcrumb" className="bg-gray-50 border-b border-gray-100">
-        <div className="container-custom py-3">
-          <ol className="flex items-center gap-2 text-sm text-gray-500">
-            <li><Link href="/" className="hover:text-teal-600">Home</Link></li>
-            <li><span className="mx-1">/</span></li>
-            <li className="text-gray-800 font-medium">Publication</li>
-          </ol>
-        </div>
-      </nav>
+    <div className="page-enter bg-slate-50 min-h-screen">
+      {/* Header Banner */}
+      <header className="gradient-navy text-white pt-8 pb-16 px-4">
+        <div className="container-custom max-w-4xl mx-auto">
+          {/* Breadcrumb Navigation */}
+          <nav aria-label="Breadcrumb" className="mb-6">
+            <ol className="flex items-center gap-2 text-xs sm:text-sm text-slate-400">
+              <li>
+                <Link href="/" className="hover:text-teal-300 transition-colors">
+                  Home
+                </Link>
+              </li>
+              <li className="text-slate-600">/</li>
+              <li className="text-slate-200 font-medium">Publication</li>
+            </ol>
+          </nav>
 
-      <div className="gradient-navy text-white py-16">
-        <div className="container-custom text-center">
-          <span className="badge bg-white/10 text-teal-300 mb-4">Research Output</span>
-          <h1 className="font-display text-4xl md:text-5xl font-bold text-white mb-4">Publication</h1>
-          <p className="text-white/70 max-w-2xl mx-auto">Selected papers will be considered for publication in Scopus-indexed journals.</p>
+          <div className="text-center max-w-3xl mx-auto">
+            <span className="inline-block text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-teal-500/20 text-teal-300 border border-teal-500/30 mb-4">
+              Research Output
+            </span>
+            <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-extrabold text-white mb-4 tracking-tight">
+              Publication
+            </h1>
+            <p className="text-slate-200 text-sm sm:text-base leading-relaxed">
+              Selected papers will be considered for publication in Scopus-indexed journals.
+            </p>
+          </div>
         </div>
-      </div>
+      </header>
 
-      <div className="container-custom max-w-4xl py-16">
-        {/* Main statement */}
-        <div className="rounded-2xl bg-teal-50 border border-teal-200 p-8 mb-12 text-center">
-          <div className="text-4xl mb-4">📚</div>
-          <p className="text-lg font-semibold text-gray-800 leading-relaxed max-w-2xl mx-auto">
-            Selected papers will be published in <span className="text-teal-700">Scopus-indexed journals</span> following two rounds of review and acceptance by the conference editorial board.
+      {/* Main Content Container */}
+      <main className="container-custom max-w-4xl py-12 md:py-16 space-y-10">
+        {/* Main Statement */}
+        <div className="rounded-2xl bg-white border border-teal-200/90 p-8 sm:p-10 shadow-sm text-center relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-teal-500 to-blue-600" />
+          <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-teal-50 border border-teal-100 flex items-center justify-center text-2xl shadow-xs">
+            📚
+          </div>
+          <p className="text-base sm:text-lg font-semibold text-slate-800 leading-relaxed max-w-2xl mx-auto">
+            Selected papers will be published in{' '}
+            <span className="text-teal-700 font-bold">Scopus-indexed journals</span>{' '}
+            following two rounds of review and acceptance by the conference editorial board.
           </p>
         </div>
 
-        {/* Journal details placeholder */}
-        <div className="rounded-2xl border border-amber-200 bg-amber-50 p-6 mb-12 flex items-start gap-4">
-          <div className="text-3xl flex-shrink-0">📋</div>
+        {/* Journal Details Placeholder */}
+        <div className="rounded-2xl border border-amber-200 bg-amber-50/70 p-6 sm:p-7 shadow-xs flex items-start gap-4">
+          <div className="w-11 h-11 rounded-xl bg-amber-100 border border-amber-200 flex items-center justify-center text-xl flex-shrink-0 text-amber-900">
+            📋
+          </div>
           <div>
-            <h3 className="font-bold text-amber-900 mb-1">Journal Details</h3>
-            <p className="text-amber-800 text-sm">Journal details will be announced after final confirmation. No journal names or timelines are published at this stage.</p>
+            <h2 className="text-base font-bold text-amber-950 mb-1">Journal Details</h2>
+            <p className="text-amber-900/90 text-xs sm:text-sm leading-relaxed">
+              Journal details will be announced after final confirmation. No journal names or timelines are published at this stage.
+            </p>
           </div>
         </div>
 
-        {/* Review process */}
-        <h2 className="text-2xl font-bold mb-8" style={{ color: '#0a192f' }}>Review Process</h2>
-        <div className="relative">
-          {/* Vertical line */}
-          <div className="absolute left-6 top-4 bottom-4 w-0.5 bg-gray-200" aria-hidden="true" />
-          <div className="space-y-6">
-            {reviewSteps.map((s, idx) => (
-              <div key={s.step} className="relative flex gap-6 pl-2">
-                <div
-                  className="relative z-10 w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0 border-2 text-white"
-                  style={{ backgroundColor: '#0a192f', borderColor: '#0a192f' }}
-                >
-                  {s.step}
-                </div>
-                <div className={`flex-1 pb-6 ${idx < reviewSteps.length - 1 ? 'border-b border-gray-100' : ''}`}>
-                  <h3 className="font-semibold text-gray-900 mb-1">{s.title}</h3>
-                  <p className="text-gray-600 text-sm">{s.desc}</p>
-                </div>
-              </div>
-            ))}
+        {/* Review Process with Scroll Animation */}
+        <section className="pt-4">
+          <div className="text-center max-w-xl mx-auto mb-6">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0a192f] tracking-tight">
+              Review Process
+            </h2>
+            <div className="w-12 h-1 bg-teal-500 mx-auto mt-2.5 rounded-full" />
           </div>
-        </div>
 
-        {/* Note */}
-        <div className="mt-12 rounded-2xl bg-gray-50 border border-gray-200 p-6">
-          <h3 className="font-semibold text-gray-800 mb-2">Important Notes</h3>
-          <ul className="space-y-2 text-sm text-gray-600">
-            <li className="flex items-start gap-2"><span className="text-teal-500 mt-0.5">•</span> Papers must be original and unpublished.</li>
-            <li className="flex items-start gap-2"><span className="text-teal-500 mt-0.5">•</span> All submitted papers will undergo rigorous editorial review.</li>
-            <li className="flex items-start gap-2"><span className="text-teal-500 mt-0.5">•</span> Authors of accepted abstracts must submit full papers through the AIET portal.</li>
-            <li className="flex items-start gap-2"><span className="text-teal-500 mt-0.5">•</span> Publication in conference proceedings is subject to conference registration and presentation.</li>
+          <ReviewProcessTimeline />
+        </section>
+
+        {/* Important Notes */}
+        <div className="rounded-2xl bg-white border border-slate-200 p-6 sm:p-8 shadow-sm">
+          <h3 className="text-base font-bold text-[#0a192f] mb-4 flex items-center gap-2">
+            <svg className="w-5 h-5 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Important Notes
+          </h3>
+          <ul className="space-y-3 text-xs sm:text-sm text-slate-700">
+            <li className="flex items-start gap-3">
+              <span className="text-teal-600 font-bold mt-0.5">•</span>
+              <span>Papers must be original and unpublished.</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="text-teal-600 font-bold mt-0.5">•</span>
+              <span>All submitted papers will undergo rigorous editorial review.</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="text-teal-600 font-bold mt-0.5">•</span>
+              <span>Authors of accepted abstracts must submit full papers through the AIET portal.</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="text-teal-600 font-bold mt-0.5">•</span>
+              <span>Publication in conference proceedings is subject to conference registration and presentation.</span>
+            </li>
           </ul>
         </div>
-      </div>
+      </main>
     </div>
   );
 }

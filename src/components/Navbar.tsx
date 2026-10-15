@@ -72,8 +72,17 @@ export default function Navbar() {
   const pathname = usePathname();
 
   useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handler);
+    let ticking = false;
+    const handler = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setScrolled(window.scrollY > 20);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+    window.addEventListener('scroll', handler, { passive: true });
     
     const checkReg = () => setIsRegistered(localStorage.getItem('isRegistered') === 'true');
     checkReg();
@@ -94,10 +103,10 @@ export default function Navbar() {
   const isActive = (href: string) => pathname === href || (href !== '/' && pathname.startsWith(href));
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50">
+    <header className="fixed top-0 left-0 right-0 z-50 transform-gpu" style={{ transform: 'translateZ(0)' }}>
       {/* ─── Top Info Bar ─── */}
       <div
-        className={`overflow-hidden transition-all duration-300 ease-in-out ${
+        className={`overflow-hidden transition-[max-height,opacity] duration-200 ease-out ${
           scrolled ? 'max-h-0 opacity-0' : 'max-h-[46px] opacity-100'
         }`}
         style={{ background: '#0a192f' }}

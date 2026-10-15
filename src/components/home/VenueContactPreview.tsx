@@ -2,89 +2,143 @@ import Link from 'next/link';
 
 export default function VenueContactPreview() {
   return (
-    <section className="section-padding bg-white" aria-label="Venue and Contact">
+    <section className="py-20 bg-slate-50/70 border-b border-slate-200" aria-label="Venue and Secretariat Contact">
       <div className="container-custom">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch max-w-6xl mx-auto">
           
-          {/* Venue */}
-          <div className="bg-gray-50 border border-gray-100 rounded-3xl p-8 md:p-10">
-            <span className="badge bg-navy-50 text-teal-700 mb-4" style={{ backgroundColor: '#f0faf9' }}>Location</span>
-            <h2 className="text-3xl font-bold mb-6" style={{ color: '#0a192f' }}>Venue</h2>
-            <div className="flex items-start gap-4 mb-8">
-              <div className="w-12 h-12 rounded-xl bg-teal-50 flex items-center justify-center flex-shrink-0 text-teal-600">
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
+          {/* Left 6 Columns: Venue & Travel Accessibility */}
+          <div className="lg:col-span-6 bg-white border border-slate-200 rounded-3xl p-8 md:p-10 shadow-sm flex flex-col justify-between">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-teal-50 text-teal-800 text-xs font-semibold tracking-wider uppercase mb-4">
+                Conference Venue
               </div>
-              <div>
-                <h3 className="font-bold text-gray-900 text-lg mb-1">Alva&rsquo;s Institute of Engineering and Technology</h3>
-                <p className="text-gray-600 leading-relaxed text-sm">
-                  Shobhavana Campus, Mijar, Moodbidri – 574225<br />
-                  Dakshina Kannada, Karnataka, India
-                </p>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0a192f] tracking-tight mb-2">
+                Alva&rsquo;s Institute of Engineering &amp; Technology
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-500 mb-6">
+                Shobhavana Campus, Mijar, Moodbidri – 574225, Dakshina Kannada, Karnataka, India
+              </p>
+
+              {/* Transit Details */}
+              <div className="space-y-3.5 mb-8">
+                <div className="flex items-start gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+                  <div className="w-8 h-8 rounded-lg bg-teal-100/80 text-teal-800 flex items-center justify-center shrink-0">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                    </svg>
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-[#0a192f]">Mangaluru International Airport (IXE)</div>
+                    <div className="text-xs text-slate-500">24 km from campus (~35 mins via NH 169)</div>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+                  <div className="w-8 h-8 rounded-lg bg-blue-100/80 text-blue-800 flex items-center justify-center shrink-0">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-[#0a192f]">Railway Stations</div>
+                    <div className="text-xs text-slate-500">Surathkal (28 km) &bull; Mangaluru Central / Junction (34 km)</div>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+                  <div className="w-8 h-8 rounded-lg bg-emerald-100/80 text-emerald-800 flex items-center justify-center shrink-0">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                    </svg>
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-[#0a192f]">Road &amp; Transit</div>
+                    <div className="text-xs text-slate-500">Regular express bus services from Mangaluru to Moodbidri</div>
+                  </div>
+                </div>
               </div>
             </div>
-            
+
             <Link
               href="/venue-contact"
-              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl border border-gray-200 bg-white text-gray-700 hover:text-teal-700 hover:border-teal-200 hover:bg-teal-50 text-sm font-semibold transition-all shadow-sm"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-300 hover:border-teal-500 hover:text-teal-700 bg-white text-slate-700 text-xs sm:text-sm font-semibold transition-colors shadow-xs w-fit"
             >
-              View Maps & Travel Info
+              View Maps, Travel &amp; Accommodation Guide
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
             </Link>
           </div>
-          
-          {/* Contact */}
-          <div className="bg-[#050d1f] rounded-3xl p-8 md:p-10 text-white relative overflow-hidden">
-            {/* Background elements */}
-            <div className="absolute -right-20 -top-20 w-64 h-64 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute -bottom-10 right-10 w-40 h-40 bg-blue-500/10 rounded-full blur-2xl pointer-events-none" />
-            
-            <div className="relative z-10">
-              <span className="badge bg-white/10 text-teal-300 mb-4 border border-white/10">Get in Touch</span>
-              <h2 className="text-3xl font-bold mb-8">Contact Us</h2>
-              
-              <div className="space-y-6">
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center flex-shrink-0 text-teal-400">
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+
+          {/* Right 6 Columns: Conference Secretariat & Organizing Office */}
+          <div className="lg:col-span-6 bg-[#050d1f] rounded-3xl p-8 md:p-10 text-white flex flex-col justify-between shadow-lg">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-teal-300 border border-white/15 text-xs font-semibold uppercase tracking-wider mb-4">
+                Conference Secretariat
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight mb-2">
+                Contact &amp; Assistance
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-300 mb-6">
+                Have questions regarding abstract submission, track scope, or delegate registration? Reach out to the organizing team.
+              </p>
+
+              <div className="space-y-4 mb-8">
+                {/* Email */}
+                <div className="flex items-start gap-3.5 p-3.5 rounded-xl bg-white/5 border border-white/10">
+                  <div className="w-9 h-9 rounded-lg bg-teal-500/20 text-teal-400 flex items-center justify-center shrink-0">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
                   </div>
                   <div>
-                    <p className="text-white/50 text-xs font-semibold uppercase tracking-wider mb-1">Email</p>
-                    <a href="mailto:icmems2027@gmail.com" className="text-white hover:text-teal-400 font-medium transition-colors">icmems2027@gmail.com</a>
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Official Correspondence</div>
+                    <a href="mailto:icmems2027@gmail.com" className="text-sm font-semibold text-white hover:text-teal-300 transition-colors">
+                      icmems2027@gmail.com
+                    </a>
                   </div>
                 </div>
-                
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center flex-shrink-0 text-teal-400">
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+
+                {/* Telephone */}
+                <div className="flex items-start gap-3.5 p-3.5 rounded-xl bg-white/5 border border-white/10">
+                  <div className="w-9 h-9 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center shrink-0">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                     </svg>
                   </div>
                   <div>
-                    <p className="text-white/50 text-xs font-semibold uppercase tracking-wider mb-1">Phone</p>
-                    <a href="tel:+919611945201" className="text-white hover:text-teal-400 font-medium transition-colors block">+91 96119 45201</a>
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Secretariat Helplines</div>
+                    <div className="text-sm font-semibold text-white flex flex-wrap gap-x-4 gap-y-1 mt-0.5">
+                      <a href="tel:+919611945201" className="hover:text-teal-300 transition-colors">+91 96119 45201</a>
+                      <span className="text-white/30">&bull;</span>
+                      <a href="tel:+918904142098" className="hover:text-teal-300 transition-colors">+91 89041 42098</a>
+                    </div>
                   </div>
                 </div>
-                
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center flex-shrink-0 text-green-400">
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+
+                {/* WhatsApp */}
+                <div className="flex items-start gap-3.5 p-3.5 rounded-xl bg-white/5 border border-white/10">
+                  <div className="w-9 h-9 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M12 0C5.373 0 0 5.373 0 12c0 2.098.548 4.07 1.504 5.782L.057 23.5 6 22.01A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.82 9.82 0 01-5.012-1.374l-.36-.214-3.727.988 1.003-3.67-.234-.374A9.821 9.821 0 012.182 12C2.182 6.551 6.551 2.182 12 2.182S21.818 6.551 21.818 12 17.449 21.818 12 21.818z"/>
                     </svg>
                   </div>
                   <div>
-                    <p className="text-white/50 text-xs font-semibold uppercase tracking-wider mb-1">WhatsApp</p>
-                    <a href="https://wa.me/919892818760" target="_blank" rel="noopener noreferrer" className="text-white hover:text-green-400 font-medium transition-colors block">+91 98928 18760</a>
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Delegate WhatsApp Desk</div>
+                    <a href="https://wa.me/919892818760" target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-emerald-300 hover:text-emerald-200 transition-colors">
+                      +91 98928 18760 (Click to Chat)
+                    </a>
                   </div>
                 </div>
               </div>
             </div>
-            
+
+            <div className="pt-2 text-xs text-slate-400 flex items-center justify-between border-t border-white/10">
+              <span>Office Hours: 9:00 AM – 5:00 PM IST</span>
+              <span className="text-teal-300">AIET Campus, Mijar</span>
+            </div>
           </div>
+
         </div>
       </div>
     </section>

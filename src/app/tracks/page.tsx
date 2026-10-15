@@ -11,25 +11,25 @@ export default async function TracksPage() {
 
   return (
     <div className="page-enter">
-      {/* Breadcrumb */}
-      <nav aria-label="Breadcrumb" className="bg-gray-50 border-b border-gray-100">
-        <div className="container-custom py-3">
-          <ol className="flex items-center gap-2 text-sm text-gray-500">
-            <li><Link href="/" className="hover:text-teal-600 transition-colors">Home</Link></li>
-            <li aria-hidden><span className="mx-1">/</span></li>
-            <li className="text-gray-800 font-medium">Tracks</li>
-          </ol>
-        </div>
-      </nav>
-
       {/* Page header */}
-      <div className="gradient-navy text-white py-20 lg:py-24 mb-6">
-        <div className="container-custom text-center">
-          <span className="badge bg-white/10 text-teal-300 mb-4">Interdisciplinary Research</span>
-          <h1 className="font-display text-4xl md:text-5xl font-bold text-white mb-4">Conference Tracks</h1>
-          <p className="text-white/70 max-w-2xl mx-auto">
-            IC-MEMS 2027 covers {tracks.length} major interdisciplinary {tracks.length === 1 ? 'track' : 'tracks'}. Explore the sub-topics and find where your research fits.
-          </p>
+      <div className="gradient-navy text-white pt-8 pb-16 lg:pb-20 mb-6">
+        <div className="container-custom">
+          {/* Breadcrumb */}
+          <nav aria-label="Breadcrumb" className="mb-6">
+            <ol className="flex items-center justify-center gap-2 text-xs sm:text-sm text-slate-400">
+              <li><Link href="/" className="hover:text-teal-300 transition-colors">Home</Link></li>
+              <li aria-hidden><span className="mx-1 text-slate-600">/</span></li>
+              <li className="text-slate-200 font-medium">Tracks</li>
+            </ol>
+          </nav>
+
+          <div className="text-center">
+            <span className="badge bg-white/10 text-teal-300 mb-4">Interdisciplinary Research</span>
+            <h1 className="font-display text-4xl md:text-5xl font-bold text-white mb-4">Conference Tracks</h1>
+            <p className="text-white/70 max-w-2xl mx-auto">
+              IC-MEMS 2027 covers {tracks.length} major interdisciplinary {tracks.length === 1 ? 'track' : 'tracks'}. Explore the sub-topics and find where your research fits.
+            </p>
+          </div>
           {/* Jump links */}
           <div className="flex flex-wrap gap-3 mt-8 justify-center">
             {tracks.map((t) => (

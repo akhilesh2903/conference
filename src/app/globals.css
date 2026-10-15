@@ -31,14 +31,13 @@
   *, *::before, *::after { box-sizing: border-box; }
 
   html {
-    scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
   }
 
   body {
     font-family: var(--font-sans);
-    background: #f7faf9;
-    color: var(--color-foreground);
+    background: #f8fafc;
+    color: #1e293b;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -47,8 +46,8 @@
   /* Typography */
   h1, h2, h3, h4, h5, h6 {
     font-weight: 700;
-    line-height: 1.2;
-    color: #0a192f;
+    line-height: 1.25;
+    color: inherit;
   }
 }
 
@@ -56,7 +55,7 @@
 .font-display { font-family: var(--font-display); }
 
 .gradient-navy {
-  background: linear-gradient(135deg, #050d1f 0%, #0a192f 50%, #163560 100%);
+  background: linear-gradient(135deg, #050d1f 0%, #0a192f 55%, #0e2746 100%);
 }
 
 .gradient-teal {

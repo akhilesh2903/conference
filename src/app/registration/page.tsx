@@ -4,11 +4,36 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 const fees = [
-  { category: 'Research Scholars / Postgraduate Students', amount: '₹6,000', currency: 'INR', icon: '🎓' },
-  { category: 'Faculty / Academicians', amount: '₹8,000', currency: 'INR', icon: '👩‍🏫' },
-  { category: 'Industry / R&D Participants', amount: '₹10,000', currency: 'INR', icon: '🏭' },
-  { category: 'International Participants', amount: 'USD 200', currency: 'USD', icon: '🌐' },
-  { category: 'Accompanying Attendee Without Certificate', amount: '₹4,000', currency: 'INR', icon: '👥' },
+  {
+    category: 'Research Scholars / Postgraduate Students',
+    amount: '₹6,000',
+    currency: 'INR',
+    badge: 'Students & Scholars',
+  },
+  {
+    category: 'Faculty / Academicians',
+    amount: '₹8,000',
+    currency: 'INR',
+    badge: 'Faculty',
+  },
+  {
+    category: 'Industry / R&D Participants',
+    amount: '₹10,000',
+    currency: 'INR',
+    badge: 'Industry & Labs',
+  },
+  {
+    category: 'International Participants',
+    amount: 'USD 200',
+    currency: 'USD',
+    badge: 'International',
+  },
+  {
+    category: 'Accompanying Attendee Without Certificate',
+    amount: '₹4,000',
+    currency: 'INR',
+    badge: 'Co-Attendee',
+  },
 ];
 
 const comparison = [
@@ -91,24 +116,25 @@ export default function RegistrationPage() {
 
   return (
     <div className="page-enter">
-      <nav aria-label="Breadcrumb" className="bg-gray-50 border-b border-gray-100">
-        <div className="container-custom py-3">
-          <ol className="flex items-center gap-2 text-sm text-gray-500">
-            <li><Link href="/" className="hover:text-teal-600">Home</Link></li>
-            <li><span className="mx-1">/</span></li>
-            <li className="text-gray-800 font-medium">Registration</li>
-          </ol>
-        </div>
-      </nav>
+      <div className="gradient-navy text-white pt-8 pb-16">
+        <div className="container-custom">
+          {/* Breadcrumb */}
+          <nav aria-label="Breadcrumb" className="mb-6">
+            <ol className="flex items-center justify-center gap-2 text-xs sm:text-sm text-slate-400">
+              <li><Link href="/" className="hover:text-teal-300 transition-colors">Home</Link></li>
+              <li><span className="mx-1 text-slate-600">/</span></li>
+              <li className="text-slate-200 font-medium">Registration</li>
+            </ol>
+          </nav>
 
-      <div className="gradient-navy text-white py-16">
-        <div className="container-custom text-center">
-          <span className="badge bg-white/10 text-teal-300 mb-4">Join IC-MEMS 2027</span>
-          <h1 className="font-display text-4xl md:text-5xl font-bold text-white mb-4">Registration</h1>
-          <div className="flex flex-wrap gap-6 mt-4 text-sm justify-center">
-            <div className="flex items-center gap-2 text-white/70">
-              <span className="w-2 h-2 rounded-full bg-teal-400" />
-              Status: Open
+          <div className="text-center">
+            <span className="badge bg-white/10 text-teal-300 mb-4">Join IC-MEMS 2027</span>
+            <h1 className="font-display text-4xl md:text-5xl font-bold text-white mb-4">Registration</h1>
+            <div className="flex flex-wrap gap-6 mt-4 text-sm justify-center">
+              <div className="flex items-center gap-2 text-white/70">
+                <span className="w-2 h-2 rounded-full bg-teal-400" />
+                Status: Open
+              </div>
             </div>
           </div>
         </div>
@@ -198,12 +224,16 @@ export default function RegistrationPage() {
           <p className="text-gray-500 text-sm mb-6">No early-bird pricing. Fixed category-wise fees apply.</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {fees.map((fee) => (
-              <div key={fee.category} className="rounded-2xl border border-gray-200 bg-white p-6 hover:border-teal-300 hover:shadow-md transition-all flex flex-col">
-                <div className="text-3xl mb-4" role="img" aria-hidden="true">{fee.icon}</div>
-                <p className="text-sm text-gray-600 font-medium leading-snug mb-4 flex-1">{fee.category}</p>
-                <div className="flex items-end justify-between mt-auto pt-4 border-t border-gray-100">
-                  <span className="text-2xl font-bold" style={{ color: '#0a192f' }}>{fee.amount}</span>
-                  <span className="text-xs text-gray-400 font-medium">{fee.currency}</span>
+              <div key={fee.category} className="rounded-2xl border border-slate-200 bg-white p-6 hover:border-teal-300 hover:shadow-md transition-all flex flex-col justify-between">
+                <div>
+                  <span className="inline-block text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-slate-100 text-slate-600 mb-3 border border-slate-200">
+                    {fee.badge}
+                  </span>
+                  <p className="text-sm text-slate-700 font-bold leading-snug mb-4">{fee.category}</p>
+                </div>
+                <div className="flex items-end justify-between pt-4 border-t border-slate-100 mt-auto">
+                  <span className="text-2xl font-extrabold text-teal-700">{fee.amount}</span>
+                  <span className="text-xs text-slate-400 font-medium">{fee.currency}</span>
                 </div>
               </div>
             ))}

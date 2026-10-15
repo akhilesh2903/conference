@@ -1,186 +1,656 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
-export const metadata: Metadata = { title: 'Committees | IC-MEMS 2027' };
+export const metadata: Metadata = { 
+  title: 'Committees & Advisory Board | IC-MEMS 2027',
+  description: 'Leadership, International & National Advisory Boards, Organising Committee, and Editorial Board for IC-MEMS 2027 at AIET Moodbidri.'
+};
 
-const leadership = [
-  { role: 'Chief Patron', name: 'Dr. Mohan Alva', affiliation: 'Chairman, Alva\'s Education Foundation' },
-  { role: 'Patron', name: 'Mr. Vivek Alva', affiliation: 'Managing Trustee, AIET' },
-  { role: 'Patron', name: 'Dr. Peter Fernandes', affiliation: 'Principal, AIET' },
-  { role: 'Chair', name: 'Dr. Richard Pinto', affiliation: 'AIET' },
-  { role: 'Co-Chair', name: 'Dr. Satyanarayan', affiliation: 'AIET' },
-  { role: 'Co-Chair', name: 'Prof. Priya Sequeira', affiliation: 'AIET' },
-  { role: 'Convener', name: 'Dr. Jayarama A', affiliation: 'AIET' },
-  { role: 'Convener', name: 'Dr. Catherine Nirmala', affiliation: 'AIET' },
-  { role: 'Convener', name: 'Dr. Vinay Shivamurthy', affiliation: 'AIET' },
-  { role: 'Convener', name: 'Dr. Gurushanth B. Vaggar', affiliation: 'AIET' },
-  { role: 'Convener', name: 'Dr. Shashikumar Kumaraswamy', affiliation: 'AIET' },
+// ─── 1. LEADERSHIP WITH PHOTO PLACEHOLDERS ───
+// To swap in photos later: upload your photo to /public/leadership/filename.jpg and update the `image` field.
+interface LeaderMember {
+  role: string;
+  name: string;
+  affiliation: string;
+  subTitle?: string;
+  image: string;
+  badgeColor?: string;
+}
+
+const chiefPatron: LeaderMember = {
+  role: 'Chief Patron',
+  name: 'Dr. Mohan Alva',
+  affiliation: "Chairman, Alva's Education Foundation, Moodbidri",
+  subTitle: 'Visionary Educationist & Philanthropist',
+  image: '/leadership/dr-mohan-alva.jpg',
+  badgeColor: 'bg-amber-100 text-amber-900 border-amber-300',
+};
+
+const patrons: LeaderMember[] = [
+  {
+    role: 'Patron',
+    name: 'Mr. Vivek Alva',
+    affiliation: 'Managing Trustee, Alva’s Education Foundation',
+    subTitle: 'Executive Leadership',
+    image: '/leadership/mr-vivek-alva.webp',
+    badgeColor: 'bg-teal-100 text-teal-900 border-teal-300',
+  },
+  {
+    role: 'Patron',
+    name: 'Dr. Peter Fernandes',
+    affiliation: 'Principal, Alva’s Institute of Engineering & Technology',
+    subTitle: 'Academic Head',
+    image: '/leadership/dr-peter-fernandes.jpg',
+    badgeColor: 'bg-teal-100 text-teal-900 border-teal-300',
+  },
 ];
 
+const conferenceChairs: LeaderMember[] = [
+  {
+    role: 'Conference Chair',
+    name: 'Dr. Richard Pinto',
+    affiliation: 'Alva’s Institute of Engineering & Technology',
+    subTitle: 'Research & Academic Strategy',
+    image: '/leadership/dr-richard-pinto.jpg',
+    badgeColor: 'bg-blue-100 text-blue-900 border-blue-300',
+  },
+  {
+    role: 'Conference Co-Chair',
+    name: 'Dr. Satyanarayan',
+    affiliation: 'Alva’s Institute of Engineering & Technology',
+    subTitle: 'Technical Coordination',
+    image: '/leadership/dr-satyanarayan.jpg',
+    badgeColor: 'bg-slate-100 text-slate-800 border-slate-300',
+  },
+  {
+    role: 'Conference Co-Chair',
+    name: 'Prof. Priya Sequeira',
+    affiliation: 'Alva’s Institute of Engineering & Technology',
+    subTitle: 'Institutional Coordination',
+    image: '/leadership/prof-priya-sequeira.jpg',
+    badgeColor: 'bg-slate-100 text-slate-800 border-slate-300',
+  },
+];
+
+const conveners: LeaderMember[] = [
+  {
+    role: 'Convener',
+    name: 'Dr. Jayarama A',
+    affiliation: 'Alva’s Institute of Engineering & Technology',
+    subTitle: 'Conference Secretariat',
+    image: '/leadership/dr-jayarama.jpg',
+  },
+  {
+    role: 'Convener',
+    name: 'Dr. Catherine Nirmala',
+    affiliation: 'Alva’s Institute of Engineering & Technology',
+    subTitle: 'Session Management',
+    image: '/leadership/dr-catherine-nirmala.jpg',
+  },
+  {
+    role: 'Convener',
+    name: 'Dr. Vinay Shivamurthy',
+    affiliation: 'Alva’s Institute of Engineering & Technology',
+    subTitle: 'Technical Programs',
+    image: '/leadership/dr-vinay-shivamurthy.jpg',
+  },
+  {
+    role: 'Convener',
+    name: 'Dr. Gurushanth B. Vaggar',
+    affiliation: 'Alva’s Institute of Engineering & Technology',
+    subTitle: 'Publications & Logistics',
+    image: '/leadership/dr-gurushanth-vaggar.jpg',
+  },
+  {
+    role: 'Convener',
+    name: 'Dr. Shashikumar Kumaraswamy',
+    affiliation: 'Alva’s Institute of Engineering & Technology',
+    subTitle: 'Peer-Review Operations',
+    image: '/leadership/avatar-academic.svg',
+  },
+];
+
+// ─── 2. INTERNATIONAL ADVISORY COMMITTEE ───
 const international = [
-  { name: 'Prof. Philip J. Grandinetti', affiliation: 'The Ohio State University', country: 'USA' },
-  { name: 'Prof. Jens Dittmer', affiliation: 'CNRS/Université du Mans', country: 'France' },
-  { name: 'Prof. Nicolas Mercier', affiliation: 'Université d\'Angers', country: 'France' },
-  { name: 'Prof. Ivan Hetman', affiliation: 'Linköping University', country: 'Sweden' },
-  { name: 'Prof. Özlem Uguz Neli', affiliation: 'Stockholm University', country: 'Sweden' },
-  { name: 'Dr. Dhasiyan Arun Kumar', affiliation: 'ASM Japan', country: 'Japan' },
-  { name: 'Prof. Ir. Ts. Dr. Malathy A/P Batumalay', affiliation: 'INTI International University', country: 'Malaysia' },
-  { name: 'Dr. Shigeru Tanaka', affiliation: 'Kumamoto University', country: 'Japan' },
-  { name: 'Dr. I Wayan Budi Sentana', affiliation: 'Politeknik Negeri Bali (PNB)', country: 'Indonesia' },
-  { name: 'Dr. Ryuichi Tomoshige', affiliation: 'SoJo University', country: 'Japan' },
-  { name: 'Dr. Gurdip Kaur Saminder Singh', affiliation: '', country: 'Malaysia' },
-  { name: 'Dr. V. Kumaradeepan', affiliation: 'University of Jaffna', country: 'Sri Lanka' },
-  { name: 'Prof. Gilbert Mbaka Nduru', affiliation: 'Deputy VC, Chuka University', country: 'Kenya' },
+  { name: 'Prof. Philip J. Grandinetti', affiliation: 'The Ohio State University', country: 'United States', flag: 'USA' },
+  { name: 'Prof. Jens Dittmer', affiliation: 'CNRS / Université du Mans', country: 'France', flag: 'FRA' },
+  { name: 'Prof. Nicolas Mercier', affiliation: 'Université d’Angers', country: 'France', flag: 'FRA' },
+  { name: 'Prof. Ivan Hetman', affiliation: 'Linköping University', country: 'Sweden', flag: 'SWE' },
+  { name: 'Prof. Özlem Uguz Neli', affiliation: 'Stockholm University', country: 'Sweden', flag: 'SWE' },
+  { name: 'Dr. Dhasiyan Arun Kumar', affiliation: 'ASM Japan', country: 'Japan', flag: 'JPN' },
+  { name: 'Prof. Ir. Ts. Dr. Malathy A/P Batumalay', affiliation: 'INTI International University', country: 'Malaysia', flag: 'MYS' },
+  { name: 'Dr. Shigeru Tanaka', affiliation: 'Kumamoto University', country: 'Japan', flag: 'JPN' },
+  { name: 'Dr. I Wayan Budi Sentana', affiliation: 'Politeknik Negeri Bali (PNB)', country: 'Indonesia', flag: 'IDN' },
+  { name: 'Dr. Ryuichi Tomoshige', affiliation: 'SoJo University', country: 'Japan', flag: 'JPN' },
+  { name: 'Dr. Gurdip Kaur Saminder Singh', affiliation: 'Universiti Teknologi MARA', country: 'Malaysia', flag: 'MYS' },
+  { name: 'Dr. V. Kumaradeepan', affiliation: 'University of Jaffna', country: 'Sri Lanka', flag: 'LKA' },
+  { name: 'Prof. Gilbert Mbaka Nduru', affiliation: 'Deputy Vice Chancellor, Chuka University', country: 'Kenya', flag: 'KEN' },
 ];
 
+// ─── 3. NATIONAL ADVISORY COMMITTEE ───
 const national = [
-  { name: 'Prof. Shriganesh S. Prabhu', affiliation: 'TIFR, Mumbai' },
-  { name: 'Prof. Achanta Venugopal', affiliation: 'TIFR, Mumbai' },
-  { name: 'Prof. Siddhartha P. Duttagupta', affiliation: 'IIT Bombay' },
-  { name: 'Prof. Sathish B. Ogale', affiliation: 'IISER Pune' },
-  { name: 'Prof. M. S. Ramachandra Rao', affiliation: 'IIT Madras' },
-  { name: 'Prof. Prashant Kulkarni', affiliation: 'DIAT, Pune' },
-  { name: 'Dr. M. G. Ananda Kumar', affiliation: 'CPRI, Bengaluru' },
-  { name: 'Dr. Ritanajali Majhi', affiliation: 'National Institute of Technology, Karnataka' },
-  { name: 'Balaji Shri Kamalakannan', affiliation: 'Alliance University' },
-  { name: 'Dr. Sunita Jadhav', affiliation: 'Bharati Vidyapeeta, Pune' },
-  { name: 'Dr. Sanjog S. Nagarkar', affiliation: 'IIT Bombay' },
-  { name: 'Dr. G. Anandha Babu', affiliation: 'SSN College of Engineering, Tamilnadu' },
-  { name: 'Dr. S. Janakiraman', affiliation: 'IIT Indore' },
-  { name: 'Dr. K Narayan Prabhu', affiliation: 'NITK Surathkal' },
-  { name: 'Dr. Arnab Datta', affiliation: 'IIT Bombay' },
-  { name: 'C A Russell Parera (Retd.)', affiliation: 'PwC India Partner / Former CEO KPMG India' },
+  { name: 'Prof. Shriganesh S. Prabhu', affiliation: 'Tata Institute of Fundamental Research (TIFR), Mumbai' },
+  { name: 'Prof. Achanta Venugopal', affiliation: 'Tata Institute of Fundamental Research (TIFR), Mumbai' },
+  { name: 'Prof. Siddhartha P. Duttagupta', affiliation: 'Indian Institute of Technology (IIT) Bombay' },
+  { name: 'Prof. Sathish B. Ogale', affiliation: 'Indian Institute of Science Education and Research (IISER), Pune' },
+  { name: 'Prof. M. S. Ramachandra Rao', affiliation: 'Indian Institute of Technology (IIT) Madras' },
+  { name: 'Prof. Prashant Kulkarni', affiliation: 'Defence Institute of Advanced Technology (DIAT), Pune' },
+  { name: 'Dr. M. G. Ananda Kumar', affiliation: 'Central Power Research Institute (CPRI), Bengaluru' },
+  { name: 'Dr. Ritanajali Majhi', affiliation: 'National Institute of Technology Karnataka (NITK), Surathkal' },
+  { name: 'Balaji Shri Kamalakannan', affiliation: 'Alliance University, Bengaluru' },
+  { name: 'Dr. Sunita Jadhav', affiliation: 'Bharati Vidyapeeth, Pune' },
+  { name: 'Dr. Sanjog S. Nagarkar', affiliation: 'Indian Institute of Technology (IIT) Bombay' },
+  { name: 'Dr. G. Anandha Babu', affiliation: 'SSN College of Engineering, Tamil Nadu' },
+  { name: 'Dr. S. Janakiraman', affiliation: 'Indian Institute of Technology (IIT) Indore' },
+  { name: 'Dr. K. Narayan Prabhu', affiliation: 'National Institute of Technology Karnataka (NITK), Surathkal' },
+  { name: 'Dr. Arnab Datta', affiliation: 'Indian Institute of Technology (IIT) Bombay' },
+  { name: 'C A Russell Parera (Retd.)', affiliation: 'Former Partner, PwC India / Former CEO, KPMG India' },
 ];
 
+// ─── 4. ORGANISING COMMITTEE ───
 const organising = [
-  'Dr. Ravi Kumar Chandrappa', 'Dr. Sakshi S. Kamath', 'Dr. Ramaprasad A. T.',
-  'Dr. S. Samshuddin', 'Dr. Umeshchandra H. G.', 'Dr. Vijay Joshi',
-  'Mr. Johnson Fernandes', 'Dr. Guruprasad', 'Dr. Kumaraswamy',
-  'Prof. Hemanth Suvarna', 'Prof. Srinivas C S', 'Dr. Ganesh V N',
-  'Dr. Roshan Shetty', 'Dr. Subrahmanya Bhat', 'Mr. Abhishek. B',
-  'Ms. Krithika', 'Ujwal S Shetty', 'Leron Noronha', 'Panchami Jogi', 'Ankita Paradkar',
+  { name: 'Dr. Ravi Kumar Chandrappa', dept: 'AIET Moodbidri' },
+  { name: 'Dr. Sakshi S. Kamath', dept: 'AIET Moodbidri' },
+  { name: 'Dr. Ramaprasad A. T.', dept: 'AIET Moodbidri' },
+  { name: 'Dr. S. Samshuddin', dept: 'AIET Moodbidri' },
+  { name: 'Dr. Umeshchandra H. G.', dept: 'AIET Moodbidri' },
+  { name: 'Dr. Vijay Joshi', dept: 'AIET Moodbidri' },
+  { name: 'Mr. Johnson Fernandes', dept: 'AIET Moodbidri' },
+  { name: 'Dr. Guruprasad', dept: 'AIET Moodbidri' },
+  { name: 'Dr. Kumaraswamy', dept: 'AIET Moodbidri' },
+  { name: 'Prof. Hemanth Suvarna', dept: 'AIET Moodbidri' },
+  { name: 'Prof. Srinivas C S', dept: 'AIET Moodbidri' },
+  { name: 'Dr. Ganesh V N', dept: 'AIET Moodbidri' },
+  { name: 'Dr. Roshan Shetty', dept: 'AIET Moodbidri' },
+  { name: 'Dr. Subrahmanya Bhat', dept: 'AIET Moodbidri' },
+  { name: 'Mr. Abhishek B', dept: 'AIET Moodbidri' },
+  { name: 'Ms. Krithika', dept: 'AIET Moodbidri' },
+  { name: 'Ujwal S Shetty', dept: 'AIET Moodbidri' },
+  { name: 'Leron Noronha', dept: 'AIET Moodbidri' },
+  { name: 'Panchami Jogi', dept: 'AIET Moodbidri' },
+  { name: 'Ankita Paradkar', dept: 'AIET Moodbidri' },
 ];
 
-const editorial = [
-  { name: 'Dr. Richard Pinto', area: 'Condensed Matter Physics, Thin Films, Sensors, Energy and Fuel Cells' },
-  { name: 'Dr. Satyanarayan', area: 'Materials Engineering and Energy-Related Materials' },
-  { name: 'Dr. Jayarama A.', area: 'Thin Films, Sensors, Fuel Cells and Hydrogen Technologies' },
-  { name: 'Dr. Ramaprasad A. T.', area: 'Polymers and Membrane Technologies' },
-  { name: 'Dr. Shashikumar Kumaraswamy', area: 'Materials Characterisation, Solid-State NMR and DFT Analysis' },
-  { name: 'Dr. Gurushanth B. Vaggar', area: 'Materials Engineering and Energy-related Materials' },
-  { name: 'Dr. Sakshi S. Kamath', area: 'Polymer Composites and Materials Science' },
-  { name: 'Dr. S. Samshuddin', area: 'Chemistry, Corrosion, Electrochemistry and Materials Chemistry' },
-  { name: 'Dr. Ravi Kumar Chandrappa', area: 'Polymer Composites, Materials Science and Spectroscopic Characterisation' },
-  { name: 'Dr. Vinay S.', area: 'Environmental Engineering, GIS, Remote Sensing and Sustainability' },
-  { name: 'Dr. Umeshchandra H. G.', area: 'Materials and Sustainable Technologies' },
-  { name: 'Dr. Catherine Nirmala', area: 'Management, Sustainability and Skill Development' },
-  { name: 'Dr. Habeeb Ur Rahiman', area: 'Management and Sustainable Business' },
-  { name: 'Dr. Niyaz Panakaje', area: 'Management, Finance and Sustainability' },
+// ─── 5. EDITORIAL BOARD (SPLIT INTO 7 ON LEFT & 7 ON RIGHT) ───
+const editorialLeft = [
+  { num: '01', name: 'Dr. Richard Pinto', area: 'Condensed Matter Physics, Thin Films, Sensors, Energy and Fuel Cells' },
+  { num: '02', name: 'Dr. Satyanarayan', area: 'Materials Engineering and Energy-Related Materials' },
+  { num: '03', name: 'Dr. Jayarama A.', area: 'Thin Films, Sensors, Fuel Cells and Hydrogen Technologies' },
+  { num: '04', name: 'Dr. Ramaprasad A. T.', area: 'Polymers and Membrane Technologies' },
+  { num: '05', name: 'Dr. Shashikumar Kumaraswamy', area: 'Materials Characterisation, Solid-State NMR and DFT Analysis' },
+  { num: '06', name: 'Dr. Gurushanth B. Vaggar', area: 'Materials Engineering and Energy-related Materials' },
+  { num: '07', name: 'Dr. Sakshi S. Kamath', area: 'Polymer Composites and Materials Science' },
+];
+
+const editorialRight = [
+  { num: '08', name: 'Dr. S. Samshuddin', area: 'Chemistry, Corrosion, Electrochemistry and Materials Chemistry' },
+  { num: '09', name: 'Dr. Ravi Kumar Chandrappa', area: 'Polymer Composites, Materials Science and Spectroscopic Characterisation' },
+  { num: '10', name: 'Dr. Vinay S.', area: 'Environmental Engineering, GIS, Remote Sensing and Sustainability' },
+  { num: '11', name: 'Dr. Umeshchandra H. G.', area: 'Materials and Sustainable Technologies' },
+  { num: '12', name: 'Dr. Catherine Nirmala', area: 'Management, Sustainability and Skill Development' },
+  { num: '13', name: 'Dr. Habeeb Ur Rahiman', area: 'Management and Sustainable Business' },
+  { num: '14', name: 'Dr. Niyaz Panakaje', area: 'Management, Finance and Sustainability' },
 ];
 
 export default function CommitteesPage() {
   return (
-    <div className="page-enter">
-      <nav aria-label="Breadcrumb" className="bg-gray-50 border-b border-gray-100">
-        <div className="container-custom py-3">
-          <ol className="flex items-center gap-2 text-sm text-gray-500">
-            <li><Link href="/" className="hover:text-teal-600">Home</Link></li>
-            <li><span className="mx-1">/</span></li>
-            <li className="text-gray-800 font-medium">Committees</li>
-          </ol>
-        </div>
-      </nav>
+    <div className="page-enter bg-slate-50 min-h-screen">
+      {/* Page Header */}
+      <div className="gradient-navy text-white pt-8 pb-16 lg:pb-20">
+        <div className="container-custom max-w-4xl">
+          {/* Breadcrumb */}
+          <nav aria-label="Breadcrumb" className="mb-6">
+            <ol className="flex items-center justify-center gap-2 text-xs md:text-sm text-slate-400">
+              <li><Link href="/" className="hover:text-teal-300 transition-colors">Home</Link></li>
+              <li><span className="mx-1 text-slate-600">/</span></li>
+              <li className="text-slate-200 font-semibold">Committees</li>
+            </ol>
+          </nav>
 
-      <div className="gradient-navy text-white py-16">
-        <div className="container-custom text-center">
-          <span className="badge bg-white/10 text-teal-300 mb-4">Organising Team</span>
-          <h1 className="font-display text-4xl md:text-5xl font-bold text-white mb-4">Committees</h1>
-          <div className="flex flex-wrap gap-3 mt-6 justify-center">
-            {['leadership', 'international', 'national', 'organising', 'editorial'].map((id) => (
-              <a key={id} href={`#${id}`} className="px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white/80 text-xs font-medium border border-white/10 transition-all capitalize">
-                {id === 'international' ? 'International Advisory' : id === 'national' ? 'National Advisory' : id}
+          <div className="text-center">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-teal-300 text-xs font-semibold tracking-wider uppercase mb-4">
+              Conference Governance &amp; Advisory
+            </div>
+            <h1 className="text-3xl md:text-5xl font-extrabold text-white tracking-tight mb-4">
+              Committees &amp; Organizing Board
+            </h1>
+            <p className="text-slate-300 text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
+              The governing leadership, international advisors, national scientific experts, and editorial board steering IC-MEMS 2027 at Alva’s Institute of Engineering and Technology.
+            </p>
+          </div>
+
+          {/* Quick Anchor Navigation */}
+          <div className="flex flex-wrap gap-2.5 mt-8 justify-center">
+            {[
+              { id: 'leadership', label: 'Conference Leadership' },
+              { id: 'international', label: 'International Advisory' },
+              { id: 'national', label: 'National Advisory' },
+              { id: 'organising', label: 'Organising Committee' },
+              { id: 'editorial', label: 'Editorial Board (7 + 7)' },
+            ].map((link) => (
+              <a
+                key={link.id}
+                href={`#${link.id}`}
+                className="px-4 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-medium border border-white/15 transition-all"
+              >
+                {link.label}
               </a>
             ))}
           </div>
         </div>
       </div>
 
-      <div className="container-custom max-w-5xl py-16 space-y-16">
-        {/* Leadership */}
+      {/* Main Content */}
+      <div className="container-custom max-w-6xl py-14 lg:py-20 space-y-20">
+
+        {/* ═══════════════════════════════════════════════
+            SECTION 1: LEADERSHIP (WITH PHOTO AREAS)
+        ═══════════════════════════════════════════════ */}
         <section id="leadership" className="scroll-mt-24">
-          <h2 className="text-2xl font-bold mb-8" style={{ color: '#0a192f' }}>Leadership</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {leadership.map((m) => (
-              <div key={`${m.role}-${m.name}`} className="rounded-xl border border-gray-200 bg-white p-4 hover:border-teal-200 hover:shadow-sm transition-all">
-                <span className="badge bg-teal-50 text-teal-700 text-[10px] mb-2">{m.role}</span>
-                <p className="font-semibold text-gray-900 text-sm">{m.name}</p>
-                <p className="text-gray-500 text-xs mt-0.5">{m.affiliation}</p>
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4 border-b border-slate-200 pb-4">
+            <div>
+              <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-teal-700 mb-1">
+                Executive Patronage &amp; Chairs
+              </div>
+              <h2 className="text-2xl md:text-3xl font-extrabold text-[#0a192f] tracking-tight">
+                Conference Leadership
+              </h2>
+            </div>
+            <p className="text-xs text-slate-500 max-w-sm">
+              Distinguished executive leadership and academic conveners steering the conference.
+            </p>
+          </div>
+
+          {/* 1A. Chief Patron (Prominent Hero Feature Card) */}
+          <div className="bg-white rounded-3xl border border-amber-200/80 p-8 md:p-10 shadow-sm hover:shadow-md transition-all mb-8">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-8 text-center sm:text-left">
+              
+              {/* Photo Area */}
+              <div className="relative group shrink-0">
+                <div className="w-36 h-44 sm:w-40 sm:h-48 md:w-48 md:h-56 rounded-2xl overflow-hidden border-2 border-amber-400/80 shadow-md bg-slate-100">
+                  <img
+                    src={chiefPatron.image}
+                    alt={chiefPatron.name}
+                    className="w-full h-full object-cover object-center transition-transform group-hover:scale-105 duration-300"
+                  />
+                </div>
+              </div>
+
+              {/* Chief Patron Info */}
+              <div className="flex-1 space-y-3">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-amber-50 text-amber-900 border border-amber-200">
+                  <span className="w-2 h-2 rounded-full bg-amber-500" />
+                  {chiefPatron.role}
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-black text-[#0a192f] tracking-tight">
+                  {chiefPatron.name}
+                </h3>
+                <div className="text-sm font-semibold text-teal-800">
+                  {chiefPatron.affiliation}
+                </div>
+                <p className="text-xs sm:text-sm text-slate-600 max-w-2xl leading-relaxed">
+                  Founder and visionary leader guiding Alva&rsquo;s Education Foundation into a globally recognized institution fostering multidisciplinary research, technological education, and social sustainability.
+                </p>
+                <div className="pt-2 flex flex-wrap gap-2 text-xs text-slate-500 justify-center sm:justify-start">
+                  <span className="px-2.5 py-1 rounded-md bg-slate-100 font-medium text-slate-700">AIET Moodbidri</span>
+                  <span className="px-2.5 py-1 rounded-md bg-slate-100 font-medium text-slate-700">Patron Committee</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* 1B. Patrons (2 Cards) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            {patrons.map((patron) => (
+              <div
+                key={patron.name}
+                className="bg-white rounded-2xl border border-slate-200 p-6 md:p-7 shadow-sm hover:shadow-md transition-all flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left group"
+              >
+                {/* Photo Area */}
+                <div className="relative shrink-0">
+                  <div className="w-32 h-40 sm:w-36 sm:h-44 rounded-2xl overflow-hidden border-2 border-teal-400/70 shadow-sm bg-slate-100">
+                    <img
+                      src={patron.image}
+                      alt={patron.name}
+                      className="w-full h-full object-cover object-center transition-transform group-hover:scale-105 duration-300"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex-1 space-y-2">
+                  <span className="inline-block text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-teal-50 text-teal-800 border border-teal-200">
+                    {patron.role}
+                  </span>
+                  <h4 className="text-xl font-bold text-[#0a192f]">
+                    {patron.name}
+                  </h4>
+                  <div className="text-xs font-semibold text-slate-700">
+                    {patron.affiliation}
+                  </div>
+                  <div className="text-[11px] text-slate-500">
+                    {patron.subTitle}
+                  </div>
+                </div>
               </div>
             ))}
           </div>
+
+          {/* 1C. Conference Chairs (3 Cards) */}
+          <div className="mb-8">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-4">
+              Conference Chairs &amp; Co-Chairs
+            </h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {conferenceChairs.map((chair) => (
+                <div
+                  key={chair.name}
+                  className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:shadow-md transition-all flex flex-col items-center text-center group"
+                >
+                  {/* Photo Area */}
+                  <div className="relative mb-4">
+                    <div className="w-32 h-40 rounded-2xl overflow-hidden border-2 border-blue-200 shadow-sm bg-slate-100">
+                      <img
+                        src={chair.image}
+                        alt={chair.name}
+                        className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
+                  </div>
+
+                  <span className="inline-block text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-800 border border-blue-200 mb-2">
+                    {chair.role}
+                  </span>
+                  <h5 className="text-base font-bold text-[#0a192f] leading-snug">
+                    {chair.name}
+                  </h5>
+                  <div className="text-xs text-slate-600 mt-1">
+                    {chair.affiliation}
+                  </div>
+                  <div className="text-[11px] text-slate-400 mt-0.5">
+                    {chair.subTitle}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 1D. Conference Conveners (5 Cards) */}
+          <div className="mt-8">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-4">
+              Conference Conveners
+            </h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
+              {conveners.map((convener) => (
+                <div
+                  key={convener.name}
+                  className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition-all flex flex-col items-center text-center group"
+                >
+                  {/* Photo Area */}
+                  <div className="relative mb-3">
+                    <div className="w-28 h-36 rounded-xl overflow-hidden border border-slate-200 shadow-xs bg-slate-100">
+                      <img
+                        src={convener.image}
+                        alt={convener.name}
+                        className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
+                  </div>
+
+                  <span className="inline-block text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-slate-100 text-slate-700 mb-1.5">
+                    {convener.role}
+                  </span>
+                  <h6 className="text-xs font-bold text-[#0a192f] leading-tight">
+                    {convener.name}
+                  </h6>
+                  <div className="text-[11px] text-slate-500 mt-0.5">
+                    {convener.affiliation}
+                  </div>
+                  <div className="text-[10px] text-teal-700 font-medium mt-1">
+                    {convener.subTitle}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </section>
 
-        {/* International Advisory */}
+
+        {/* ═══════════════════════════════════════════════
+            SECTION 2: INTERNATIONAL ADVISORY COMMITTEE
+        ═══════════════════════════════════════════════ */}
         <section id="international" className="scroll-mt-24">
-          <h2 className="text-2xl font-bold mb-8" style={{ color: '#0a192f' }}>International Advisory Committee</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {international.map((m) => (
-              <div key={m.name} className="rounded-xl border border-gray-200 bg-white p-4 flex items-start gap-3 hover:border-blue-200 hover:shadow-sm transition-all">
-                <div className="w-8 h-8 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 text-xs font-bold flex-shrink-0">
-                  {m.country.slice(0, 2)}
-                </div>
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4 border-b border-slate-200 pb-4">
+            <div>
+              <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-teal-700 mb-1">
+                Global Scientific Counsel
+              </div>
+              <h2 className="text-2xl md:text-3xl font-extrabold text-[#0a192f] tracking-tight">
+                International Advisory Committee
+              </h2>
+            </div>
+            <p className="text-xs text-slate-500 max-w-sm">
+              Scholars and researchers from leading global universities and international research facilities.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {international.map((m, idx) => (
+              <div
+                key={idx}
+                className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs hover:shadow-md hover:border-teal-300 transition-all flex flex-col justify-between"
+              >
                 <div>
-                  <p className="font-semibold text-gray-900 text-sm leading-snug">{m.name}</p>
-                  {m.affiliation && <p className="text-gray-500 text-xs mt-0.5">{m.affiliation}</p>}
-                  <p className="text-blue-600 text-xs font-medium mt-0.5">{m.country}</p>
+                  <div className="flex items-center justify-between gap-2 mb-2.5">
+                    <span className="px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase bg-teal-50 text-teal-800 border border-teal-100">
+                      {m.country}
+                    </span>
+                    <span className="text-[10px] font-mono text-slate-400">
+                      {m.flag}
+                    </span>
+                  </div>
+                  <h3 className="text-sm font-bold text-[#0a192f] leading-snug">
+                    {m.name}
+                  </h3>
+                  {m.affiliation && (
+                    <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                      {m.affiliation}
+                    </p>
+                  )}
                 </div>
               </div>
             ))}
           </div>
         </section>
 
-        {/* National Advisory */}
+
+        {/* ═══════════════════════════════════════════════
+            SECTION 3: NATIONAL ADVISORY COMMITTEE
+        ═══════════════════════════════════════════════ */}
         <section id="national" className="scroll-mt-24">
-          <h2 className="text-2xl font-bold mb-8" style={{ color: '#0a192f' }}>National Advisory Committee</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {national.map((m) => (
-              <div key={m.name} className="rounded-xl border border-gray-200 bg-white p-4 hover:border-teal-200 hover:shadow-sm transition-all">
-                <p className="font-semibold text-gray-900 text-sm">{m.name}</p>
-                <p className="text-gray-500 text-xs mt-0.5">{m.affiliation}</p>
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4 border-b border-slate-200 pb-4">
+            <div>
+              <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-teal-700 mb-1">
+                National Academic Eminence
               </div>
-            ))}
+              <h2 className="text-2xl md:text-3xl font-extrabold text-[#0a192f] tracking-tight">
+                National Advisory Committee
+              </h2>
+            </div>
+            <p className="text-xs text-slate-500 max-w-sm">
+              Distinguished professors and directors from TIFR, IITs, IISER, CPRI, and premier Indian engineering institutions.
+            </p>
           </div>
-        </section>
 
-        {/* Organising Committee */}
-        <section id="organising" className="scroll-mt-24">
-          <h2 className="text-2xl font-bold mb-8" style={{ color: '#0a192f' }}>Organising Committee</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-            {organising.map((name) => (
-              <div key={name} className="rounded-xl border border-gray-100 bg-gray-50 p-3 text-center hover:border-teal-200 hover:bg-teal-50/30 transition-all">
-                <p className="text-gray-700 text-xs font-medium leading-snug">{name}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Editorial Board */}
-        <section id="editorial" className="scroll-mt-24">
-          <h2 className="text-2xl font-bold mb-8" style={{ color: '#0a192f' }}>Editorial Board</h2>
-          <div className="divide-y divide-gray-100 rounded-2xl border border-gray-200 overflow-hidden">
-            {editorial.map((m, i) => (
-              <div key={m.name} className={`p-4 flex items-start gap-4 ${i % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-teal-50/30 transition-colors`}>
-                <div className="w-8 h-8 rounded-lg bg-teal-100 flex items-center justify-center text-teal-700 font-bold text-xs flex-shrink-0">
-                  {i + 1}
-                </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {national.map((m, idx) => (
+              <div
+                key={idx}
+                className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs hover:shadow-md hover:border-blue-300 transition-all flex flex-col justify-between"
+              >
                 <div>
-                  <p className="font-semibold text-gray-900 text-sm">{m.name}</p>
-                  <p className="text-gray-500 text-xs mt-0.5 leading-relaxed">{m.area}</p>
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="w-2 h-2 rounded-full bg-blue-500" />
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                      India Advisory Council
+                    </span>
+                  </div>
+                  <h3 className="text-sm font-bold text-[#0a192f] leading-snug">
+                    {m.name}
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                    {m.affiliation}
+                  </p>
                 </div>
               </div>
             ))}
           </div>
         </section>
+
+
+        {/* ═══════════════════════════════════════════════
+            SECTION 4: ORGANISING COMMITTEE
+        ═══════════════════════════════════════════════ */}
+        <section id="organising" className="scroll-mt-24">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4 border-b border-slate-200 pb-4">
+            <div>
+              <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-teal-700 mb-1">
+                Host Institution Execution Team
+              </div>
+              <h2 className="text-2xl md:text-3xl font-extrabold text-[#0a192f] tracking-tight">
+                Organising Committee
+              </h2>
+            </div>
+            <p className="text-xs text-slate-500 max-w-sm">
+              Faculty members and department heads coordinating operations across all technical tracks at AIET Moodbidri.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3.5">
+            {organising.map((m, idx) => (
+              <div
+                key={idx}
+                className="bg-white rounded-xl border border-slate-200 p-3.5 shadow-xs hover:border-teal-300 hover:bg-slate-50/50 transition-all"
+              >
+                <div className="text-xs font-bold text-[#0a192f] leading-snug">
+                  {m.name}
+                </div>
+                <div className="text-[11px] text-teal-700 font-medium mt-1">
+                  {m.dept}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+
+        {/* ═══════════════════════════════════════════════
+            SECTION 5: EDITORIAL BOARD (7 LEFT & 7 RIGHT)
+        ═══════════════════════════════════════════════ */}
+        <section id="editorial" className="scroll-mt-24">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4 border-b border-slate-200 pb-4">
+            <div>
+              <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-teal-700 mb-1">
+                Peer Review &amp; Proceedings Evaluation
+              </div>
+              <h2 className="text-2xl md:text-3xl font-extrabold text-[#0a192f] tracking-tight">
+                Editorial Board
+              </h2>
+            </div>
+            <p className="text-xs text-slate-500 max-w-md">
+              14 peer-review editors 
+            </p>
+          </div>
+
+          {/* Symmetrical 2-Column Split: 7 on Left, 7 on Right */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+            
+            {/* ─── LEFT COLUMN (Members 01 to 07) ─── */}
+            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col justify-between">
+              <div className="bg-slate-100/80 px-6 py-3.5 border-b border-slate-200 flex items-center justify-between">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#0a192f]">
+                  Editorial Board &bull; Section A
+                </span>
+                <span className="text-[10px] font-semibold text-teal-700 bg-teal-50 px-2 py-0.5 rounded border border-teal-200">
+                  
+                </span>
+              </div>
+
+              <div className="divide-y divide-slate-100">
+                {editorialLeft.map((m) => (
+                  <div
+                    key={m.num}
+                    className="p-5 flex items-start gap-4 hover:bg-slate-50/70 transition-colors"
+                  >
+                    <div className="w-8 h-8 rounded-lg bg-teal-50 border border-teal-200 flex items-center justify-center text-teal-800 text-xs font-black shrink-0">
+                      {m.num}
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-bold text-[#0a192f] leading-snug">
+                        {m.name}
+                      </h4>
+                      <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                        {m.area}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* ─── RIGHT COLUMN (Members 08 to 14) ─── */}
+            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col justify-between">
+              <div className="bg-slate-100/80 px-6 py-3.5 border-b border-slate-200 flex items-center justify-between">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#0a192f]">
+                  Editorial Board &bull; Section B
+                </span>
+                <span className="text-[10px] font-semibold text-teal-700 bg-teal-50 px-2 py-0.5 rounded border border-teal-200">
+              
+                </span>
+              </div>
+
+              <div className="divide-y divide-slate-100">
+                {editorialRight.map((m) => (
+                  <div
+                    key={m.num}
+                    className="p-5 flex items-start gap-4 hover:bg-slate-50/70 transition-colors"
+                  >
+                    <div className="w-8 h-8 rounded-lg bg-teal-50 border border-teal-200 flex items-center justify-center text-teal-800 text-xs font-black shrink-0">
+                      {m.num}
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-bold text-[#0a192f] leading-snug">
+                        {m.name}
+                      </h4>
+                      <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                        {m.area}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+          </div>
+
+          {/* Editorial Advisory Note */}
+          <div className="mt-8 p-6 rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-600">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-teal-100 text-teal-800 flex items-center justify-center font-bold shrink-0">
+                ✓
+              </div>
+              <div>
+                <strong>Peer Review Protocol:</strong> All submitted manuscripts undergo rigorous two-stage review by members of the editorial board and external subject reviewers.
+              </div>
+            </div>
+            <Link
+              href="/publication"
+              className="px-4 py-2 rounded-lg bg-teal-600 hover:bg-teal-700 text-white font-semibold whitespace-nowrap transition-colors"
+            >
+              Publication Guidelines &rarr;
+            </Link>
+          </div>
+        </section>
+
       </div>
     </div>
   );
