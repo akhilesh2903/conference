@@ -106,20 +106,20 @@ export default function Navbar() {
     <header className="fixed top-0 left-0 right-0 z-50 transform-gpu" style={{ transform: 'translateZ(0)' }}>
       {/* ─── Top Info Bar ─── */}
       <div
-        className={`overflow-hidden transition-[max-height,opacity] duration-200 ease-out ${
+        className={`overflow-hidden transition-[max-height,opacity] duration-200 ease-out border-b border-slate-200/80 ${
           scrolled ? 'max-h-0 opacity-0' : 'max-h-[46px] opacity-100'
         }`}
-        style={{ background: '#0a192f' }}
+        style={{ background: '#f8fafc' }}
       >
         <div className="w-full max-w-7xl 2xl:max-w-[1536px] mx-auto px-4 lg:px-6 flex items-center justify-between py-2">
           {/* Left: date + location */}
           <div className="flex items-center gap-4 text-[11px] md:text-[12px]">
-            <span className="flex items-center gap-1.5 text-teal-400 font-medium">
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+            <span className="flex items-center gap-1.5 text-teal-700 font-semibold">
+              <svg className="w-3.5 h-3.5 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
               16–17 September 2027
             </span>
-            <span className="hidden sm:flex items-center gap-1.5 text-white/50 border-l border-white/20 pl-4">
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+            <span className="hidden sm:flex items-center gap-1.5 text-slate-600 border-l border-slate-300 pl-4">
+              <svg className="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
               Hybrid Mode | Moodbidri, Karnataka, India
             </span>
           </div>
@@ -127,17 +127,17 @@ export default function Navbar() {
           {/* Right: social + url */}
           <div className="flex items-center gap-5">
             <div className="hidden md:flex items-center gap-3">
-              <a href="mailto:icmems2027@gmail.com" className="text-teal-400 hover:text-white transition-colors" title="Email">
+              <a href="mailto:icmems2027@gmail.com" className="text-slate-500 hover:text-slate-900 transition-colors" title="Email">
                 <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884zM18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/></svg>
               </a>
-              <a href="#" className="text-teal-400 hover:text-white transition-colors" title="LinkedIn">
+              <a href="#" className="text-slate-500 hover:text-slate-900 transition-colors" title="LinkedIn">
                 <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
               </a>
-              <a href="#" className="text-teal-400 hover:text-white transition-colors" title="YouTube">
+              <a href="#" className="text-slate-500 hover:text-slate-900 transition-colors" title="YouTube">
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.5 12 3.5 12 3.5s-7.505 0-9.377.55a3.016 3.016 0 0 0-2.122 2.136C0 8.07 0 12 0 12s0 3.93.501 5.814a3.016 3.016 0 0 0 2.122 2.136c1.872.55 9.377.55 9.377.55s7.505 0 9.377-.55a3.016 3.016 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
               </a>
             </div>
-            <span className="text-white/60 text-[11px] md:text-[12px] hidden md:block border-l border-white/20 pl-4 tracking-wide">
+            <span className="text-slate-600 text-[11px] md:text-[12px] hidden md:block border-l border-slate-300 pl-4 tracking-wide font-medium">
               aiet.org.in/icmems2027
             </span>
           </div>
@@ -146,35 +146,32 @@ export default function Navbar() {
 
       {/* ─── Main Navigation Bar ─── */}
       <nav
-        className={`relative transition-all duration-300 w-full overflow-visible ${
-          scrolled ? 'shadow-2xl' : ''
-        }`}
-        style={{
-          background: `linear-gradient(90deg, rgba(3,11,26,1) 0%, rgba(8,28,58,0.95) 40%, rgba(3,11,26,0.9) 100%), url('/Alvas.jpg')`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundBlendMode: 'overlay'
-        }}
+        className={`relative transition-all duration-300 w-full overflow-visible bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-[inset_0_-20px_36px_-10px_rgba(0,0,0,0.13),0_4px_14px_rgba(0,0,0,0.06)]`}
         aria-label="Main navigation"
       >
-        <div className="absolute inset-0 bg-gradient-to-r from-[#030a17] via-[#051426] to-[#030a17] opacity-90 mix-blend-multiply pointer-events-none" />
+        {/* Upward Shadow & Glow Gradient moving upwards throughout the navbar */}
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/[0.09] via-slate-900/[0.02] to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-teal-500/[0.12] via-teal-500/[0.02] to-transparent pointer-events-none" />
+        
+        {/* Horizontal bottom highlight line */}
+        <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-teal-400 to-transparent opacity-85 shadow-[0_0_12px_rgba(45,212,191,0.8)] pointer-events-none" />
 
         <div className="w-full mx-auto px-4 lg:px-6 relative z-10 2xl:max-w-none">
           <div className="flex items-center justify-between h-[60px] xl:h-[72px]">
             
             {/* Logo + Branding */}
-            <Link href="/" className="flex items-center gap-2 group shrink-0 mr-1 xl:mr-3">
+            <Link href="/" className="flex items-center gap-2.5 group shrink-0 mr-1 xl:mr-3">
               <img
-                src="/alvaslogo.png"
-                alt="AIET Logo"
-                className="h-8 sm:h-9 xl:h-11 w-auto object-contain rounded-sm"
+                src="/alvas-org-logo.png"
+                alt="Alva's Education Foundation Logo"
+                className="h-9 sm:h-10 xl:h-12 w-auto object-contain transition-transform duration-200 group-hover:scale-105"
               />
-              <div className="border-l border-white/10 pl-2">
-                <div className="flex items-center gap-1 font-bold text-[13px] sm:text-[14px] xl:text-[15px] tracking-tight leading-none group-hover:text-blue-200 transition-colors">
-                  <span className="text-white">IC-MEMS</span>
-                  <span className="text-teal-400">2027</span>
+              <div className="border-l border-slate-300 pl-2.5">
+                <div className="flex items-center gap-1 font-bold text-[13px] sm:text-[14px] xl:text-[15px] tracking-tight leading-none group-hover:text-teal-700 transition-colors">
+                  <span className="text-slate-900">IC-MEMS</span>
+                  <span className="text-teal-600 font-extrabold">2027</span>
                 </div>
-                <div className="hidden min-[420px]:block text-white/40 text-[10px] xl:text-[11px] font-medium tracking-wide mt-1 leading-none">
+                <div className="hidden min-[420px]:block text-slate-500 text-[10px] xl:text-[11px] font-medium tracking-wide mt-1 leading-none">
                   AIET, Moodbidri
                 </div>
               </div>
@@ -185,9 +182,9 @@ export default function Navbar() {
               {navLinks.map((link) => {
                 const getClasses = () => {
                   if (isActive(link.href)) {
-                    return 'bg-[#0f2a4a] text-white rounded-xl border border-teal-500/20 shadow-[inset_0_-2px_0_rgba(45,212,191,1),0_5px_15px_rgba(45,212,191,0.25)]';
+                    return 'bg-slate-100 text-teal-700 font-semibold rounded-xl border border-slate-200/80 shadow-sm';
                   }
-                  return 'text-white/60 hover:text-white hover:bg-white/5 rounded-xl';
+                  return 'text-slate-800 hover:text-black hover:bg-slate-100/80 rounded-xl';
                 };
 
                 return link.children ? (
@@ -203,18 +200,18 @@ export default function Navbar() {
                     >
                       {link.icon}
                       {link.label}
-                      <svg className="w-3 h-3 ml-0.5 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg className="w-3 h-3 ml-0.5 opacity-60 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
                       </svg>
                     </Link>
                     {activeDropdown === link.label && (
                       <div className="absolute top-full left-0 pt-2 w-52 z-50">
-                        <div className="bg-[#050f20] border border-white/10 rounded-xl shadow-2xl py-1.5 backdrop-blur-xl">
+                        <div className="bg-white border border-slate-200 rounded-xl shadow-xl py-1.5">
                           {link.children.map((child) => (
                             <Link
                               key={child.href}
                               href={child.href}
-                              className="block px-4 py-2.5 text-[13px] text-white/65 hover:text-white hover:bg-white/[0.07] transition-colors"
+                              className="block px-4 py-2.5 text-[13px] text-slate-700 hover:text-black hover:bg-slate-50 transition-colors"
                               onClick={() => setActiveDropdown(null)}
                             >
                               {child.label}
@@ -228,11 +225,11 @@ export default function Navbar() {
                   <Link
                     key={link.label}
                     href={link.href}
-                    className="flex items-center gap-1 px-2.5 2xl:px-3 py-1.5 rounded-xl text-[12.5px] 2xl:text-[13px] font-medium text-white/40 hover:text-white/60 transition-all duration-300 whitespace-nowrap"
+                    className="flex items-center gap-1 px-2.5 2xl:px-3 py-1.5 rounded-xl text-[12.5px] 2xl:text-[13px] font-medium text-slate-600 hover:text-black hover:bg-slate-100/80 transition-all duration-300 whitespace-nowrap"
                   >
                     {link.icon}
                     {link.label === 'Programme' ? 'Program' : link.label}
-                    <span className="text-[9px] bg-amber-500 text-[#2b1700] px-1 py-0.5 rounded-sm font-bold tracking-wider ml-1 leading-none shadow-sm shadow-amber-500/20">TBA</span>
+                    <span className="text-[9px] bg-amber-500 text-white px-1 py-0.5 rounded-sm font-bold tracking-wider ml-1 leading-none shadow-sm">TBA</span>
                   </Link>
                 ) : (
                   <Link
@@ -248,19 +245,18 @@ export default function Navbar() {
             </div>
 
             {/* CTA Button + Hamburger */}
-              <div className="flex items-center gap-2 shrink-0 ml-auto lg:ml-2 xl:ml-3">
+            <div className="flex items-center gap-2 shrink-0 ml-auto lg:ml-2 xl:ml-3">
               {isRegistered ? (
                 <button
                   onClick={handleLogout}
-                  className="hidden sm:inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-red-500/90 hover:bg-red-500 text-white text-[12px] font-bold tracking-wide transition-all shadow-lg hover:shadow-red-500/30"
+                  className="hidden sm:inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-red-500 hover:bg-red-600 text-white text-[12px] font-bold tracking-wide transition-all shadow-md hover:shadow-red-500/20"
                 >
                   Logout
                 </button>
               ) : (
                 <Link
                   href="/registration"
-                  className="hidden sm:inline-flex items-center gap-1.5 px-5 py-1.5 rounded-full text-[12px] font-bold transition-all shadow-[0_0_20px_rgba(45,212,191,0.4)] hover:shadow-[0_0_25px_rgba(45,212,191,0.6)] text-[#021024] whitespace-nowrap"
-                  style={{ background: 'linear-gradient(90deg, #3b82f6, #06b6d4, #2dd4bf)' }}
+                  className="hidden sm:inline-flex items-center gap-1.5 px-5 py-1.5 rounded-full text-[12px] font-bold transition-all shadow-md hover:shadow-lg text-white whitespace-nowrap bg-teal-600 hover:bg-teal-500"
                 >
                   Register Now
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -270,7 +266,7 @@ export default function Navbar() {
               )}
 
               <button
-                className="xl:hidden p-2 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-colors ml-2"
+                className="xl:hidden p-2 rounded-lg text-slate-800 hover:text-black hover:bg-slate-100 transition-colors ml-2"
                 onClick={() => setIsOpen(!isOpen)}
                 aria-label="Toggle menu"
                 aria-expanded={isOpen}
@@ -291,12 +287,12 @@ export default function Navbar() {
           {/* Mobile Menu */}
           {isOpen && (
             <div
-              className="xl:hidden mt-2 py-4 space-y-1 bg-[#061224] border-t border-b border-teal-500/20 shadow-2xl rounded-b-2xl absolute left-0 right-0 w-full max-h-[calc(100vh-80px)] overflow-y-auto overscroll-contain pb-6 z-50"
+              className="xl:hidden mt-2 py-4 space-y-1 bg-white border-t border-b border-slate-200 shadow-2xl rounded-b-2xl absolute left-0 right-0 w-full max-h-[calc(100vh-80px)] overflow-y-auto overscroll-contain pb-6 z-50 text-slate-800"
             >
               {navLinks.map((link) =>
                 link.children ? (
                   <div key={link.label}>
-                    <div className="px-5 py-2 text-xs font-semibold text-white/40 uppercase tracking-wider flex items-center gap-2">
+                    <div className="px-5 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-2">
                       <span className="text-sm">{link.icon}</span>
                       {link.label}
                     </div>
@@ -305,7 +301,7 @@ export default function Navbar() {
                         key={child.href}
                         href={child.href}
                         onClick={() => setIsOpen(false)}
-                        className="block pl-11 pr-5 py-2.5 text-sm text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-colors mx-2"
+                        className="block pl-11 pr-5 py-2.5 text-sm text-slate-700 hover:text-black hover:bg-slate-100 rounded-lg transition-colors mx-2"
                       >
                         {child.label}
                       </Link>
@@ -316,13 +312,13 @@ export default function Navbar() {
                     key={link.href}
                     href={link.href}
                     onClick={() => setIsOpen(false)}
-                    className="flex items-center justify-between px-5 py-3 rounded-lg text-sm text-white/50 mx-2"
+                    className="flex items-center justify-between px-5 py-3 rounded-lg text-sm text-slate-600 hover:bg-slate-100 mx-2"
                   >
                     <span className="flex items-center gap-2.5">
                       {link.icon}
                       {link.label}
                     </span>
-                    <span className="text-[10px] bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded-full">TBA</span>
+                    <span className="text-[10px] bg-amber-500 text-white px-2 py-0.5 rounded-full font-bold">TBA</span>
                   </Link>
                 ) : (
                   <Link
@@ -331,8 +327,8 @@ export default function Navbar() {
                     onClick={() => setIsOpen(false)}
                     className={`flex items-center gap-2.5 px-5 py-3 rounded-lg text-sm font-medium transition-colors mx-2 ${
                       isActive(link.href)
-                        ? 'text-teal-400 bg-white/10'
-                        : 'text-white/80 hover:text-white hover:bg-white/10'
+                        ? 'text-teal-700 bg-teal-50 font-semibold'
+                        : 'text-slate-800 hover:text-black hover:bg-slate-100'
                     }`}
                   >
                     {link.icon}
@@ -344,7 +340,7 @@ export default function Navbar() {
                 {isRegistered ? (
                   <button
                     onClick={() => { setIsOpen(false); handleLogout(); }}
-                    className="block w-full text-center px-4 py-3 rounded-full bg-red-500 hover:bg-red-400 text-white text-sm font-semibold transition-colors"
+                    className="block w-full text-center px-4 py-3 rounded-full bg-red-500 hover:bg-red-600 text-white text-sm font-semibold transition-colors"
                   >
                     Logout
                   </button>
@@ -352,8 +348,7 @@ export default function Navbar() {
                   <Link
                     href="/registration"
                     onClick={() => setIsOpen(false)}
-                    className="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-full text-[#021024] text-sm font-bold transition-colors"
-                    style={{ background: 'linear-gradient(90deg, #3b82f6, #06b6d4, #2dd4bf)' }}
+                    className="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-full text-white text-sm font-bold transition-colors bg-teal-600 hover:bg-teal-500 shadow-md"
                   >
                     Register Now
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
