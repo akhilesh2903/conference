@@ -275,7 +275,7 @@ export default function AdminPage() {
   }, [isLoggedIn, activeTab]);
 
   /* ─── Track Handlers ───────────────────────────────────────────────── */
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -283,32 +283,58 @@ export default function AdminPage() {
     setTrackFormError('');
     setTrackImageName(file.name);
 
-    // 1. Immediate local base64 preview
     const reader = new FileReader();
     reader.onload = (event) => {
-      const base64Url = event.target?.result as string;
-      setTrackForm((prev) => ({ ...prev, image: base64Url }));
+      const rawBase64 = event.target?.result as string;
+      const img = new Image();
+      img.onload = () => {
+        try {
+          // Resize image to max 1200x800 to keep MongoDB document lightweight (~80-120KB)
+          const MAX_WIDTH = 1200;
+          const MAX_HEIGHT = 800;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height = Math.round((height * MAX_WIDTH) / width);
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width = Math.round((width * MAX_HEIGHT) / height);
+              height = MAX_HEIGHT;
+            }
+          }
+
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, width, height);
+            const optimizedBase64 = canvas.toDataURL('image/jpeg', 0.85);
+            setTrackForm((prev) => ({ ...prev, image: optimizedBase64 }));
+          } else {
+            setTrackForm((prev) => ({ ...prev, image: rawBase64 }));
+          }
+        } catch {
+          setTrackForm((prev) => ({ ...prev, image: rawBase64 }));
+        } finally {
+          setUploadingImage(false);
+        }
+      };
+      img.onerror = () => {
+        setTrackForm((prev) => ({ ...prev, image: rawBase64 }));
+        setUploadingImage(false);
+      };
+      img.src = rawBase64;
+    };
+    reader.onerror = () => {
+      setTrackFormError('Failed to read image file');
+      setUploadingImage(false);
     };
     reader.readAsDataURL(file);
-
-    // 2. Upload to server for permanent URL storage
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-      const res = await fetch('/api/admin/upload', {
-        method: 'POST',
-        headers: { Authorization: authHeader() },
-        body: formData,
-      });
-      const data = await res.json();
-      if (res.ok && data.url) {
-        setTrackForm((prev) => ({ ...prev, image: data.url }));
-      }
-    } catch (err) {
-      console.warn('Fallback to base64 image preview:', err);
-    } finally {
-      setUploadingImage(false);
-    }
   };
 
   const handleAddTrack = async (e: React.FormEvent) => {
@@ -1134,6 +1160,9 @@ export default function AdminPage() {
                         <img
                           src={trackForm.image}
                           alt="Track Preview"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = '/tracks/track-4-management.png';
+                          }}
                           className="w-16 h-14 object-cover rounded-lg border border-slate-300 shadow-2xs bg-white shrink-0"
                         />
                         <div className="min-w-0">
@@ -1261,6 +1290,9 @@ export default function AdminPage() {
                                 <img
                                   src={track.image}
                                   alt={track.title}
+                                  onError={(e) => {
+                                    (e.target as HTMLImageElement).src = '/tracks/track-4-management.png';
+                                  }}
                                   className="w-14 h-10 object-cover rounded-lg border border-slate-200 shadow-2xs bg-white"
                                 />
                               ) : (

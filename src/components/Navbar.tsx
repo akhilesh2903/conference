@@ -151,6 +151,16 @@ const navLinks: NavLinkItem[] = [
         )
       },
       { 
+        label: 'Organising Committee', 
+        href: '/committees#organising',
+        desc: 'Host institution execution team',
+        icon: (
+          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" />
+          </svg>
+        )
+      },
+      { 
         label: 'Editorial Board', 
         href: '/committees#editorial',
         desc: 'Technical program committee',
@@ -198,7 +208,26 @@ export default function Navbar() {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => {
       setActiveDropdown(null);
-    }, 140);
+    }, 90);
+  };
+
+  const handleLinkClick = (href: string, e?: React.MouseEvent) => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    setActiveDropdown(null);
+    setIsOpen(false);
+
+    if (href.includes('#')) {
+      const [path, hash] = href.split('#');
+      const isSamePath = pathname === path || (path === '' && (pathname === '/committees' || pathname === '/for-authors' || pathname === '/about' || pathname === '/publication'));
+      if (isSamePath) {
+        if (e) e.preventDefault();
+        const element = document.getElementById(hash);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+          window.history.pushState(null, '', href);
+        }
+      }
+    }
   };
 
   useEffect(() => {
@@ -352,12 +381,13 @@ export default function Navbar() {
                   >
                     <Link
                       href={link.href}
-                      className={`flex items-center gap-1 px-2.5 2xl:px-3 py-1.5 ${getClasses()} text-[12.5px] 2xl:text-[13px] font-medium transition-all duration-300 whitespace-nowrap group-hover:text-teal-700`}
+                      onClick={(e) => handleLinkClick(link.href, e)}
+                      className={`flex items-center gap-1 px-2.5 2xl:px-3 py-1.5 ${getClasses()} text-[12.5px] 2xl:text-[13px] font-medium transition-colors duration-150 whitespace-nowrap group-hover:text-teal-700`}
                     >
                       {link.icon}
                       {link.label}
                       <svg
-                        className={`w-3 h-3 ml-0.5 text-slate-400 transition-transform duration-300 ease-out ${
+                        className={`w-3 h-3 ml-0.5 text-slate-400 transition-transform duration-200 ease-out ${
                           activeDropdown === link.label ? 'rotate-180 text-teal-600' : 'group-hover:rotate-180 group-hover:text-teal-600'
                         }`}
                         fill="none"
@@ -368,27 +398,26 @@ export default function Navbar() {
                       </svg>
                     </Link>
 
-                    {/* Paper Rolling / Sliding Dropdown Container */}
+                    {/* Ultra-Smooth Dropdown Container */}
                     <AnimatePresence>
                       {activeDropdown === link.label && (
                         <motion.div
-                          key="paper-dropdown"
-                          initial={{ opacity: 0, rotateX: -75, y: -12, scaleY: 0.7 }}
-                          animate={{ opacity: 1, rotateX: 0, y: 0, scaleY: 1 }}
-                          exit={{ opacity: 0, y: -16, scaleY: 0.85, rotateX: -45, transition: { duration: 0.22, ease: [0.4, 0, 0.2, 1] } }}
-                          transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                          style={{ transformOrigin: 'top center', perspective: 1200 }}
-                          className="absolute top-full left-0 pt-1.5 w-[275px] z-50 pointer-events-auto"
+                          key={`paper-dropdown-${link.label}`}
+                          initial={{ opacity: 0, y: 4, scale: 0.98 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: 2, scale: 0.98, transition: { duration: 0.1, ease: 'easeOut' } }}
+                          transition={{ duration: 0.15, ease: [0.16, 1, 0.3, 1] }}
+                          className="absolute top-full left-0 pt-1.5 w-[285px] z-50 pointer-events-auto transform-gpu"
                           onMouseEnter={() => handleMouseEnter(link.label)}
                           onMouseLeave={handleMouseLeave}
                         >
-                          {/* Safety hit bridge */}
-                          <div className="absolute -top-3 left-0 right-0 h-4" />
+                          {/* Continuous Safety hit bridge */}
+                          <div className="absolute -top-2 left-0 right-0 h-3" />
 
                           {/* Paper Card */}
-                          <div className="paper-card rounded-2xl p-2.5 border border-slate-200/90 relative overflow-hidden backdrop-blur-md">
+                          <div className="paper-card rounded-2xl p-2.5 border border-slate-200/90 relative overflow-hidden bg-white shadow-xl">
                             {/* Paper Top Roll Rim / Curl Accent */}
-                            <div className="h-1.5 w-full bg-gradient-to-r from-teal-500/25 via-teal-400 to-teal-500/25 rounded-t-xl mb-2 paper-curl-top" />
+                            <div className="h-1.5 w-full bg-gradient-to-r from-teal-500/30 via-teal-400 to-teal-500/30 rounded-t-xl mb-2 paper-curl-top" />
 
                             {/* Subtabs with Box and Underline one after the other */}
                             <div className="flex flex-col">
@@ -397,11 +426,11 @@ export default function Navbar() {
                                   {/* Boxed Subtab */}
                                   <Link
                                     href={child.href}
-                                    onClick={() => setActiveDropdown(null)}
-                                    className="group/item relative flex items-center gap-3 px-3 py-2.5 rounded-xl border border-slate-200/90 bg-slate-50/70 hover:bg-white hover:border-teal-400 hover:shadow-[0_4px_14px_rgba(13,148,136,0.12)] transition-all duration-200 overflow-hidden"
+                                    onClick={(e) => handleLinkClick(child.href, e)}
+                                    className="group/item relative flex items-center gap-3 px-3 py-2.5 rounded-xl border border-slate-200/90 bg-slate-50/70 hover:bg-white hover:border-teal-400 hover:shadow-[0_4px_14px_rgba(13,148,136,0.12)] transition-all duration-150 overflow-hidden"
                                   >
                                     {/* Left icon inside mini box */}
-                                    <div className="w-7 h-7 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-teal-600 group-hover/item:bg-teal-600 group-hover/item:text-white group-hover/item:border-teal-600 transition-all duration-200 shrink-0 shadow-2xs">
+                                    <div className="w-7 h-7 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-teal-600 group-hover/item:bg-teal-600 group-hover/item:text-white group-hover/item:border-teal-600 transition-all duration-150 shrink-0 shadow-2xs">
                                       {child.icon}
                                     </div>
 
@@ -419,7 +448,7 @@ export default function Navbar() {
 
                                     {/* Micro Arrow Indicator */}
                                     <svg
-                                      className="w-3.5 h-3.5 text-slate-400 group-hover/item:text-teal-600 group-hover/item:translate-x-0.5 transition-all duration-200 shrink-0"
+                                      className="w-3.5 h-3.5 text-slate-400 group-hover/item:text-teal-600 group-hover/item:translate-x-0.5 transition-all duration-150 shrink-0"
                                       fill="none"
                                       viewBox="0 0 24 24"
                                       stroke="currentColor"
@@ -428,7 +457,7 @@ export default function Navbar() {
                                     </svg>
 
                                     {/* Animated Underline highlight inside each box */}
-                                    <span className="absolute bottom-0 left-2.5 right-2.5 h-[2px] bg-gradient-to-r from-teal-500 to-teal-300 scale-x-0 group-hover/item:scale-x-100 transition-transform duration-200 origin-left rounded-full" />
+                                    <span className="absolute bottom-0 left-2.5 right-2.5 h-[2px] bg-gradient-to-r from-teal-500 to-teal-300 scale-x-0 group-hover/item:scale-x-100 transition-transform duration-150 origin-left rounded-full" />
                                   </Link>
 
                                   {/* Underline separator one after the other */}
@@ -538,17 +567,26 @@ export default function Navbar() {
               {navLinks.map((link) =>
                 link.children ? (
                   <div key={link.label} className="mx-2 mb-2 p-2 bg-slate-50/70 rounded-2xl border border-slate-200/80">
-                    <div className="px-2 py-1.5 text-xs font-bold text-teal-800 uppercase tracking-wider flex items-center gap-2">
-                      <span className="text-sm">{link.icon}</span>
-                      {link.label}
-                    </div>
+                    <Link
+                      href={link.href}
+                      onClick={(e) => handleLinkClick(link.href, e)}
+                      className="px-2 py-1.5 text-xs font-bold text-teal-800 hover:text-teal-900 uppercase tracking-wider flex items-center justify-between"
+                    >
+                      <span className="flex items-center gap-2">
+                        <span className="text-sm">{link.icon}</span>
+                        {link.label}
+                      </span>
+                      <span className="text-[11px] font-semibold text-teal-700 bg-teal-50 px-2 py-0.5 rounded border border-teal-200">
+                        View Page &rarr;
+                      </span>
+                    </Link>
                     <div className="mt-1 flex flex-col">
                       {link.children.map((child, idx) => (
                         <React.Fragment key={child.href}>
                           <Link
                             key={child.href}
                             href={child.href}
-                            onClick={() => setIsOpen(false)}
+                            onClick={(e) => handleLinkClick(child.href, e)}
                             className="group/mob relative flex items-center gap-3 px-3 py-2.5 rounded-xl border border-slate-200/90 bg-white hover:border-teal-400 hover:shadow-2xs transition-colors"
                           >
                             <div className="w-7 h-7 rounded-lg bg-teal-50 border border-teal-100 flex items-center justify-center text-teal-700 shrink-0">

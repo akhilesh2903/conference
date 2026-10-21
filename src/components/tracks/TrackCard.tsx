@@ -93,6 +93,9 @@ export default function TrackCard({ track, index }: TrackCardProps) {
                 <img
                   src={track.image}
                   alt={track.imageAlt || track.title}
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = '/tracks/track-4-management.png';
+                  }}
                   className="w-full h-auto object-contain transition-transform duration-700 ease-out group-hover/img:scale-[1.02]"
                   loading={index === 0 ? 'eager' : 'lazy'}
                 />

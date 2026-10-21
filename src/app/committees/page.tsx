@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import CommitteesHashScroll from '@/components/CommitteesHashScroll';
 
 export const metadata: Metadata = { 
   title: 'Committees & Advisory Board | IC-MEMS 2027',
@@ -195,6 +196,7 @@ const editorialRight = [
 export default function CommitteesPage() {
   return (
     <div className="page-enter bg-slate-50 min-h-screen">
+      <CommitteesHashScroll />
       {/* Page Header */}
       <div className="gradient-navy text-white pt-6 pb-12 sm:pt-8 sm:pb-16 lg:pb-20">
         <div className="container-custom max-w-4xl">
