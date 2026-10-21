@@ -6,21 +6,17 @@ export default function HeroSection() {
       className="relative min-h-[calc(100vh-46px)] lg:min-h-screen flex flex-col justify-between overflow-hidden bg-[#030a17] pt-[116px] xl:pt-[128px]"
       aria-label="Conference Hero"
     >
-      {/* Background Campus/Tech Image Layer - Right side graphic completely unobstructed and clearly visible */}
+      {/* Background Campus/Tech Image Layer - Clean without blue overlay */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <div
           className="absolute inset-0 bg-cover bg-center sm:bg-[center_right] bg-no-repeat"
           style={{ backgroundImage: "url('/hero.png')" }}
         />
-        {/* Directional gradient: provides dark contrast on the left for text legibility, leaving the right side 100% clear and luminous */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#030a17]/95 via-[#030a17]/65 to-transparent sm:via-[#030a17]/45" />
-        {/* Subtle top & bottom shadow gradient */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#030a17]/70 via-transparent to-[#030a17]/90" />
       </div>
 
       {/* Main Hero Content - Positioned on the left side so right-side illustration is clearly visible */}
       <div className="container-custom relative z-10 w-full my-auto py-5 sm:py-8 flex flex-col justify-center">
-        <div className="max-w-xl lg:max-w-2xl flex flex-col items-start text-left mr-auto">
+        <div className="max-w-2xl lg:max-w-3xl xl:max-w-4xl flex flex-col items-start text-left mr-auto">
           
           {/* Institution Header & Organizing Partnership Badge */}
           <div className="inline-flex flex-col items-start gap-1 px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl border border-teal-500/40 bg-[#051426]/85 backdrop-blur-md mb-3 sm:mb-5 shadow-xl max-w-full">
@@ -49,9 +45,9 @@ export default function HeroSection() {
           </h1>
 
           {/* Conference Key Meta Bar (Dates, Venue, Mode, Indexing) */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 w-full max-w-xl lg:max-w-2xl mb-5 sm:mb-7 text-left">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 w-full max-w-3xl xl:max-w-4xl mb-5 sm:mb-7 text-left">
             {/* 1. Dates */}
-            <div className="p-2.5 sm:p-3 rounded-xl bg-[#051426]/80 hover:bg-[#051426]/90 backdrop-blur-md border border-white/20 transition-all flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2.5 shadow-lg">
+            <div className="p-2.5 sm:px-3 sm:py-2.5 rounded-xl bg-[#051426]/85 hover:bg-[#051426]/95 backdrop-blur-md border border-white/20 transition-all flex items-center gap-2 sm:gap-2.5 shadow-lg">
               <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-teal-500/25 flex items-center justify-center shrink-0 text-teal-300">
                 <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -64,7 +60,7 @@ export default function HeroSection() {
             </div>
 
             {/* 2. Venue */}
-            <div className="p-2.5 sm:p-3 rounded-xl bg-[#051426]/80 hover:bg-[#051426]/90 backdrop-blur-md border border-white/20 transition-all flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2.5 shadow-lg">
+            <div className="p-2.5 sm:px-3 sm:py-2.5 rounded-xl bg-[#051426]/85 hover:bg-[#051426]/95 backdrop-blur-md border border-white/20 transition-all flex items-center gap-2 sm:gap-2.5 shadow-lg">
               <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-blue-500/25 flex items-center justify-center shrink-0 text-blue-300">
                 <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -78,7 +74,7 @@ export default function HeroSection() {
             </div>
 
             {/* 3. Format */}
-            <div className="p-2.5 sm:p-3 rounded-xl bg-[#051426]/80 hover:bg-[#051426]/90 backdrop-blur-md border border-white/20 transition-all flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2.5 shadow-lg">
+            <div className="p-2.5 sm:px-3 sm:py-2.5 rounded-xl bg-[#051426]/85 hover:bg-[#051426]/95 backdrop-blur-md border border-white/20 transition-all flex items-center gap-2 sm:gap-2.5 shadow-lg">
               <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-emerald-500/25 flex items-center justify-center shrink-0 text-emerald-300">
                 <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
@@ -91,7 +87,7 @@ export default function HeroSection() {
             </div>
 
             {/* 4. Proceedings */}
-            <div className="p-2.5 sm:p-3 rounded-xl bg-[#051426]/80 hover:bg-[#051426]/90 backdrop-blur-md border border-white/20 transition-all flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2.5 shadow-lg">
+            <div className="p-2.5 sm:px-3 sm:py-2.5 rounded-xl bg-[#051426]/85 hover:bg-[#051426]/95 backdrop-blur-md border border-white/20 transition-all flex items-center gap-2 sm:gap-2.5 shadow-lg">
               <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-amber-500/25 flex items-center justify-center shrink-0 text-amber-300">
                 <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />

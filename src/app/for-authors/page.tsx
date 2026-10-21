@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import AbstractSubmissionForm from '@/components/authors/AbstractSubmissionForm';
 
 export const metadata: Metadata = { title: 'For Authors | IC-MEMS 2027' };
 
@@ -124,22 +125,8 @@ export default function ForAuthorsPage() {
         </section>
 
         {/* Abstract Submission */}
-        <section id="submission" className="scroll-mt-24 bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm">
-          <h2 className="text-2xl font-bold text-[#0a192f] mb-6">Abstract Submission</h2>
-          <div className="rounded-xl border border-teal-200 bg-teal-50/70 p-6 flex items-start gap-4">
-            <div className="w-11 h-11 rounded-xl bg-teal-100 border border-teal-200 flex items-center justify-center text-xl shrink-0">
-              📝
-            </div>
-            <div>
-              <h3 className="font-bold text-teal-950 mb-1 text-base">Direct Text Entry Method</h3>
-              <p className="text-teal-900/90 text-xs sm:text-sm leading-relaxed">
-                The abstract submission system supports direct text entry. Enter your abstract title, body text, keywords and author details directly in the online form on the AIET portal.
-              </p>
-            </div>
-          </div>
-          <p className="text-xs sm:text-sm text-slate-500 mt-4 text-center">
-            Submission portal opens 16 June 2027. Check back for updates.
-          </p>
+        <section id="submission" className="scroll-mt-24">
+          <AbstractSubmissionForm />
         </section>
 
         {/* Full Paper */}

@@ -14,6 +14,7 @@ export const OFFICIAL_4_TRACKS = [
   {
     trackNumber: '01',
     title: 'Advanced and Sustainable Materials',
+    image: '/tracks/track-1-materials.png',
     text: [
       'Energy materials',
       'Solar cell materials',
@@ -36,6 +37,7 @@ export const OFFICIAL_4_TRACKS = [
   {
     trackNumber: '02',
     title: 'Energy Systems, Hydrogen & Sustainable Energy',
+    image: '/tracks/track-2-energy.png',
     text: [
       'Renewable energy',
       'Solar energy',
@@ -54,6 +56,7 @@ export const OFFICIAL_4_TRACKS = [
   {
     trackNumber: '03',
     title: 'Environment, Climate & Sustainable Engineering',
+    image: '/tracks/track-3-environment.png',
     text: [
       'Environmental engineering',
       'Waste management',
@@ -69,6 +72,7 @@ export const OFFICIAL_4_TRACKS = [
   {
     trackNumber: '04',
     title: 'Sustainable Management, Business & Finance',
+    image: '/tracks/track-4-management.png',
     text: [
       'Sustainable business',
       'Strategic management',
@@ -121,6 +125,7 @@ export async function POST(request: Request) {
         existing.trackNumber = trackData.trackNumber;
         existing.title = trackData.title;
         existing.text = trackData.text;
+        existing.image = trackData.image;
         await existing.save();
         results.push({ action: 'updated', track: existing });
       }

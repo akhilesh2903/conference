@@ -17,14 +17,19 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { trackNumber, title, text } = body;
+    const { trackNumber, title, text, image } = body;
 
     if (!trackNumber || !title || !text) {
       return NextResponse.json({ error: 'trackNumber, title, and text are required' }, { status: 400 });
     }
 
     await connectToDatabase();
-    const track = await Track.create({ trackNumber, title, text });
+    const track = await Track.create({
+      trackNumber: String(trackNumber).trim(),
+      title: String(title).trim(),
+      text: String(text).trim(),
+      image: image ? String(image).trim() : undefined,
+    });
     return NextResponse.json({ success: true, track }, { status: 201 });
   } catch (error: any) {
     console.error('Create track error:', error);

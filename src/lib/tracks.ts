@@ -16,6 +16,72 @@ export interface FormattedTrack {
   gradient: string;
   icon: string;
   shortIcon: string;
+  image?: string;
+  imageAlt?: string;
+}
+
+export const TRACK_IMAGES: Record<string, { image: string; imageAlt: string }> = {
+  '1': {
+    image: '/tracks/track-1-materials.png',
+    imageAlt: 'Track 1: Advanced and Sustainable Materials Ecosystem Infographic',
+  },
+  '2': {
+    image: '/tracks/track-2-energy.png',
+    imageAlt: 'Track 2: Energy Systems, Hydrogen & Sustainable Energy Infographic',
+  },
+  '3': {
+    image: '/tracks/track-3-environment.png',
+    imageAlt: 'Track 3: Environment, Climate & Sustainable Engineering Infographic',
+  },
+  '4': {
+    image: '/tracks/track-4-management.png',
+    imageAlt: 'Track 4: Sustainable Management, Business & Finance Infographic',
+  },
+};
+
+export function resolveTrackImage(
+  rawNumber: string,
+  title: string,
+  customImage?: string
+): { image: string; imageAlt: string } {
+  // 1. If explicit custom image is specified (URL or relative path)
+  if (customImage && typeof customImage === 'string' && customImage.trim()) {
+    return {
+      image: customImage.trim(),
+      imageAlt: `Track ${rawNumber}: ${title} Infographic`,
+    };
+  }
+
+  // 2. Direct map by clean track number
+  const cleanNum = rawNumber.replace(/^0+/, '') || rawNumber;
+  if (TRACK_IMAGES[cleanNum]) {
+    return TRACK_IMAGES[cleanNum];
+  }
+
+  // 3. Keyword matching based on title
+  const lower = title.toLowerCase();
+  if (lower.includes('material') || lower.includes('nano') || lower.includes('polymer') || lower.includes('thin film')) {
+    return TRACK_IMAGES['1'];
+  }
+  if (lower.includes('energy') || lower.includes('hydrogen') || lower.includes('solar') || lower.includes('fuel') || lower.includes('battery')) {
+    return TRACK_IMAGES['2'];
+  }
+  if (lower.includes('environment') || lower.includes('climate') || lower.includes('waste') || lower.includes('gis') || lower.includes('carbon')) {
+    return TRACK_IMAGES['3'];
+  }
+  if (lower.includes('management') || lower.includes('business') || lower.includes('finance') || lower.includes('economy') || lower.includes('esg')) {
+    return TRACK_IMAGES['4'];
+  }
+
+  // 4. Guaranteed rotating fallback based on numeric value, so NO track ever lacks an image
+  const numVal = parseInt(cleanNum, 10);
+  const fallbackIndex = !isNaN(numVal) && numVal > 0 ? ((numVal - 1) % 4) + 1 : 1;
+  const fallbackImg = TRACK_IMAGES[String(fallbackIndex)] || TRACK_IMAGES['1'];
+
+  return {
+    image: fallbackImg.image,
+    imageAlt: `Track ${rawNumber}: ${title} Infographic`,
+  };
 }
 
 export const DEFAULT_TRACKS: FormattedTrack[] = [
@@ -34,6 +100,8 @@ export const DEFAULT_TRACKS: FormattedTrack[] = [
     gradient: 'from-blue-600 to-blue-700',
     icon: '⚗️',
     shortIcon: 'MAT',
+    image: '/tracks/track-1-materials.png',
+    imageAlt: 'Track 1: Advanced and Sustainable Materials Ecosystem Infographic',
     subtopics: [
       'Energy materials', 'Solar cell materials', 'Fuel cell materials',
       'Battery materials', 'Supercapacitors', 'Hydrogen storage materials',
@@ -58,6 +126,8 @@ export const DEFAULT_TRACKS: FormattedTrack[] = [
     gradient: 'from-teal-600 to-teal-700',
     icon: '⚡',
     shortIcon: 'ENG',
+    image: '/tracks/track-2-energy.png',
+    imageAlt: 'Track 2: Energy Systems, Hydrogen & Sustainable Energy Infographic',
     subtopics: [
       'Renewable energy', 'Solar energy', 'Wind energy', 'Bioenergy',
       'Green hydrogen', 'Hydrogen storage', 'Hydrogen utilization',
@@ -80,6 +150,8 @@ export const DEFAULT_TRACKS: FormattedTrack[] = [
     gradient: 'from-green-600 to-green-700',
     icon: '🌿',
     shortIcon: 'ENV',
+    image: '/tracks/track-3-environment.png',
+    imageAlt: 'Track 3: Environment, Climate & Sustainable Engineering Infographic',
     subtopics: [
       'Environmental engineering', 'Waste management', 'Waste-to-energy',
       'Climate change mitigation', 'Carbon capture and utilization', 'GIS',
@@ -101,6 +173,8 @@ export const DEFAULT_TRACKS: FormattedTrack[] = [
     gradient: 'from-purple-600 to-purple-700',
     icon: '📊',
     shortIcon: 'MGT',
+    image: '/tracks/track-4-management.png',
+    imageAlt: 'Track 4: Sustainable Management, Business & Finance Infographic',
     subtopics: [
       'Sustainable business', 'Strategic management', 'Green banking', 'Green finance',
       'Green marketing', 'ESG', 'Entrepreneurship', 'AI for sustainability',
@@ -267,6 +341,8 @@ export async function getTracks(): Promise<FormattedTrack[]> {
         ? track.title.split(' ').slice(0, 3).join(' ') + '…'
         : track.title;
 
+      const imgInfo = resolveTrackImage(rawNumber, track.title, track.image);
+
       return {
         id: `track-${rawNumber}`,
         number: formattedNumber,
@@ -282,6 +358,8 @@ export async function getTracks(): Promise<FormattedTrack[]> {
         gradient: palette.gradient,
         icon: palette.icon,
         shortIcon: generateShortIcon(track.title, idx),
+        image: imgInfo.image,
+        imageAlt: imgInfo.imageAlt,
       };
     });
   } catch (err) {

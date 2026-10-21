@@ -29,24 +29,49 @@ export default async function ThemeCards({ tracks: propTracks }: ThemeCardsProps
           {tracks.map((theme) => (
             <div
               key={theme.id}
-              className="bg-white rounded-2xl border border-slate-200 p-7 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group"
+              className="bg-white rounded-3xl border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group overflow-hidden"
             >
-              <div>
-                {/* Track header */}
-                <div className="flex items-center justify-between gap-3 mb-4">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-slate-100 text-[#0a192f] border border-slate-200">
+              {/* Infographic Preview Banner */}
+              {theme.image && (
+                <Link
+                  href={`/tracks#${theme.id}`}
+                  className="relative block w-full aspect-[16/9] overflow-hidden bg-slate-50 border-b border-slate-200/90 group/thumb cursor-pointer"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={theme.image}
+                    alt={theme.imageAlt || theme.title}
+                    className="w-full h-full object-contain transition-transform duration-700 ease-out group-hover/thumb:scale-105"
+                    loading="lazy"
+                  />
+                  
+                  {/* Track Badge */}
+                  <div className="absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-black uppercase tracking-wider text-white bg-slate-900/80 backdrop-blur-md border border-white/20 shadow-xs">
                     <span className="w-2 h-2 rounded-full" style={{ backgroundColor: theme.color }} />
                     Track {theme.rawNumber}
-                  </span>
-                  <span className="text-xs font-medium text-slate-400">
-                    Peer-Reviewed Scope
-                  </span>
-                </div>
+                  </div>
+                </Link>
+              )}
 
-                {/* Title */}
-                <h3 className="text-lg md:text-xl font-bold text-[#0a192f] mb-3 group-hover:text-teal-700 transition-colors leading-snug">
-                  {theme.title}
-                </h3>
+              <div className="p-6 sm:p-7 flex flex-col justify-between flex-1">
+                <div>
+                  {/* Track header (if no image or secondary header) */}
+                  {!theme.image && (
+                    <div className="flex items-center justify-between gap-3 mb-4">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-slate-100 text-[#0a192f] border border-slate-200">
+                        <span className="w-2 h-2 rounded-full" style={{ backgroundColor: theme.color }} />
+                        Track {theme.rawNumber}
+                      </span>
+                      <span className="text-xs font-medium text-slate-400">
+                        Peer-Reviewed Scope
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Title */}
+                  <h3 className="text-lg md:text-xl font-bold text-[#0a192f] mb-3 group-hover:text-teal-700 transition-colors leading-snug">
+                    {theme.title}
+                  </h3>
 
                 {/* Description */}
                 <p className="text-slate-600 text-xs md:text-sm leading-relaxed mb-5 line-clamp-3">
@@ -97,8 +122,9 @@ export default async function ThemeCards({ tracks: propTracks }: ThemeCardsProps
                 </Link>
               </div>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
+      </div>
 
         {/* Bottom CTA */}
         <div className="mt-12 text-center">
