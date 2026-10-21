@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 
@@ -52,7 +52,7 @@ const countriesList = [
   'China', 'Brazil', 'South Africa', 'Sweden', 'Netherlands', 'Other'
 ];
 
-export default function RegistrationPage() {
+function RegistrationContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectUrl = searchParams.get('redirect');
@@ -918,5 +918,13 @@ export default function RegistrationPage() {
         </section>
       </div>
     </div>
+  );
+}
+
+export default function RegistrationPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-slate-50 flex items-center justify-center text-slate-500 text-sm">Loading registration portal...</div>}>
+      <RegistrationContent />
+    </Suspense>
   );
 }

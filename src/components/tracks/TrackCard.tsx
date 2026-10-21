@@ -20,6 +20,7 @@ export default function TrackCard({ track, index }: TrackCardProps) {
   return (
     <motion.article
       id={track.id}
+      suppressHydrationWarning
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.15 }}
@@ -40,6 +41,7 @@ export default function TrackCard({ track, index }: TrackCardProps) {
           
           {/* ===================== IMAGE & TITLE & ACTION COLUMN ===================== */}
           <motion.div
+            suppressHydrationWarning
             initial={{ opacity: 0, x: isImageOnRight ? 40 : -40 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, amount: 0.2 }}
@@ -132,6 +134,7 @@ export default function TrackCard({ track, index }: TrackCardProps) {
 
           {/* ===================== SCOPE & SUBTOPICS COLUMN ===================== */}
           <motion.div
+            suppressHydrationWarning
             initial={{ opacity: 0, x: isImageOnRight ? -40 : 40 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, amount: 0.2 }}
