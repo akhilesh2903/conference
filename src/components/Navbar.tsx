@@ -291,17 +291,16 @@ export default function Navbar() {
     <header className="fixed top-0 left-0 right-0 z-50 transform-gpu" style={{ transform: 'translateZ(0)' }}>
       {/* ─── Top Info Bar ─── */}
       <div
-        className={`overflow-hidden transition-[max-height,opacity] duration-200 ease-out border-b border-slate-200/80 ${
+        className={`overflow-hidden transition-[max-height,opacity] duration-200 ease-out border-b border-slate-200/80 bg-[#f8fafc]/90 backdrop-blur-md ${
           scrolled ? 'max-h-0 opacity-0' : 'max-h-[46px] opacity-100'
         }`}
-        style={{ background: '#f8fafc' }}
       >
         <div className="w-full max-w-7xl 2xl:max-w-[1536px] mx-auto px-4 lg:px-6 flex items-center justify-between py-2">
           {/* Left: date + location */}
           <div className="flex items-center gap-4 text-[11px] md:text-[12px]">
             <span className="flex items-center gap-1.5 text-teal-700 font-semibold">
               <svg className="w-3.5 h-3.5 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-              16–17 September 2027
+              16–18 September 2027
             </span>
             <span className="hidden sm:flex items-center gap-1.5 text-slate-600 border-l border-slate-300 pl-4">
               <svg className="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
@@ -331,7 +330,7 @@ export default function Navbar() {
 
       {/* ─── Main Navigation Bar ─── */}
       <nav
-        className={`relative transition-all duration-300 w-full overflow-visible bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-[inset_0_-20px_36px_-10px_rgba(0,0,0,0.13),0_4px_14px_rgba(0,0,0,0.06)]`}
+        className={`relative transition-all duration-300 w-full overflow-visible bg-white/85 backdrop-blur-md border-b border-slate-200/80 shadow-[inset_0_-20px_36px_-10px_rgba(0,0,0,0.13),0_4px_14px_rgba(0,0,0,0.06)]`}
         aria-label="Main navigation"
       >
         {/* Upward Shadow & Glow Gradient moving upwards throughout the navbar */}
