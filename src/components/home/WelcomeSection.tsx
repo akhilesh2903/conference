@@ -52,26 +52,55 @@ export default async function WelcomeSection({ tracks: propTracks }: WelcomeSect
   ];
 
   return (
-    <section className="py-20 bg-white border-b border-slate-200" aria-label="About IC-MEMS 2027">
+    <section
+      className="py-20 bg-white border-b border-slate-200 relative overflow-hidden"
+      aria-label="About ICMEMS 2027"
+    >
+      {/* ── Background Conference Watermark Icons ── */}
+      {/* 1. Global Academic Network Watermark (Top Right) */}
+      <div className="absolute -top-10 -right-10 w-80 h-80 pointer-events-none opacity-[0.045] text-teal-800 animate-float-a" aria-hidden>
+        <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="2.2" className="w-full h-full">
+          <circle cx="50" cy="50" r="42" />
+          <ellipse cx="50" cy="50" rx="18" ry="42" />
+          <line x1="8" y1="50" x2="92" y2="50" />
+          <line x1="14" y1="30" x2="86" y2="30" />
+          <line x1="14" y1="70" x2="86" y2="70" />
+        </svg>
+      </div>
+
+      {/* 2. Academic Graduation & Research Watermark (Bottom Left) */}
+      <div className="absolute -bottom-10 -left-10 w-72 h-72 pointer-events-none opacity-[0.035] text-teal-900 animate-float-b" aria-hidden>
+        <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="2.2" className="w-full h-full">
+          <polygon points="50,18 90,38 50,52 10,38" />
+          <path d="M26,45 L26,70 Q50,82 74,70 L74,45" />
+          <line x1="90" y1="38" x2="90" y2="65" />
+          <circle cx="90" cy="67" r="3" fill="currentColor" />
+        </svg>
+      </div>
       <div className="container-custom">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
           
           {/* Left Column: Academic Introduction */}
-          <div className="lg:col-span-6 space-y-6">
+          <div className="lg:col-span-6 space-y-6 relative">
+            {/* Subtle animated aura behind the welcome text */}
+            <div
+              className="absolute top-10 left-0 w-80 h-32 rounded-full blur-3xl opacity-20 bg-teal-400 pointer-events-none -z-10 animate-aura-pulse"
+              aria-hidden="true"
+            />
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-teal-50 text-teal-800 text-xs font-semibold tracking-wider uppercase">
               About The Conference
             </div>
             
             <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0a192f] tracking-tight leading-tight">
-              Welcome to <span className="text-teal-700">IC-MEMS 2027</span>
+              Welcome to <span className="text-teal-700">ICMEMS 2027</span>
             </h2>
 
             <div className="space-y-4 text-slate-600 leading-relaxed text-sm sm:text-base">
               <p>
-                The <strong className="text-[#0a192f]">International Conference on Materials, Energy and Management for Sustainability (IC-MEMS 2027)</strong>, hosted by <strong className="text-[#0a192f]">Alva&rsquo;s Institute of Engineering and Technology (AIET)</strong> in Moodbidri, Karnataka, will convene global researchers on <span className="text-teal-700 font-semibold">16 to 18 September 2027</span> in hybrid mode.
+                The <strong className="text-[#0a192f]">International Conference on Materials, Energy and Management for Sustainability (ICMEMS 2027)</strong>, hosted by <strong className="text-[#0a192f]">Alva&rsquo;s Institute of Engineering and Technology (AIET)</strong> in Moodbidri, Karnataka, will convene global researchers on <span className="text-teal-700 font-semibold">16 to 18 September 2027</span> in hybrid mode.
               </p>
               <p>
-                Addressing climate change, resource scarcity, and clean energy transition demands an interdisciplinary synthesis. IC-MEMS 2027 brings together researchers, engineers, scientists, and management scholars to translate frontier materials discoveries and renewable energy technologies into actionable, sustainable enterprise models.
+                Addressing climate change, resource scarcity, and clean energy transition demands an interdisciplinary synthesis. ICMEMS 2027 brings together researchers, engineers, scientists, and management scholars to translate frontier materials discoveries and renewable energy technologies into actionable, sustainable enterprise models.
               </p>
               <p>
                 The conference features keynote addresses by leading international scholars, parallel peer-reviewed technical paper presentations, poster symposiums, and industrial panel dialogues.

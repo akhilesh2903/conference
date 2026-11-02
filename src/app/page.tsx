@@ -7,13 +7,13 @@ import PublicationHighlight from '@/components/home/PublicationHighlight';
 import RegistrationPreview from '@/components/home/RegistrationPreview';
 import SpeakersPreview from '@/components/home/SpeakersPreview';
 import VenueContactPreview from '@/components/home/VenueContactPreview';
-import DownloadsPreview from '@/components/home/DownloadsPreview';
+import SectionDivider from '@/components/home/SectionDivider';
 import { getTracks } from '@/lib/tracks';
 
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'IC-MEMS 2027 | Home',
+  title: 'ICMEMS 2027 | Home',
 };
 
 export default async function HomePage() {
@@ -22,14 +22,34 @@ export default async function HomePage() {
   return (
     <>
       <HeroSection />
-      <ImportantDatesStrip />
+
+      <SectionDivider icon="globe" />
+
       <WelcomeSection tracks={tracks} />
+
+      <SectionDivider icon="cap" />
+
+      <ImportantDatesStrip />
+
+      <SectionDivider icon="paper" />
+
       <ThemeCards tracks={tracks} />
+
+      <SectionDivider icon="flask" />
+
       <PublicationHighlight />
+
+      <SectionDivider icon="chart" />
+
       <RegistrationPreview />
+
+      <SectionDivider icon="crystal" />
+
       <SpeakersPreview />
+
+      <SectionDivider icon="leaf" />
+
       <VenueContactPreview />
-      <DownloadsPreview />
     </>
   );
 }

@@ -2,7 +2,31 @@ import Link from 'next/link';
 
 export default function VenueContactPreview() {
   return (
-    <section className="py-20 bg-slate-50/70 border-b border-slate-200" aria-label="Venue and Secretariat Contact">
+    <section
+      className="py-20 bg-slate-100 border-b border-slate-200 relative overflow-hidden"
+      aria-label="Venue and Secretariat Contact"
+    >
+      {/* ── Background Conference Watermark Icons ── */}
+      {/* 1. Map Pin & Compass Watermark (Top Right) */}
+      <div className="absolute -top-10 -right-10 w-80 h-80 pointer-events-none opacity-[0.045] text-teal-800 animate-float-a" aria-hidden>
+        <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-full h-full">
+          <path d="M50 15 C33 15 20 28 20 45 C20 65 50 90 50 90 C50 90 80 65 80 45 C80 28 67 15 50 15 Z" />
+          <circle cx="50" cy="42" r="10" />
+        </svg>
+      </div>
+
+      {/* 2. Campus Landmark Watermark (Bottom Left) */}
+      <div className="absolute -bottom-10 -left-10 w-80 h-80 pointer-events-none opacity-[0.035] text-teal-900 animate-float-b" aria-hidden>
+        <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-full h-full">
+          <polygon points="50,20 15,40 85,40" />
+          <line x1="24" y1="40" x2="24" y2="75" strokeWidth="3" />
+          <line x1="41" y1="40" x2="41" y2="75" strokeWidth="3" />
+          <line x1="59" y1="40" x2="59" y2="75" strokeWidth="3" />
+          <line x1="76" y1="40" x2="76" y2="75" strokeWidth="3" />
+          <line x1="12" y1="75" x2="88" y2="75" strokeWidth="4" />
+          <line x1="8" y1="82" x2="92" y2="82" strokeWidth="4" />
+        </svg>
+      </div>
       <div className="container-custom">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch max-w-6xl mx-auto">
           

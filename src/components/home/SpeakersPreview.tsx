@@ -23,7 +23,32 @@ const speakerTracks = [
 
 export default function SpeakersPreview() {
   return (
-    <section className="py-20 bg-white border-b border-slate-200" aria-label="Keynote Speakers">
+    <section
+      className="py-20 bg-white border-b border-slate-200 relative overflow-hidden"
+      aria-label="Keynote Speakers"
+    >
+      {/* ── Background Conference Watermark Icons ── */}
+      {/* 1. Keynote Podium & Mic Watermark (Top Right) */}
+      <div className="absolute -top-10 -right-10 w-80 h-80 pointer-events-none opacity-[0.045] text-teal-800 animate-float-a" aria-hidden>
+        <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-full h-full">
+          <ellipse cx="50" cy="30" rx="12" ry="16" />
+          <line x1="38" y1="30" x2="62" y2="30" />
+          <line x1="39" y1="36" x2="61" y2="36" />
+          <path d="M34 32 C34 46 66 46 66 32" />
+          <line x1="50" y1="46" x2="50" y2="70" strokeWidth="3" />
+          <line x1="32" y1="70" x2="68" y2="70" strokeWidth="3" strokeLinecap="round" />
+        </svg>
+      </div>
+
+      {/* 2. Plenary Soundwave Watermark (Bottom Left) */}
+      <div className="absolute -bottom-10 -left-10 w-72 h-72 pointer-events-none opacity-[0.035] text-teal-900 animate-float-b" aria-hidden>
+        <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-full h-full">
+          <circle cx="50" cy="50" r="14" />
+          <path d="M50 24 A26 26 0 0 1 76 50" strokeLinecap="round" />
+          <path d="M50 14 A36 36 0 0 1 86 50" strokeLinecap="round" />
+          <path d="M50 4 A46 46 0 0 1 96 50" strokeLinecap="round" />
+        </svg>
+      </div>
       <div className="container-custom">
         {/* Header */}
         <div className="max-w-3xl mx-auto text-center mb-14">
@@ -34,7 +59,7 @@ export default function SpeakersPreview() {
             Distinguished Keynote Speakers
           </h2>
           <p className="text-slate-600 text-sm md:text-base mt-2 leading-relaxed">
-            IC-MEMS 2027 brings together eminent researchers, distinguished academicians, and global industry practitioners to deliver plenary addresses.
+            ICMEMS 2027 brings together eminent researchers, distinguished academicians, and global industry practitioners to deliver plenary addresses.
           </p>
         </div>
 

@@ -49,7 +49,33 @@ const inclusions = [
 
 export default function RegistrationPreview() {
   return (
-    <section className="py-20 bg-slate-50/70 border-b border-slate-200" aria-label="Registration Fee Schedule">
+    <section
+      className="py-20 bg-teal-50/60 border-b border-teal-100 relative overflow-hidden"
+      aria-label="Registration Fee Schedule"
+    >
+      {/* ── Background Conference Watermark Icons ── */}
+      {/* 1. Conference Delegate Badge Watermark (Top Right) */}
+      <div className="absolute -top-8 -right-8 w-72 h-72 pointer-events-none opacity-[0.045] text-teal-800 animate-float-a" aria-hidden>
+        <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-full h-full">
+          <rect x="25" y="20" width="50" height="70" rx="6" />
+          <path d="M42 20 V12 H58 V20" />
+          <circle cx="50" cy="40" r="10" />
+          <path d="M35 62 C35 54 41 52 50 52 C59 52 65 54 65 62" />
+          <line x1="35" y1="72" x2="65" y2="72" />
+          <line x1="40" y1="78" x2="60" y2="78" />
+        </svg>
+      </div>
+
+      {/* 2. Conference Passport / Ticket Watermark (Bottom Left) */}
+      <div className="absolute -bottom-10 -left-10 w-80 h-80 pointer-events-none opacity-[0.035] text-teal-900 animate-float-b" aria-hidden>
+        <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-full h-full">
+          <rect x="15" y="30" width="70" height="42" rx="4" />
+          <line x1="62" y1="30" x2="62" y2="72" strokeDasharray="3 3" />
+          <circle cx="35" cy="51" r="8" />
+          <line x1="48" y1="46" x2="56" y2="46" />
+          <line x1="48" y1="54" x2="56" y2="54" />
+        </svg>
+      </div>
       <div className="container-custom">
         {/* Header */}
         <div className="max-w-3xl mx-auto text-center mb-12">

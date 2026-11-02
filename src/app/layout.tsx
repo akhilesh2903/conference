@@ -35,7 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body className="bg-[#030a17] text-gray-900 antialiased">
+      <body className="bg-slate-50 text-gray-900 antialiased">
         <Navbar />
         <main className="pt-[96px] xl:pt-[108px] min-h-screen bg-slate-50">
           {children}

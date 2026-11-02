@@ -72,8 +72,32 @@ export default function HeroSection() {
 
       {/* Main Hero Content - Left aligned with generous breathing room */}
       <div className="container-custom relative z-10 w-full pt-2 sm:pt-3 md:pt-4 pb-4 sm:pb-6 flex flex-col justify-start">
-        <div className="w-full max-w-2xl lg:max-w-3xl flex flex-col items-start text-left mr-auto">
+        <div className="w-full max-w-2xl lg:max-w-3xl flex flex-col items-start text-left mr-auto relative">
           
+          {/* ── Animated Atmosphere Behind The Text ── */}
+          <div className="absolute -top-12 -left-12 -right-10 -bottom-10 pointer-events-none -z-10 overflow-hidden" aria-hidden="true">
+            {/* 1. Fluid gradient aura pulsing behind the headline text */}
+            <div
+              className="absolute top-1/4 left-10 w-[420px] h-[220px] rounded-full blur-3xl opacity-35 animate-aura-pulse"
+              style={{
+                background: 'radial-gradient(ellipse at center, rgba(13, 148, 136, 0.45) 0%, rgba(56, 189, 248, 0.3) 50%, transparent 75%)',
+              }}
+            />
+            {/* 2. Secondary soft gold-teal glow behind the title */}
+            <div
+              className="absolute top-1/3 left-48 w-[320px] h-[180px] rounded-full blur-2xl opacity-25 animate-float-b"
+              style={{
+                background: 'radial-gradient(ellipse at center, rgba(20, 184, 166, 0.4) 0%, rgba(240, 165, 0, 0.2) 60%, transparent 80%)',
+              }}
+            />
+            {/* 3. Floating micro-constellation nodes drifting behind the text */}
+            <div className="absolute top-12 left-16 w-3 h-3 rounded-full bg-teal-400/40 blur-[1px] animate-float-a" />
+            <div className="absolute top-28 left-64 w-2 h-2 rounded-full bg-sky-400/50 blur-[0.5px] animate-float-b" />
+            <div className="absolute top-44 left-32 w-2.5 h-2.5 rounded-full bg-emerald-400/40 blur-[1px] animate-float-a" />
+            <div className="absolute top-20 right-20 w-3.5 h-3.5 rounded-full bg-teal-300/35 blur-[1px] animate-float-b" />
+            <div className="absolute bottom-12 left-80 w-2 h-2 rounded-full bg-cyan-400/45 blur-[0.5px] animate-float-a" />
+          </div>
+
           {/* Institution Header & Organizing Partnership Badge floating directly on sky background without white box */}
           <div className="flex flex-nowrap items-center gap-2.5 sm:gap-4 lg:gap-5 mb-2.5 sm:mb-3.5 max-w-full overflow-x-auto sm:overflow-visible">
             {/* Alva's Logo & Institution Name */}
@@ -116,7 +140,7 @@ export default function HeroSection() {
 
           {/* Conference Acronym - Serif Font Style from reference photo (Playfair Display) */}
           <div className="font-serif text-4xl sm:text-6xl md:text-7xl lg:text-[76px] font-bold tracking-tight mb-1 sm:mb-1.5 leading-none flex items-baseline gap-3 sm:gap-4 flex-wrap">
-            <span className="text-[#0c2340] drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)]">IC MEMS</span>
+            <span className="text-[#0c2340] drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)]">ICMEMS</span>
             <span className="text-[#00a87e] font-bold drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)]">2027</span>
           </div>
 
