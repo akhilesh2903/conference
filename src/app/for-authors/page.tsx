@@ -1,8 +1,8 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import Link from 'next/link';
 import AbstractSubmissionForm from '@/components/authors/AbstractSubmissionForm';
 
-export const metadata: Metadata = { title: 'For Authors | IC-MEMS 2027' };
+export const metadata: Metadata = { title: 'For Authors | ICMEMS 2027' };
 
 export default function ForAuthorsPage() {
   return (
@@ -31,7 +31,7 @@ export default function ForAuthorsPage() {
               For Authors
             </h1>
             <p className="text-slate-200 text-sm sm:text-base leading-relaxed">
-              Everything you need to submit your abstract and full paper to IC-MEMS 2027.
+              Everything you need to submit your abstract and full paper to ICMEMS 2027.
             </p>
           </div>
 

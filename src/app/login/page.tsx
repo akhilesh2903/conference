@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
@@ -202,7 +202,7 @@ function LoginContent() {
           <Link href="/" className="flex items-center gap-2.5">
             <img src="/alvas-org-logo.png" alt="AIET Logo" className="h-8 w-auto object-contain" />
             <div className="border-l border-slate-700 pl-2.5">
-              <span className="font-bold text-sm tracking-tight text-white">IC-MEMS <span className="text-teal-400">2027</span></span>
+              <span className="font-bold text-sm tracking-tight text-white">ICMEMS <span className="text-teal-400">2027</span></span>
               <span className="text-[10px] text-slate-400 block leading-none">AIET, Moodbidri</span>
             </div>
           </Link>
@@ -237,7 +237,7 @@ function LoginContent() {
               Author & Delegate Console
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-              IC-MEMS 2027 Portal
+              ICMEMS 2027 Portal
             </h1>
             <p className="text-slate-300 text-xs sm:text-sm mt-1">
               International Conference on Materials, Energy and Management for Sustainability
@@ -516,7 +516,7 @@ function LoginContent() {
                         className="mt-1 w-4 h-4 text-teal-600 rounded border-slate-300 focus:ring-teal-500"
                       />
                       <span className="text-xs text-slate-600 leading-relaxed">
-                        I agree to the <Link href="/terms" className="text-teal-700 font-semibold underline">IC-MEMS 2027 Participation Terms</Link> and the <Link href="/publication#review" className="text-teal-700 font-semibold underline">Conference Ethics Statement</Link>.
+                        I agree to the <Link href="/terms" className="text-teal-700 font-semibold underline">ICMEMS 2027 Participation Terms</Link> and the <Link href="/publication#review" className="text-teal-700 font-semibold underline">Conference Ethics Statement</Link>.
                       </span>
                     </label>
                   </div>

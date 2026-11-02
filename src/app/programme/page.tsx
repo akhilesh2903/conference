@@ -1,7 +1,7 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import Link from 'next/link';
 
-export const metadata: Metadata = { title: 'Programme | IC-MEMS 2027' };
+export const metadata: Metadata = { title: 'Programme | ICMEMS 2027' };
 
 const days = [
   { day: 1, date: '16 September 2027', label: 'Day 1' },
@@ -27,7 +27,7 @@ export default function ProgrammePage() {
             <div className="flex items-center gap-3 mb-4 justify-center">
               <span className="badge bg-amber-500/20 text-amber-300 border border-amber-400/20">To Be Announced</span>
             </div>
-            <h1 className="font-display text-4xl md:text-5xl font-bold text-white mb-4">IC-MEMS 2027 Programme</h1>
+            <h1 className="font-display text-4xl md:text-5xl font-bold text-white mb-4">ICMEMS 2027 Programme</h1>
           <p className="text-white/70 max-w-xl mx-auto">The detailed conference programme will be published after confirmation. All times are in IST (UTC+5:30).</p>
         </div>
       </div>

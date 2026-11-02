@@ -77,7 +77,7 @@ export default async function ThemeCards({ tracks: propTracks }: ThemeCardsProps
         </div>
 
         {/* Tracks Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 max-w-6xl 2xl:max-w-7xl mx-auto">
           {tracks.map((theme) => (
             <div
               key={theme.id}

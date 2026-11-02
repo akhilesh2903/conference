@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -352,7 +352,7 @@ export default function Navbar() {
               />
               <div className="border-l border-slate-300 pl-2.5">
                 <div className="flex items-center gap-1 font-bold text-[13px] sm:text-[14px] xl:text-[15px] tracking-tight leading-none group-hover:text-teal-700 transition-colors">
-                  <span className="text-slate-900">IC-MEMS</span>
+                  <span className="text-slate-900">ICMEMS</span>
                   <span className="text-teal-600 font-extrabold">2027</span>
                 </div>
                 <div className="hidden min-[420px]:block text-slate-500 text-[10px] xl:text-[11px] font-medium tracking-wide mt-1 leading-none">

@@ -1,7 +1,7 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import Link from 'next/link';
 
-export const metadata: Metadata = { title: 'About | IC-MEMS 2027' };
+export const metadata: Metadata = { title: 'About | ICMEMS 2027' };
 
 const participants = [
   'Research Scholars (PG and PhD)', 'Faculty Members',
@@ -25,7 +25,7 @@ export default function AboutPage() {
           </nav>
 
           <div className="text-center">
-            <span className="badge bg-white/10 text-teal-300 mb-4">IC-MEMS 2027</span>
+            <span className="badge bg-white/10 text-teal-300 mb-4">ICMEMS 2027</span>
             <h1 className="font-display text-4xl md:text-5xl font-bold text-white mb-4">About the Conference</h1>
             <p className="text-white/70 max-w-2xl text-lg mx-auto">
               An interdisciplinary international platform for sustainable innovation
@@ -42,7 +42,7 @@ export default function AboutPage() {
               <h2 className="text-2xl font-bold mb-6" style={{ color: '#0a192f' }}>About the Conference</h2>
               <div className="space-y-5 text-gray-600 leading-relaxed">
                 <p>
-                  International Conference on Materials, Energy and Management for Sustainability (IC-MEMS 2027) provides an interdisciplinary international platform for researchers, academicians, scientists, engineers, research scholars, industry professionals, and other stakeholders to exchange recent developments, innovations and emerging ideas addressing global sustainability challenges.
+                  International Conference on Materials, Energy and Management for Sustainability (ICMEMS 2027) provides an interdisciplinary international platform for researchers, academicians, scientists, engineers, research scholars, industry professionals, and other stakeholders to exchange recent developments, innovations and emerging ideas addressing global sustainability challenges.
                 </p>
                 <p>
                   The conference brings together diverse perspectives across Advanced and Sustainable Materials, including energy materials, fuel-cell and battery materials, hydrogen-storage materials, nanomaterials, functional thin films and sustainable composites; Energy Systems, Hydrogen and Sustainable Energy Technologies, Environment, Climate and Sustainable Engineering; and Sustainable Management, Business and Finance, focusing on ESG, sustainable business, green finance, innovation and technology management, responsible investment, entrepreneurship and sustainable supply chains.
@@ -85,7 +85,7 @@ export default function AboutPage() {
                 AIET promotes interdisciplinary research in areas including sustainable materials, renewable energy, green hydrogen, hydrogen storage, fuel cells, sensors and advanced technologies. Management perspectives complement these areas through a focus on entrepreneurship, innovation, responsible business practices and the organisational capabilities needed to translate research into practical applications. Industry–academia interaction provides opportunities to exchange knowledge, understand emerging needs and explore collaborative solutions.
               </p>
               <p>
-                Through IC-MEMS 2027, AIET seeks to bring together researchers and practitioners from diverse disciplines to examine sustainability through both technological and managerial perspectives. The conference reflects the institute&rsquo;s commitment to knowledge sharing and collaboration, providing a forum to discuss how advances in materials, energy, environmental engineering, business and finance can contribute to sustainable development.
+                Through ICMEMS 2027, AIET seeks to bring together researchers and practitioners from diverse disciplines to examine sustainability through both technological and managerial perspectives. The conference reflects the institute&rsquo;s commitment to knowledge sharing and collaboration, providing a forum to discuss how advances in materials, energy, environmental engineering, business and finance can contribute to sustainable development.
               </p>
             </div>
             <div className="rounded-2xl bg-white border border-gray-200 overflow-hidden shadow-sm">
@@ -97,7 +97,7 @@ export default function AboutPage() {
               </div>
               <div className="p-5">
                 <p className="text-sm text-gray-600 leading-relaxed">
-                  The sole organiser of IC-MEMS 2027, providing state-of-the-art research facilities and an international academic environment at Shobhavana Campus.
+                  The sole organiser of ICMEMS 2027, providing state-of-the-art research facilities and an international academic environment at Shobhavana Campus.
                 </p>
               </div>
             </div>

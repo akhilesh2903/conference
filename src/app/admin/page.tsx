@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
 
@@ -565,7 +565,7 @@ export default function AdminPage() {
             <span className="w-2 h-2 rounded-full bg-teal-400" />
             Authorized Access Only
           </div>
-          <h2 className="text-3xl font-extrabold text-white tracking-tight">IC-MEMS 2027 Admin</h2>
+          <h2 className="text-3xl font-extrabold text-white tracking-tight">ICMEMS 2027 Admin</h2>
           <p className="text-slate-400 text-xs mt-1">Management Portal for Candidates, Abstracts & Tracks</p>
         </div>
 
@@ -633,7 +633,7 @@ export default function AdminPage() {
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 leading-tight">
-                  IC-MEMS 2027 Admin Console
+                  ICMEMS 2027 Admin Console
                 </h1>
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-teal-100 text-teal-800">
                   Live DB

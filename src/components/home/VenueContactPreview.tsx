@@ -28,7 +28,7 @@ export default function VenueContactPreview() {
         </svg>
       </div>
       <div className="container-custom">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch max-w-6xl 2xl:max-w-7xl mx-auto">
           
           {/* Left 6 Columns: Venue & Travel Accessibility */}
           <div className="lg:col-span-6 bg-white border border-slate-200 rounded-3xl p-8 md:p-10 shadow-sm flex flex-col justify-between">

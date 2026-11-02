@@ -1,7 +1,7 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import Link from 'next/link';
 
-export const metadata: Metadata = { title: 'Venue & Contact | IC-MEMS 2027' };
+export const metadata: Metadata = { title: 'Venue & Contact | ICMEMS 2027' };
 
 export default function VenueContactPage() {
   return (
@@ -20,7 +20,7 @@ export default function VenueContactPage() {
           <div className="text-center">
             <span className="badge bg-white/10 text-teal-300 mb-3 sm:mb-4">Where &amp; How</span>
             <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 sm:mb-4">Venue &amp; Contact</h1>
-            <p className="text-white/70 text-sm sm:text-base max-w-xl mx-auto px-2 sm:px-0">IC-MEMS 2027 is hosted at the Shobhavana Campus, AIET, Moodbidri.</p>
+            <p className="text-white/70 text-sm sm:text-base max-w-xl mx-auto px-2 sm:px-0">ICMEMS 2027 is hosted at the Shobhavana Campus, AIET, Moodbidri.</p>
           </div>
         </div>
       </div>

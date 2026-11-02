@@ -1,4 +1,4 @@
-import Link from 'next/link';
+﻿import Link from 'next/link';
 
 const footerLinks = [
   { label: 'Home', href: '/' },
@@ -96,7 +96,7 @@ export default function Footer() {
       <div className="border-t border-white/10">
         <div className="w-full max-w-[1536px] mx-auto px-4 sm:px-6 xl:px-12 py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-white/40 text-xs text-center sm:text-left">
-            &copy; {currentYear} IC-MEMS 2027 | Alva&rsquo;s Institute of Engineering and Technology. All rights reserved.
+            &copy; {currentYear} ICMEMS 2027 | Alva&rsquo;s Institute of Engineering and Technology. All rights reserved.
           </p>
           <div className="flex items-center gap-4">
             <Link href="/privacy-policy" className="text-white/40 hover:text-white/60 text-xs transition-colors">Privacy Policy</Link>

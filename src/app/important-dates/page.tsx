@@ -1,7 +1,7 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import Link from 'next/link';
 
-export const metadata: Metadata = { title: 'Important Dates | IC-MEMS 2027' };
+export const metadata: Metadata = { title: 'Important Dates | ICMEMS 2027' };
 
 interface DateItem {
   id: number;
@@ -54,7 +54,7 @@ export default function ImportantDatesPage() {
               Important Dates
             </h1>
             <p className="text-slate-200 text-sm sm:text-base leading-relaxed">
-              All deadlines are for IC-MEMS 2027. Dates are in Indian Standard Time (IST).
+              All deadlines are for ICMEMS 2027. Dates are in Indian Standard Time (IST).
             </p>
           </div>
         </div>

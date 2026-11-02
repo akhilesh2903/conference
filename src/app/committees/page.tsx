@@ -1,10 +1,10 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import Link from 'next/link';
 import CommitteesHashScroll from '@/components/CommitteesHashScroll';
 
 export const metadata: Metadata = { 
-  title: 'Committees & Advisory Board | IC-MEMS 2027',
-  description: 'Leadership, International & National Advisory Boards, Organising Committee, and Editorial Board for IC-MEMS 2027 at AIET Moodbidri.'
+  title: 'Committees & Advisory Board | ICMEMS 2027',
+  description: 'Leadership, International & National Advisory Boards, Organising Committee, and Editorial Board for ICMEMS 2027 at AIET Moodbidri.'
 };
 
 // ─── 1. LEADERSHIP WITH PHOTO PLACEHOLDERS ───
@@ -215,7 +215,7 @@ export default function CommitteesPage() {
               Committees &amp; Organizing Board
             </h1>
             <p className="text-slate-300 text-xs sm:text-sm md:text-base max-w-2xl mx-auto leading-relaxed px-1 sm:px-0">
-              The governing leadership, international advisors, national scientific experts, and editorial board steering IC-MEMS 2027 at Alva’s Institute of Engineering and Technology.
+              The governing leadership, international advisors, national scientific experts, and editorial board steering ICMEMS 2027 at Alva’s Institute of Engineering and Technology.
             </p>
           </div>
 

@@ -91,7 +91,7 @@ export default function RegistrationPreview() {
         </div>
 
         {/* Fee Schedule Table / Cards */}
-        <div className="max-w-5xl mx-auto bg-white rounded-xl sm:rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-8 sm:mb-10">
+        <div className="max-w-5xl 2xl:max-w-6xl mx-auto bg-white rounded-xl sm:rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-8 sm:mb-10">
           <div className="bg-slate-100/80 px-4 sm:px-6 py-3.5 sm:py-4 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2">
             <span className="text-xs font-bold uppercase tracking-wider text-[#0a192f]">
               Delegate Category &amp; Registration Fee

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
@@ -175,7 +175,7 @@ function RegistrationContent() {
       return;
     }
     if (!formData.agreedToTerms) {
-      setErrorMsg('Please review and agree to the IC-MEMS 2027 Conference Ethics Statement & Terms.');
+      setErrorMsg('Please review and agree to the ICMEMS 2027 Conference Ethics Statement & Terms.');
       return;
     }
 
@@ -296,7 +296,7 @@ function RegistrationContent() {
           <div className="text-center max-w-3xl mx-auto">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 border border-teal-400/20 text-teal-300 text-xs font-semibold mb-4">
               <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse" />
-              IC-MEMS 2027 Delegate & Author Portal
+              ICMEMS 2027 Delegate & Author Portal
             </div>
             <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-4">
               Conference Registration
@@ -368,7 +368,7 @@ function RegistrationContent() {
                     Active Registration Session
                   </h3>
                   <p className="text-sm text-teal-800 max-w-lg mx-auto mb-6">
-                    Welcome, <span className="font-semibold">{registeredUser?.fullName || 'Author'}</span>! You are officially registered with IC-MEMS 2027. Your credentials allow you to submit abstracts and view paper status.
+                    Welcome, <span className="font-semibold">{registeredUser?.fullName || 'Author'}</span>! You are officially registered with ICMEMS 2027. Your credentials allow you to submit abstracts and view paper status.
                   </p>
 
                   <div className="max-w-md mx-auto bg-white/90 rounded-xl p-4 border border-teal-100 text-left text-xs sm:text-sm space-y-2 mb-6">
@@ -787,7 +787,7 @@ function RegistrationContent() {
                           className="mt-1 w-4 h-4 text-teal-600 rounded border-slate-300 focus:ring-teal-500"
                         />
                         <span className="text-xs text-slate-600 leading-relaxed">
-                          I agree to the <Link href="/terms" className="text-teal-700 font-semibold underline">IC-MEMS 2027 Conference Terms</Link>, <Link href="/publication#review" className="text-teal-700 font-semibold underline">Publication Ethics Statement</Link>, and consent to the processing of registration details for conference organization and review.
+                          I agree to the <Link href="/terms" className="text-teal-700 font-semibold underline">ICMEMS 2027 Conference Terms</Link>, <Link href="/publication#review" className="text-teal-700 font-semibold underline">Publication Ethics Statement</Link>, and consent to the processing of registration details for conference organization and review.
                         </span>
                       </label>
                     </div>

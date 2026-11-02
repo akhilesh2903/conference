@@ -1,7 +1,7 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import Link from 'next/link';
 
-export const metadata: Metadata = { title: 'Speakers | IC-MEMS 2027' };
+export const metadata: Metadata = { title: 'Speakers | ICMEMS 2027' };
 
 export default function SpeakersPage() {
   return (

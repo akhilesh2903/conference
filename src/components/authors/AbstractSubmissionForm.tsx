@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -215,7 +215,7 @@ export default function AbstractSubmissionForm() {
           <div className="flex items-center gap-2 mb-1">
             <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-teal-50 text-teal-800 border border-teal-200">
               <span className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse" />
-              IC-MEMS 2027 Submission Portal
+              ICMEMS 2027 Submission Portal
             </span>
             <span className="text-xs text-slate-400">•</span>
             <span className="text-xs text-slate-500 font-medium">AIET Moodbidri</span>
@@ -321,7 +321,7 @@ export default function AbstractSubmissionForm() {
               Abstract Submission Received!
             </h4>
             <p className="text-sm text-slate-600 mt-1 max-w-lg mx-auto">
-              Your research abstract has been successfully submitted to the IC-MEMS 2027 technical committee.
+              Your research abstract has been successfully submitted to the ICMEMS 2027 technical committee.
             </p>
           </div>
 

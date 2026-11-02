@@ -1,10 +1,10 @@
-import Link from 'next/link';
+﻿import Link from 'next/link';
 export default function TermsPage() {
   return (
     <div className="container-custom max-w-3xl py-16">
       <h1 className="text-3xl font-bold mb-6" style={{ color: '#0a192f' }}>Terms of Use</h1>
       <p className="text-gray-600 text-sm leading-relaxed mb-4">
-        By using this website and submitting your abstract or registration through the IC-MEMS 2027 portal, you agree to provide accurate and complete information.
+        By using this website and submitting your abstract or registration through the ICMEMS 2027 portal, you agree to provide accurate and complete information.
       </p>
       <p className="text-gray-600 text-sm leading-relaxed mb-4">
         Registration fees are non-refundable. Papers submitted must be original and unpublished.

@@ -1,10 +1,10 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import Link from 'next/link';
 import ReviewProcessTimeline from '@/components/publication/ReviewProcessTimeline';
 
 export const metadata: Metadata = {
-  title: 'Publication | IC-MEMS 2027',
-  description: 'Publication details and peer review process for IC-MEMS 2027.',
+  title: 'Publication | ICMEMS 2027',
+  description: 'Publication details and peer review process for ICMEMS 2027.',
 };
 
 export default function PublicationPage() {

@@ -1,11 +1,11 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getTracks } from '@/lib/tracks';
 import TrackCard from '@/components/tracks/TrackCard';
 
 export const dynamic = 'force-dynamic';
 
-export const metadata: Metadata = { title: 'Tracks | IC-MEMS 2027' };
+export const metadata: Metadata = { title: 'Tracks | ICMEMS 2027' };
 
 export default async function TracksPage() {
   const tracks = await getTracks();
@@ -28,7 +28,7 @@ export default async function TracksPage() {
             <span className="badge bg-white/10 text-teal-300 mb-4">Interdisciplinary Research</span>
             <h1 className="font-display text-4xl md:text-5xl font-bold text-white mb-4">Conference Tracks</h1>
             <p className="text-white/70 max-w-2xl mx-auto">
-              IC-MEMS 2027 covers {tracks.length} major interdisciplinary {tracks.length === 1 ? 'track' : 'tracks'}. Explore the sub-topics, examine high-resolution research infographics, and find where your work aligns.
+              ICMEMS 2027 covers {tracks.length} major interdisciplinary {tracks.length === 1 ? 'track' : 'tracks'}. Explore the sub-topics, examine high-resolution research infographics, and find where your work aligns.
             </p>
           </div>
           {/* Jump links */}
