@@ -57,7 +57,7 @@ export default function ForAuthorsPage() {
           <h2 className="text-2xl font-bold text-[#0a192f] mb-4">Call for Papers</h2>
           <div className="rounded-xl bg-teal-50/60 border border-teal-100 p-6">
             <p className="text-slate-700 text-sm sm:text-base leading-relaxed mb-5">
-              Original and unpublished theoretical, experimental, computational, technological or applied research contributions are invited across all four conference themes:
+              Original and unpublished conceptual, empirical, theoretical, experimental, computational, technological, or applied research contributions are invited across the following conference themes.
             </p>
             <div className="space-y-3">
               {[

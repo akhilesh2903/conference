@@ -113,9 +113,7 @@ const conveners: LeaderMember[] = [
 
 // ─── 2. INTERNATIONAL ADVISORY COMMITTEE ───
 const international = [
-  { name: 'Prof. Philip J. Grandinetti', affiliation: 'The Ohio State University', country: 'United States', flag: 'USA' },
   { name: 'Prof. Jens Dittmer', affiliation: 'CNRS / Université du Mans', country: 'France', flag: 'FRA' },
-  { name: 'Prof. Nicolas Mercier', affiliation: 'Université d’Angers', country: 'France', flag: 'FRA' },
   { name: 'Prof. Ivan Hetman', affiliation: 'Linköping University', country: 'Sweden', flag: 'SWE' },
   { name: 'Prof. Özlem Uguz Neli', affiliation: 'Stockholm University', country: 'Sweden', flag: 'SWE' },
   { name: 'Dr. Dhasiyan Arun Kumar', affiliation: 'ASM Japan', country: 'Japan', flag: 'JPN' },
