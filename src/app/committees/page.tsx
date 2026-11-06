@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import CommitteesHashScroll from '@/components/CommitteesHashScroll';
 
-export const metadata: Metadata = { 
+export const metadata: Metadata = {
   title: 'Committees & Advisory Board | ICMEMS 2027',
   description: 'Leadership, International & National Advisory Boards, Organising Committee, and Editorial Board for ICMEMS 2027 at AIET Moodbidri.'
 };
@@ -113,7 +113,7 @@ const conveners: LeaderMember[] = [
 
 // ─── 2. INTERNATIONAL ADVISORY COMMITTEE ───
 const international = [
-  { name: 'Prof. Jens Dittmer', affiliation: 'CNRS / Université du Mans', country: 'France', flag: 'FRA' },
+  { name: 'Prof. Jens Dittmer', affiliation: 'Le mans University', country: 'France', flag: 'FRA' },
   { name: 'Prof. Ivan Hetman', affiliation: 'Linköping University', country: 'Sweden', flag: 'SWE' },
   { name: 'Prof. Özlem Uguz Neli', affiliation: 'Stockholm University', country: 'Sweden', flag: 'SWE' },
   { name: 'Dr. Dhasiyan Arun Kumar', affiliation: 'ASM Japan', country: 'Japan', flag: 'JPN' },
@@ -121,7 +121,7 @@ const international = [
   { name: 'Dr. Shigeru Tanaka', affiliation: 'Kumamoto University', country: 'Japan', flag: 'JPN' },
   { name: 'Dr. I Wayan Budi Sentana', affiliation: 'Politeknik Negeri Bali (PNB)', country: 'Indonesia', flag: 'IDN' },
   { name: 'Dr. Ryuichi Tomoshige', affiliation: 'SoJo University', country: 'Japan', flag: 'JPN' },
-  { name: 'Dr. Gurdip Kaur Saminder Singh', affiliation: 'Universiti Teknologi MARA', country: 'Malaysia', flag: 'MYS' },
+  { name: 'Dr. Gurdip Kaur Saminder Singh', affiliation: 'Open University Malaysia (OUM)', country: 'Malaysia', flag: 'MYS' },
   { name: 'Dr. V. Kumaradeepan', affiliation: 'University of Jaffna', country: 'Sri Lanka', flag: 'LKA' },
   { name: 'Prof. Gilbert Mbaka Nduru', affiliation: 'Deputy Vice Chancellor, Chuka University', country: 'Kenya', flag: 'KEN' },
 ];
@@ -264,7 +264,7 @@ export default function CommitteesPage() {
           {/* 1A. Chief Patron (Prominent Hero Feature Card) */}
           <div className="bg-white rounded-2xl sm:rounded-3xl border border-amber-200/80 p-5 sm:p-8 md:p-10 shadow-sm hover:shadow-md transition-all mb-6 sm:mb-8">
             <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 sm:gap-8 text-center sm:text-left">
-              
+
               {/* Photo Area */}
               <div className="relative group shrink-0">
                 <div className="w-32 h-40 sm:w-40 sm:h-48 md:w-48 md:h-56 rounded-xl sm:rounded-2xl overflow-hidden border-2 border-amber-400/80 shadow-md bg-slate-100">
@@ -385,9 +385,8 @@ export default function CommitteesPage() {
               {conveners.map((convener, idx) => (
                 <div
                   key={convener.name}
-                  className={`bg-white rounded-xl sm:rounded-2xl border border-slate-200 p-3 sm:p-4 lg:p-5 shadow-sm hover:shadow-md transition-all flex flex-col items-center text-center group ${
-                    idx === conveners.length - 1 ? 'col-span-2 min-[520px]:col-span-1' : ''
-                  }`}
+                  className={`bg-white rounded-xl sm:rounded-2xl border border-slate-200 p-3 sm:p-4 lg:p-5 shadow-sm hover:shadow-md transition-all flex flex-col items-center text-center group ${idx === conveners.length - 1 ? 'col-span-2 min-[520px]:col-span-1' : ''
+                    }`}
                 >
                   {/* Photo Area */}
                   <div className="relative mb-2.5 sm:mb-3">
@@ -572,7 +571,7 @@ export default function CommitteesPage() {
 
           {/* Symmetrical 2-Column Split: 7 on Left, 7 on Right */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
-            
+
             {/* ─── LEFT COLUMN (Members 01 to 07) ─── */}
             <div className="bg-white rounded-xl sm:rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col justify-between">
               <div className="bg-slate-100/80 px-4 sm:px-6 py-3 sm:py-3.5 border-b border-slate-200 flex items-center justify-between">
