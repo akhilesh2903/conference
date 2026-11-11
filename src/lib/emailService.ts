@@ -1,4 +1,4 @@
-import nodemailer from 'nodemailer';
+import type { Transporter } from 'nodemailer';
 
 export interface EmailRecipientInfo {
   participantName: string;
@@ -25,7 +25,7 @@ const CONFERENCE_EMAIL = process.env.CONFERENCE_EMAIL || 'icmems2027@gmail.com';
  * Creates and returns the Nodemailer transporter instance.
  * Throws a descriptive error if SMTP credentials are missing.
  */
-export function getMailTransporter() {
+export async function getMailTransporter(): Promise<Transporter> {
   const host = process.env.SMTP_HOST || 'smtp.gmail.com';
   const port = parseInt(process.env.SMTP_PORT || '465', 10);
   const secure = process.env.SMTP_SECURE === 'true' || port === 465;
@@ -38,7 +38,15 @@ export function getMailTransporter() {
     );
   }
 
-  return nodemailer.createTransport({
+  const nodemailerModule = await import('nodemailer');
+  const createTransport =
+    nodemailerModule.createTransport ||
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (nodemailerModule as any).default?.createTransport ||
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (nodemailerModule as any).default;
+
+  return createTransport({
     host,
     port,
     secure,
@@ -160,7 +168,7 @@ async function dispatchEmail(params: {
 
   // 3. Fallback: SMTP via Nodemailer
   try {
-    const transporter = getMailTransporter();
+    const transporter = await getMailTransporter();
     const fromAddress = getSenderAddress();
 
     const mailOptions = {
