@@ -1,62 +1,57 @@
 import { NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/mongodb';
 import AbstractSubmission from '@/models/AbstractSubmission';
+import { checkAdminAuth } from '@/lib/adminAuth';
 
 export async function GET(request: Request) {
+  const auth = checkAdminAuth(request);
+  if (!auth.authorized) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
-    const authHeader = request.headers.get('authorization');
-    if (!authHeader || !authHeader.startsWith('Basic ')) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    const base64Credentials = authHeader.split(' ')[1];
-    const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
-    const [username, password] = credentials.split(':');
-
-    if (username !== process.env.ADMIN_USERNAME || password !== process.env.ADMIN_PASSWORD) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-    }
-
     await connectToDatabase();
-
     const abstracts = await AbstractSubmission.find({}).sort({ createdAt: -1 });
     return NextResponse.json({ success: true, abstracts });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Fetch admin abstracts error:', error);
-    return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
+    const errorMsg = error instanceof Error ? error.message : 'Internal Server Error';
+    return NextResponse.json({ error: errorMsg }, { status: 500 });
   }
 }
 
 export async function PATCH(request: Request) {
+  const auth = checkAdminAuth(request);
+  if (!auth.authorized) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
-    const authHeader = request.headers.get('authorization');
-    if (!authHeader || !authHeader.startsWith('Basic ')) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    const base64Credentials = authHeader.split(' ')[1];
-    const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
-    const [username, password] = credentials.split(':');
-
-    if (username !== process.env.ADMIN_USERNAME || password !== process.env.ADMIN_PASSWORD) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-    }
-
     await connectToDatabase();
-    const { id, status } = await request.json();
+    const { id, status, rejectionReason } = await request.json();
 
     if (!id || !status) {
       return NextResponse.json({ error: 'Missing abstract ID or status' }, { status: 400 });
     }
 
-    const updated = await AbstractSubmission.findByIdAndUpdate(id, { status }, { new: true });
+    const updateFields: Record<string, unknown> = { status };
+    if (typeof rejectionReason === 'string') {
+      updateFields.rejectionReason = rejectionReason;
+    }
+    if (status === 'Approved' || status === 'Rejected') {
+      updateFields.decisionDate = new Date();
+      updateFields.decisionBy = auth.username || 'admin';
+    }
+
+    const updated = await AbstractSubmission.findByIdAndUpdate(id, updateFields, { new: true });
     if (!updated) {
       return NextResponse.json({ error: 'Abstract submission not found' }, { status: 404 });
     }
 
     return NextResponse.json({ success: true, abstract: updated });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Update abstract status error:', error);
-    return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
+    const errorMsg = error instanceof Error ? error.message : 'Internal Server Error';
+    return NextResponse.json({ error: errorMsg }, { status: 500 });
   }
 }

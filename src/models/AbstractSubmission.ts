@@ -1,4 +1,4 @@
-import mongoose, { Schema, model, models } from 'mongoose';
+import { Schema, model, models } from 'mongoose';
 
 export interface ICoAuthor {
   name: string;
@@ -7,7 +7,19 @@ export interface ICoAuthor {
   country: string;
 }
 
+export interface IEmailLogEntry {
+  recipientEmail: string;
+  recipientName?: string;
+  notificationType: 'approval' | 'rejection';
+  status: 'sent' | 'failed';
+  sentAt: Date;
+  error?: string;
+  messageId?: string;
+  sentBy?: string;
+}
+
 export interface IAbstractSubmission {
+  _id?: string;
   submissionId: string;
   track: string;
   secondaryTrack?: string;
@@ -24,7 +36,21 @@ export interface IAbstractSubmission {
   coAuthors: ICoAuthor[];
   domainConflicts?: string;
   wordCount: number;
-  status: 'Submitted' | 'Under Review' | 'Accepted' | 'Revision' | 'Rejected';
+  status: 'Pending' | 'Approved' | 'Rejected' | 'Submitted' | 'Under Review' | 'Accepted' | 'Revision';
+  rejectionReason?: string;
+  decisionDate?: Date;
+  decisionBy?: string;
+  emailNotification?: {
+    status: 'not_sent' | 'sent' | 'failed';
+    notificationType?: 'approval' | 'rejection';
+    sentAt?: Date;
+    recipientEmail?: string;
+    error?: string;
+    attempts?: number;
+    lastAttemptAt?: Date;
+    messageId?: string;
+  };
+  emailLogs?: IEmailLogEntry[];
   createdAt: Date;
 }
 
@@ -33,6 +59,17 @@ const CoAuthorSchema = new Schema<ICoAuthor>({
   email: { type: String, required: true },
   organization: { type: String, required: true },
   country: { type: String, required: true },
+}, { _id: false });
+
+const EmailLogEntrySchema = new Schema<IEmailLogEntry>({
+  recipientEmail: { type: String, required: true },
+  recipientName: { type: String, default: '' },
+  notificationType: { type: String, enum: ['approval', 'rejection'], required: true },
+  status: { type: String, enum: ['sent', 'failed'], required: true },
+  sentAt: { type: Date, default: Date.now },
+  error: { type: String, default: '' },
+  messageId: { type: String, default: '' },
+  sentBy: { type: String, default: 'admin' },
 }, { _id: false });
 
 const AbstractSubmissionSchema = new Schema<IAbstractSubmission>({
@@ -52,7 +89,25 @@ const AbstractSubmissionSchema = new Schema<IAbstractSubmission>({
   coAuthors: [CoAuthorSchema],
   domainConflicts: { type: String, default: '' },
   wordCount: { type: Number, required: true },
-  status: { type: String, default: 'Submitted' },
+  status: { 
+    type: String, 
+    enum: ['Pending', 'Approved', 'Rejected', 'Submitted', 'Under Review', 'Accepted', 'Revision'],
+    default: 'Pending' 
+  },
+  rejectionReason: { type: String, default: '' },
+  decisionDate: { type: Date },
+  decisionBy: { type: String, default: '' },
+  emailNotification: {
+    status: { type: String, enum: ['not_sent', 'sent', 'failed'], default: 'not_sent' },
+    notificationType: { type: String, enum: ['approval', 'rejection'] },
+    sentAt: { type: Date },
+    recipientEmail: { type: String },
+    error: { type: String, default: '' },
+    attempts: { type: Number, default: 0 },
+    lastAttemptAt: { type: Date },
+    messageId: { type: String, default: '' },
+  },
+  emailLogs: [EmailLogEntrySchema],
   createdAt: { type: Date, default: Date.now },
 });
 

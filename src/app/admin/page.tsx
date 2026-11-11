@@ -1,6 +1,6 @@
-﻿'use client';
+'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 
 type Status = 'pending' | 'accepted' | 'rejected';
 type CandidateSubTab = 'all' | 'pending' | 'accepted' | 'rejected';
@@ -53,7 +53,30 @@ type AbstractItem = {
   }[];
   domainConflicts?: string;
   wordCount: number;
-  status: 'Submitted' | 'Under Review' | 'Accepted' | 'Revision' | 'Rejected';
+  status: 'Pending' | 'Approved' | 'Rejected' | 'Submitted' | 'Under Review' | 'Accepted' | 'Revision';
+  rejectionReason?: string;
+  decisionDate?: string;
+  decisionBy?: string;
+  emailNotification?: {
+    status: 'not_sent' | 'sent' | 'failed';
+    notificationType?: 'approval' | 'rejection';
+    sentAt?: string;
+    recipientEmail?: string;
+    error?: string;
+    attempts?: number;
+    lastAttemptAt?: string;
+    messageId?: string;
+  };
+  emailLogs?: {
+    recipientEmail: string;
+    recipientName?: string;
+    notificationType: 'approval' | 'rejection';
+    status: 'sent' | 'failed';
+    sentAt: string;
+    error?: string;
+    messageId?: string;
+    sentBy?: string;
+  }[];
   createdAt: string;
 };
 
@@ -69,8 +92,18 @@ type Tab = 'candidates' | 'abstracts' | 'tracks';
 
 export default function AdminPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return sessionStorage.getItem('icmems_admin_u') || '';
+    }
+    return '';
+  });
+  const [password, setPassword] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return sessionStorage.getItem('icmems_admin_p') || '';
+    }
+    return '';
+  });
   const [errorMsg, setErrorMsg] = useState('');
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<Tab>('candidates');
@@ -91,8 +124,18 @@ export default function AdminPage() {
   const [abstractSubTab, setAbstractSubTab] = useState<string>('all');
   const [abstractSearch, setAbstractSearch] = useState('');
   const [abstractTrackFilter, setAbstractTrackFilter] = useState('');
-  const [abstractStatusLoading, setAbstractStatusLoading] = useState<string | null>(null);
   const [selectedAbstract, setSelectedAbstract] = useState<AbstractItem | null>(null);
+
+  // Abstract Action Dialogs
+  const [abstractToApprove, setAbstractToApprove] = useState<AbstractItem | null>(null);
+  const [abstractToReject, setAbstractToReject] = useState<AbstractItem | null>(null);
+  const [rejectionReasonInput, setRejectionReasonInput] = useState('');
+  const [actionProcessing, setActionProcessing] = useState(false);
+  const [retryingEmailId, setRetryingEmailId] = useState<string | null>(null);
+  const [actionMessage, setActionMessage] = useState<{
+    type: 'success' | 'warning' | 'error';
+    text: string;
+  } | null>(null);
 
   // Tracks state
   const [tracks, setTracks] = useState<Track[]>([]);
@@ -136,14 +179,14 @@ export default function AdminPage() {
         headers: { Authorization: header },
       });
       const contentType = res.headers.get('content-type');
-      let data: any;
+      let data: { error?: string; candidates?: Candidate[] };
       if (contentType && contentType.includes('application/json')) {
         data = await res.json();
       } else {
         data = { error: 'Server error: Check if MONGODB_URI is properly configured.' };
       }
       if (!res.ok) throw new Error(data.error || 'Failed to authenticate');
-      const list: Candidate[] = (data.candidates || []).map((c: any) => ({
+      const list: Candidate[] = (data.candidates || []).map((c: Candidate) => ({
         ...c,
         status: c.status || 'pending',
       }));
@@ -155,8 +198,8 @@ export default function AdminPage() {
         sessionStorage.setItem('icmems_admin_u', user);
         sessionStorage.setItem('icmems_admin_p', pass);
       }
-    } catch (err: any) {
-      setErrorMsg(err.message);
+    } catch (err: unknown) {
+      setErrorMsg(err instanceof Error ? err.message : 'Failed to authenticate');
       setIsLoggedIn(false);
     } finally {
       setFetchLoading(false);
@@ -166,15 +209,21 @@ export default function AdminPage() {
 
   // Restore session on mount
   useEffect(() => {
+    let ignore = false;
     if (typeof window !== 'undefined') {
       const u = sessionStorage.getItem('icmems_admin_u');
       const p = sessionStorage.getItem('icmems_admin_p');
       if (u && p) {
-        setUsername(u);
-        setPassword(p);
-        fetchCandidates(u, p);
+        queueMicrotask(() => {
+          if (!ignore) {
+            fetchCandidates(u, p);
+          }
+        });
       }
     }
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   const fetchAbstracts = async () => {
@@ -185,7 +234,7 @@ export default function AdminPage() {
       });
       const data = await res.json();
       if (res.ok) setAbstracts(data.abstracts || []);
-    } catch (e) {
+    } catch {
       // silent
     } finally {
       setAbstractsLoading(false);
@@ -224,38 +273,147 @@ export default function AdminPage() {
         prev.map((c) => (c._id === id ? { ...c, status: newStatus } : c))
       );
       if (selectedCandidate && selectedCandidate._id === id) {
-        setSelectedCandidate((prev) => prev ? { ...prev, status: newStatus } : null);
+        setSelectedCandidate((prev) => (prev ? { ...prev, status: newStatus } : null));
       }
-    } catch (err: any) {
-      alert(err.message || 'Error updating status');
+    } catch (err: unknown) {
+      alert(err instanceof Error ? err.message : 'Error updating status');
     } finally {
       setStatusLoading(null);
     }
   };
 
-  /* ─── Status update: Abstract ───────────────────────────────────────── */
-  const updateAbstractStatus = async (id: string, newStatus: string) => {
-    setAbstractStatusLoading(id);
+  /* ─── Abstract Workflow: Approve ───────────────────────────────────── */
+  const handleApproveAbstract = async (abstract: AbstractItem) => {
+    setActionProcessing(true);
+    setActionMessage(null);
     try {
-      const res = await fetch(`/api/admin/abstracts/${id}`, {
-        method: 'PATCH',
+      const res = await fetch(`/api/admin/abstracts/${abstract._id}/approve`, {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: authHeader(),
         },
-        body: JSON.stringify({ status: newStatus }),
       });
-      if (!res.ok) throw new Error('Failed to update abstract status');
-      setAbstracts((prev) =>
-        prev.map((a) => (a._id === id ? { ...a, status: newStatus as any } : a))
-      );
-      if (selectedAbstract && selectedAbstract._id === id) {
-        setSelectedAbstract((prev) => prev ? { ...prev, status: newStatus as any } : null);
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to approve abstract');
       }
-    } catch (err: any) {
-      alert(err.message || 'Error updating abstract status');
+
+      const updatedAbstract = data.abstract;
+      setAbstracts((prev) =>
+        prev.map((a) => (a._id === abstract._id ? updatedAbstract : a))
+      );
+      if (selectedAbstract && selectedAbstract._id === abstract._id) {
+        setSelectedAbstract(updatedAbstract);
+      }
+
+      if (data.emailSent) {
+        setActionMessage({
+          type: 'success',
+          text: `Abstract "${abstract.submissionId}" successfully Approved! Acceptance notification email sent to ${abstract.primaryAuthor?.email || abstract.userEmail}.`,
+        });
+      } else {
+        setActionMessage({
+          type: 'warning',
+          text: `Abstract "${abstract.submissionId}" status updated to Approved, but email delivery failed: ${data.emailError}. You can retry sending the email notification anytime.`,
+        });
+      }
+      setAbstractToApprove(null);
+    } catch (err: unknown) {
+      setActionMessage({
+        type: 'error',
+        text: err instanceof Error ? err.message : 'Error processing approval',
+      });
     } finally {
-      setAbstractStatusLoading(null);
+      setActionProcessing(false);
+    }
+  };
+
+  /* ─── Abstract Workflow: Reject ────────────────────────────────────── */
+  const handleRejectAbstract = async (abstract: AbstractItem, reason: string) => {
+    setActionProcessing(true);
+    setActionMessage(null);
+    try {
+      const res = await fetch(`/api/admin/abstracts/${abstract._id}/reject`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: authHeader(),
+        },
+        body: JSON.stringify({ reason }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to reject abstract');
+      }
+
+      const updatedAbstract = data.abstract;
+      setAbstracts((prev) =>
+        prev.map((a) => (a._id === abstract._id ? updatedAbstract : a))
+      );
+      if (selectedAbstract && selectedAbstract._id === abstract._id) {
+        setSelectedAbstract(updatedAbstract);
+      }
+
+      if (data.emailSent) {
+        setActionMessage({
+          type: 'success',
+          text: `Abstract "${abstract.submissionId}" Rejected and decision email sent to ${abstract.primaryAuthor?.email || abstract.userEmail}.`,
+        });
+      } else {
+        setActionMessage({
+          type: 'warning',
+          text: `Abstract "${abstract.submissionId}" status updated to Rejected, but email delivery failed: ${data.emailError}. You can retry sending the email notification anytime.`,
+        });
+      }
+      setAbstractToReject(null);
+      setRejectionReasonInput('');
+    } catch (err: unknown) {
+      setActionMessage({
+        type: 'error',
+        text: err instanceof Error ? err.message : 'Error processing rejection',
+      });
+    } finally {
+      setActionProcessing(false);
+    }
+  };
+
+  /* ─── Abstract Workflow: Retry Email ───────────────────────────────── */
+  const handleResendEmail = async (abstract: AbstractItem) => {
+    setRetryingEmailId(abstract._id);
+    setActionMessage(null);
+    try {
+      const res = await fetch(`/api/admin/abstracts/${abstract._id}/resend-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: authHeader(),
+        },
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to send notification email');
+      }
+
+      const updatedAbstract = data.abstract;
+      setAbstracts((prev) =>
+        prev.map((a) => (a._id === abstract._id ? updatedAbstract : a))
+      );
+      if (selectedAbstract && selectedAbstract._id === abstract._id) {
+        setSelectedAbstract(updatedAbstract);
+      }
+
+      setActionMessage({
+        type: 'success',
+        text: `Notification email successfully re-sent to ${abstract.primaryAuthor?.email || abstract.userEmail}!`,
+      });
+    } catch (err: unknown) {
+      setActionMessage({
+        type: 'error',
+        text: err instanceof Error ? err.message : 'Error re-sending email',
+      });
+    } finally {
+      setRetryingEmailId(null);
     }
   };
 
@@ -267,10 +425,17 @@ export default function AdminPage() {
   };
 
   useEffect(() => {
+    let ignore = false;
     if (isLoggedIn) {
-      if (activeTab === 'abstracts') fetchAbstracts();
-      if (activeTab === 'tracks') fetchTracks();
+      queueMicrotask(() => {
+        if (ignore) return;
+        if (activeTab === 'abstracts') fetchAbstracts();
+        if (activeTab === 'tracks') fetchTracks();
+      });
     }
+    return () => {
+      ignore = true;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoggedIn, activeTab]);
 
@@ -289,7 +454,6 @@ export default function AdminPage() {
       const img = new Image();
       img.onload = () => {
         try {
-          // Resize image to max 1200x800 to keep MongoDB document lightweight (~80-120KB)
           const MAX_WIDTH = 1200;
           const MAX_HEIGHT = 800;
           let width = img.width;
@@ -357,15 +521,15 @@ export default function AdminPage() {
       setTrackForm({ trackNumber: '', title: '', text: '', image: '' });
       setTrackImageName('');
       fetchTracks();
-    } catch (err: any) {
-      setTrackFormError(err.message);
+    } catch (err: unknown) {
+      setTrackFormError(err instanceof Error ? err.message : 'Failed to add track');
     } finally {
       setTrackFormLoading(false);
     }
   };
 
   const handleDeleteTrack = async (track: Track) => {
-    const trackId = track._id || (track as any).id;
+    const trackId = track._id;
     if (!trackId) {
       alert('Unable to delete track: Missing track ID');
       return;
@@ -382,10 +546,10 @@ export default function AdminPage() {
       if (!res.ok) {
         throw new Error(data.error || 'Failed to delete track from server');
       }
-      setTracks((prev) => prev.filter((t) => (t._id || (t as any).id) !== trackId && t.trackNumber !== track.trackNumber));
+      setTracks((prev) => prev.filter((t) => t._id !== trackId && t.trackNumber !== track.trackNumber));
       fetchTracks();
-    } catch (err: any) {
-      alert(err.message || 'Error deleting track');
+    } catch (err: unknown) {
+      alert(err instanceof Error ? err.message : 'Error deleting track');
     } finally {
       setTrackDeleteLoading(null);
     }
@@ -403,8 +567,8 @@ export default function AdminPage() {
       if (!res.ok) throw new Error(data.error || 'Failed to seed tracks');
       alert('Official conference tracks loaded successfully!');
       fetchTracks();
-    } catch (err: any) {
-      alert(err.message || 'Error seeding tracks');
+    } catch (err: unknown) {
+      alert(err instanceof Error ? err.message : 'Error seeding tracks');
     } finally {
       setSeedLoading(false);
     }
@@ -467,7 +631,7 @@ export default function AdminPage() {
       'Submission ID', 'Title', 'Primary Track', 'Secondary Track',
       'Author Name', 'Author Email', 'Institution', 'Country',
       'Co-Authors Count', 'Word Count', 'Keywords', 'Domain Conflicts',
-      'Status', 'Date Submitted'
+      'Status', 'Email Status', 'Decision Date', 'Date Submitted'
     ];
     const rows = filteredAbstracts.map((a) => [
       `"${a.submissionId || ''}"`,
@@ -483,6 +647,8 @@ export default function AdminPage() {
       `"${(a.keywords || '').replace(/"/g, '""')}"`,
       `"${(a.domainConflicts || '').replace(/"/g, '""')}"`,
       `"${a.status || ''}"`,
+      `"${a.emailNotification?.status || 'not_sent'}"`,
+      `"${a.decisionDate ? new Date(a.decisionDate).toLocaleDateString() : ''}"`,
       `"${new Date(a.createdAt).toLocaleDateString()}"`,
     ]);
 
@@ -497,64 +663,60 @@ export default function AdminPage() {
   };
 
   /* ─── Filtering logic: Candidates ───────────────────────────────────── */
-  const pendingCount = useMemo(() => candidates.filter((c) => c.status === 'pending').length, [candidates]);
-  const acceptedCount = useMemo(() => candidates.filter((c) => c.status === 'accepted').length, [candidates]);
-  const rejectedCount = useMemo(() => candidates.filter((c) => c.status === 'rejected').length, [candidates]);
+  const pendingCount = candidates.filter((c) => c.status === 'pending').length;
+  const acceptedCount = candidates.filter((c) => c.status === 'accepted').length;
+  const rejectedCount = candidates.filter((c) => c.status === 'rejected').length;
 
-  const categoryOptions = useMemo(
-    () => Array.from(new Set(candidates.map((c) => c.category).filter(Boolean))).sort(),
-    [candidates]
-  );
-  const typeOptions = useMemo(
-    () => Array.from(new Set(candidates.map((c) => c.presentationType).filter(Boolean))).sort(),
-    [candidates]
-  );
+  const categoryOptions = Array.from(new Set(candidates.map((c) => c.category).filter(Boolean))).sort();
+  const typeOptions = Array.from(new Set(candidates.map((c) => c.presentationType).filter(Boolean))).sort();
 
-  const filteredCandidates = useMemo(() => {
-    return candidates.filter((c) => {
-      // Sub-tab status filter
-      if (candidateSubTab !== 'all' && c.status !== candidateSubTab) return false;
-      // Category filter
-      if (filterCategory && c.category !== filterCategory) return false;
-      // Presentation type filter
-      if (filterType && c.presentationType !== filterType) return false;
-      // Text search
-      if (candidateSearch.trim()) {
-        const q = candidateSearch.toLowerCase();
-        const matchName = c.fullName?.toLowerCase().includes(q);
-        const matchEmail = c.email?.toLowerCase().includes(q);
-        const matchInst = c.institution?.toLowerCase().includes(q);
-        const matchPhone = c.phoneNumber?.toLowerCase().includes(q);
-        const matchCountry = c.country?.toLowerCase().includes(q);
-        if (!matchName && !matchEmail && !matchInst && !matchPhone && !matchCountry) return false;
-      }
-      return true;
-    });
-  }, [candidates, candidateSubTab, filterCategory, filterType, candidateSearch]);
+  const filteredCandidates = candidates.filter((c) => {
+    if (candidateSubTab !== 'all' && c.status !== candidateSubTab) return false;
+    if (filterCategory && c.category !== filterCategory) return false;
+    if (filterType && c.presentationType !== filterType) return false;
+    if (candidateSearch.trim()) {
+      const q = candidateSearch.toLowerCase();
+      const matchName = c.fullName?.toLowerCase().includes(q);
+      const matchEmail = c.email?.toLowerCase().includes(q);
+      const matchInst = c.institution?.toLowerCase().includes(q);
+      const matchPhone = c.phoneNumber?.toLowerCase().includes(q);
+      const matchCountry = c.country?.toLowerCase().includes(q);
+      if (!matchName && !matchEmail && !matchInst && !matchPhone && !matchCountry) return false;
+    }
+    return true;
+  });
 
   /* ─── Filtering logic: Abstracts ────────────────────────────────────── */
-  const abstractTrackOptions = useMemo(
-    () => Array.from(new Set(abstracts.map((a) => a.track).filter(Boolean))).sort(),
-    [abstracts]
-  );
+  const abstractPendingCount = abstracts.filter((a) => a.status === 'Pending' || a.status === 'Submitted' || a.status === 'Under Review').length;
+  const abstractApprovedCount = abstracts.filter((a) => a.status === 'Approved' || a.status === 'Accepted').length;
+  const abstractRejectedCount = abstracts.filter((a) => a.status === 'Rejected').length;
 
-  const filteredAbstracts = useMemo(() => {
-    return abstracts.filter((a) => {
-      if (abstractSubTab !== 'all' && a.status !== abstractSubTab) return false;
-      if (abstractTrackFilter && a.track !== abstractTrackFilter) return false;
-      if (abstractSearch.trim()) {
-        const q = abstractSearch.toLowerCase();
-        const matchTitle = a.title?.toLowerCase().includes(q);
-        const matchId = a.submissionId?.toLowerCase().includes(q);
-        const matchAuthor = a.primaryAuthor?.name?.toLowerCase().includes(q);
-        const matchEmail = a.primaryAuthor?.email?.toLowerCase().includes(q);
-        const matchOrg = a.primaryAuthor?.organization?.toLowerCase().includes(q);
-        const matchKeywords = a.keywords?.toLowerCase().includes(q);
-        if (!matchTitle && !matchId && !matchAuthor && !matchEmail && !matchOrg && !matchKeywords) return false;
-      }
-      return true;
-    });
-  }, [abstracts, abstractSubTab, abstractTrackFilter, abstractSearch]);
+  const abstractTrackOptions = Array.from(new Set(abstracts.map((a) => a.track).filter(Boolean))).sort();
+
+  const filteredAbstracts = abstracts.filter((a) => {
+    if (abstractSubTab === 'Pending') {
+      if (a.status !== 'Pending' && a.status !== 'Submitted' && a.status !== 'Under Review') return false;
+    } else if (abstractSubTab === 'Approved') {
+      if (a.status !== 'Approved' && a.status !== 'Accepted') return false;
+    } else if (abstractSubTab === 'Rejected') {
+      if (a.status !== 'Rejected') return false;
+    } else if (abstractSubTab !== 'all') {
+      if (a.status !== abstractSubTab) return false;
+    }
+
+    if (abstractTrackFilter && a.track !== abstractTrackFilter) return false;
+    if (abstractSearch.trim()) {
+      const q = abstractSearch.toLowerCase();
+      const matchTitle = a.title?.toLowerCase().includes(q);
+      const matchId = a.submissionId?.toLowerCase().includes(q);
+      const matchAuthor = a.primaryAuthor?.name?.toLowerCase().includes(q);
+      const matchEmail = a.primaryAuthor?.email?.toLowerCase().includes(q) || a.userEmail?.toLowerCase().includes(q);
+      const matchOrg = a.primaryAuthor?.organization?.toLowerCase().includes(q);
+      const matchKeywords = a.keywords?.toLowerCase().includes(q);
+      if (!matchTitle && !matchId && !matchAuthor && !matchEmail && !matchOrg && !matchKeywords) return false;
+    }
+    return true;
+  });
 
   /* ─── Login screen ─────────────────────────────────────────────────── */
   if (!isLoggedIn) {
@@ -624,6 +786,33 @@ export default function AdminPage() {
     <div className="min-h-screen bg-slate-100 py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto space-y-6">
 
+        {/* ─── Action Alert / Notification Toast ─── */}
+        {actionMessage && (
+          <div
+            className={`p-4 rounded-2xl border text-xs sm:text-sm flex items-start justify-between gap-3 shadow-sm transition-all ${
+              actionMessage.type === 'success'
+                ? 'bg-emerald-50 border-emerald-300 text-emerald-900'
+                : actionMessage.type === 'warning'
+                ? 'bg-amber-50 border-amber-300 text-amber-900'
+                : 'bg-red-50 border-red-300 text-red-900'
+            }`}
+          >
+            <div className="flex items-start gap-2.5">
+              <span className="text-base shrink-0">
+                {actionMessage.type === 'success' ? '✅' : actionMessage.type === 'warning' ? '⚠️' : '❌'}
+              </span>
+              <div className="leading-relaxed font-medium">{actionMessage.text}</div>
+            </div>
+            <button
+              onClick={() => setActionMessage(null)}
+              className="text-slate-400 hover:text-slate-700 font-bold shrink-0 text-sm"
+              aria-label="Dismiss"
+            >
+              ✕
+            </button>
+          </div>
+        )}
+
         {/* ─── Top Header ─── */}
         <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
@@ -679,7 +868,7 @@ export default function AdminPage() {
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
             }`}
           >
-            <span>Abstract Submissions</span>
+            <span>Abstract Management</span>
             <span className={`px-2 py-0.5 rounded-full text-[11px] font-extrabold ${activeTab === 'abstracts' ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700'}`}>
               {abstracts.length}
             </span>
@@ -708,16 +897,14 @@ export default function AdminPage() {
             
             {/* Filters & Actions Bar */}
             <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs space-y-3">
-              
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
-                {/* Sub-tab Status Filters */}
                 <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0">
                   {(
                     [
-                      { key: 'all', label: 'All Registered', count: candidates.length, color: 'slate' },
-                      { key: 'pending', label: 'Pending Review', count: pendingCount, color: 'amber' },
-                      { key: 'accepted', label: 'Accepted', count: acceptedCount, color: 'emerald' },
-                      { key: 'rejected', label: 'Rejected', count: rejectedCount, color: 'red' },
+                      { key: 'all', label: 'All Registered', count: candidates.length },
+                      { key: 'pending', label: 'Pending Review', count: pendingCount },
+                      { key: 'accepted', label: 'Accepted', count: acceptedCount },
+                      { key: 'rejected', label: 'Rejected', count: rejectedCount },
                     ] as const
                   ).map(({ key, label, count }) => {
                     const active = candidateSubTab === key;
@@ -740,7 +927,6 @@ export default function AdminPage() {
                   })}
                 </div>
 
-                {/* Export Button */}
                 <div className="flex items-center gap-2">
                   <button
                     onClick={exportCandidatesCSV}
@@ -754,7 +940,6 @@ export default function AdminPage() {
                 </div>
               </div>
 
-              {/* Search & Select Filters */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-slate-100">
                 <div>
                   <input
@@ -795,7 +980,7 @@ export default function AdminPage() {
             {/* Candidates Table */}
             <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
               {fetchLoading ? (
-                <div className="p-12 text-center text-slate-500 text-sm">Loading candidates from MongoDB...</div>
+                <div className="p-12 text-center text-slate-500 text-sm">Loading candidates from database...</div>
               ) : filteredCandidates.length === 0 ? (
                 <div className="p-12 text-center text-slate-500 text-sm">
                   No candidates found matching the selected filters.
@@ -887,7 +1072,6 @@ export default function AdminPage() {
                                   type="button"
                                   onClick={() => setSelectedCandidate(c)}
                                   className="px-2 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-semibold transition-colors"
-                                  title="View full profile details"
                                 >
                                   Details
                                 </button>
@@ -923,7 +1107,7 @@ export default function AdminPage() {
         )}
 
         {/* ═══════════════════════════════════════════════════════════════ */}
-        {/* ─── TAB 2: ABSTRACT SUBMISSIONS ─── */}
+        {/* ─── TAB 2: ABSTRACT MANAGEMENT & EMAIL SYSTEM ─── */}
         {/* ═══════════════════════════════════════════════════════════════ */}
         {activeTab === 'abstracts' && (
           <div className="space-y-4">
@@ -932,22 +1116,26 @@ export default function AdminPage() {
             <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs space-y-3">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
                 
-                {/* Status sub-tabs */}
+                {/* Status Sub-Tabs */}
                 <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0">
-                  {['all', 'Submitted', 'Under Review', 'Accepted', 'Revision', 'Rejected'].map((st) => {
-                    const count = st === 'all' ? abstracts.length : abstracts.filter((a) => a.status === st).length;
-                    const active = abstractSubTab === st;
+                  {[
+                    { key: 'all', label: 'All Submissions', count: abstracts.length },
+                    { key: 'Pending', label: 'Pending', count: abstractPendingCount },
+                    { key: 'Approved', label: 'Approved', count: abstractApprovedCount },
+                    { key: 'Rejected', label: 'Rejected', count: abstractRejectedCount },
+                  ].map(({ key, label, count }) => {
+                    const active = abstractSubTab === key;
                     return (
                       <button
-                        key={st}
-                        onClick={() => setAbstractSubTab(st)}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 whitespace-nowrap ${
+                        key={key}
+                        onClick={() => setAbstractSubTab(key)}
+                        className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 whitespace-nowrap ${
                           active
                             ? 'bg-slate-900 text-white shadow-2xs'
                             : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                         }`}
                       >
-                        {st === 'all' ? 'All Submissions' : st}
+                        {label}
                         <span className={`px-1.5 py-0.2 rounded text-[10px] ${active ? 'bg-white/20 text-white' : 'bg-white text-slate-700'}`}>
                           {count}
                         </span>
@@ -956,8 +1144,20 @@ export default function AdminPage() {
                   })}
                 </div>
 
-                {/* Export Button */}
+                {/* Actions & Export */}
                 <div className="flex items-center gap-2">
+                  <button
+                    onClick={fetchAbstracts}
+                    disabled={abstractsLoading}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold shadow-2xs transition-colors disabled:opacity-50"
+                    title="Refresh data"
+                  >
+                    <svg className={`w-3.5 h-3.5 text-teal-600 ${abstractsLoading ? 'animate-spin' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    <span>Refresh</span>
+                  </button>
+
                   <button
                     onClick={exportAbstractsCSV}
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold shadow-2xs transition-colors"
@@ -965,7 +1165,7 @@ export default function AdminPage() {
                     <svg className="w-3.5 h-3.5 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                     </svg>
-                    Export Abstracts (.CSV)
+                    Export (.CSV)
                   </button>
                 </div>
               </div>
@@ -977,7 +1177,7 @@ export default function AdminPage() {
                     type="text"
                     value={abstractSearch}
                     onChange={(e) => setAbstractSearch(e.target.value)}
-                    placeholder="Search by ID, Paper Title, Author, Keywords, Institution..."
+                    placeholder="Search by Submission ID, Participant Name, Email, Title, Keywords..."
                     className="w-full px-3 py-1.5 rounded-xl border border-slate-300 text-xs focus:border-teal-500 outline-none"
                   />
                 </div>
@@ -1002,98 +1202,183 @@ export default function AdminPage() {
                 <div className="p-12 text-center text-slate-500 text-sm">Loading abstracts from database...</div>
               ) : filteredAbstracts.length === 0 ? (
                 <div className="p-12 text-center text-slate-500 text-sm">
-                  No abstract submissions found matching the criteria.
+                  No abstract submissions found matching the selected filters.
                 </div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="min-w-full divide-y divide-slate-200 text-left text-xs">
                     <thead className="bg-slate-50/80 text-slate-600 font-bold uppercase tracking-wider text-[10px]">
                       <tr>
-                        <th className="px-4 py-3">ID & Date</th>
-                        <th className="px-4 py-3">Paper Title & Track</th>
-                        <th className="px-4 py-3">Primary Author</th>
-                        <th className="px-4 py-3">Affiliation</th>
-                        <th className="px-4 py-3">Co-Authors</th>
-                        <th className="px-4 py-3">Words</th>
-                        <th className="px-4 py-3">Status</th>
+                        <th className="px-4 py-3">Submission ID</th>
+                        <th className="px-4 py-3">Participant Name & Email</th>
+                        <th className="px-4 py-3">Abstract Title & Track</th>
+                        <th className="px-4 py-3">Submission Date</th>
+                        <th className="px-4 py-3">Current Status</th>
+                        <th className="px-4 py-3">Email Notification</th>
                         <th className="px-4 py-3 text-right">Actions</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-200">
                       {filteredAbstracts.map((abs) => {
-                        const isUpdating = abstractStatusLoading === abs._id;
+                        const isApproved = abs.status === 'Approved' || abs.status === 'Accepted';
+                        const isRejected = abs.status === 'Rejected';
+                        const emailStatus = abs.emailNotification?.status || 'not_sent';
+                        const isRetrying = retryingEmailId === abs._id;
+
                         return (
                           <tr key={abs._id} className="hover:bg-slate-50/70 transition-colors">
+                            {/* Submission ID */}
                             <td className="px-4 py-3 whitespace-nowrap">
-                              <span className="font-mono font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded border border-teal-200">
+                              <span className="font-mono font-bold text-teal-800 bg-teal-50 px-2 py-0.5 rounded border border-teal-200 text-xs">
                                 {abs.submissionId}
                               </span>
-                              <div className="text-[10px] text-slate-400 mt-1">
-                                {new Date(abs.createdAt).toLocaleDateString()}
-                              </div>
                             </td>
-                            <td className="px-4 py-3 max-w-[260px]">
-                              <div className="font-bold text-slate-900 line-clamp-2" title={abs.title}>
+
+                            {/* Participant Name & Email */}
+                            <td className="px-4 py-3 whitespace-nowrap">
+                              <div className="font-bold text-slate-900">
+                                {abs.primaryAuthor?.name || 'Author'}
+                              </div>
+                              <div className="text-slate-500 text-[11px] select-all">
+                                {abs.primaryAuthor?.email || abs.userEmail}
+                              </div>
+                              {abs.primaryAuthor?.organization && (
+                                <div className="text-slate-400 text-[10px] truncate max-w-[160px]">
+                                  {abs.primaryAuthor.organization}
+                                </div>
+                              )}
+                            </td>
+
+                            {/* Abstract Title & Track */}
+                            <td className="px-4 py-3 max-w-[240px]">
+                              <div className="font-semibold text-slate-900 line-clamp-2" title={abs.title}>
                                 {abs.title}
                               </div>
-                              <div className="text-[11px] text-teal-700 font-medium truncate mt-0.5" title={abs.track}>
+                              <div className="text-[10px] text-teal-700 font-medium truncate mt-0.5" title={abs.track}>
                                 {abs.track}
                               </div>
                             </td>
+
+                            {/* Submission Date */}
+                            <td className="px-4 py-3 whitespace-nowrap text-slate-600">
+                              {new Date(abs.createdAt).toLocaleDateString('en-US', {
+                                month: 'short',
+                                day: 'numeric',
+                                year: 'numeric',
+                              })}
+                            </td>
+
+                            {/* Current Status */}
                             <td className="px-4 py-3 whitespace-nowrap">
-                              <div className="font-semibold text-slate-800">{abs.primaryAuthor?.name}</div>
-                              <div className="text-slate-500 text-[11px]">{abs.primaryAuthor?.email}</div>
-                            </td>
-                            <td className="px-4 py-3 max-w-[180px]">
-                              <div className="text-slate-800 font-medium truncate" title={abs.primaryAuthor?.organization}>
-                                {abs.primaryAuthor?.organization}
-                              </div>
-                              <div className="text-slate-500 text-[11px]">{abs.primaryAuthor?.country}</div>
-                            </td>
-                            <td className="px-4 py-3 whitespace-nowrap">
-                              {abs.coAuthors?.length > 0 ? (
-                                <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-semibold" title={abs.coAuthors.map((c) => c.name).join(', ')}>
-                                  {abs.coAuthors.length} Co-Author{abs.coAuthors.length > 1 ? 's' : ''}
-                                </span>
-                              ) : (
-                                <span className="text-slate-400">Single</span>
-                              )}
-                            </td>
-                            <td className="px-4 py-3 whitespace-nowrap text-slate-600 font-mono">
-                              {abs.wordCount}
-                            </td>
-                            <td className="px-4 py-3 whitespace-nowrap">
-                              <select
-                                disabled={isUpdating}
-                                value={abs.status}
-                                onChange={(e) => updateAbstractStatus(abs._id, e.target.value)}
-                                className={`text-[11px] font-bold rounded-lg px-2 py-1 border outline-none cursor-pointer ${
-                                  abs.status === 'Accepted'
+                              <span
+                                className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wide border ${
+                                  isApproved
                                     ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
-                                    : abs.status === 'Rejected'
+                                    : isRejected
                                     ? 'bg-red-50 text-red-800 border-red-300'
-                                    : abs.status === 'Under Review'
-                                    ? 'bg-blue-50 text-blue-800 border-blue-300'
-                                    : abs.status === 'Revision'
-                                    ? 'bg-purple-50 text-purple-800 border-purple-300'
                                     : 'bg-amber-50 text-amber-800 border-amber-300'
                                 }`}
                               >
-                                <option value="Submitted">Submitted</option>
-                                <option value="Under Review">Under Review</option>
-                                <option value="Revision">Revision</option>
-                                <option value="Accepted">Accepted</option>
-                                <option value="Rejected">Rejected</option>
-                              </select>
+                                <span
+                                  className={`w-1.5 h-1.5 rounded-full ${
+                                    isApproved ? 'bg-emerald-500' : isRejected ? 'bg-red-500' : 'bg-amber-500'
+                                  }`}
+                                />
+                                {abs.status}
+                              </span>
                             </td>
+
+                            {/* Email Notification Status */}
+                            <td className="px-4 py-3 whitespace-nowrap">
+                              {emailStatus === 'sent' ? (
+                                <span
+                                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold"
+                                  title={`Email delivered at ${abs.emailNotification?.sentAt ? new Date(abs.emailNotification.sentAt).toLocaleString() : ''}`}
+                                >
+                                  <svg className="w-3 h-3 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                  </svg>
+                                  Email Sent
+                                </span>
+                              ) : emailStatus === 'failed' ? (
+                                <div className="flex items-center gap-1.5">
+                                  <span
+                                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-red-50 text-red-700 border border-red-200 text-[10px] font-bold"
+                                    title={abs.emailNotification?.error || 'Email delivery failed'}
+                                  >
+                                    <span>⚠️</span> Failed
+                                  </span>
+                                  <button
+                                    type="button"
+                                    disabled={isRetrying}
+                                    onClick={() => handleResendEmail(abs)}
+                                    className="px-2 py-0.5 rounded bg-slate-100 hover:bg-slate-200 text-teal-800 font-semibold text-[10px] border border-slate-300 transition-colors disabled:opacity-50"
+                                    title="Retry sending notification email"
+                                  >
+                                    {isRetrying ? 'Retrying...' : 'Retry Email'}
+                                  </button>
+                                </div>
+                              ) : (
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-100 text-slate-500 text-[10px] font-medium">
+                                  Not Sent
+                                </span>
+                              )}
+                            </td>
+
+                            {/* Action Buttons */}
                             <td className="px-4 py-3 whitespace-nowrap text-right">
-                              <button
-                                type="button"
-                                onClick={() => setSelectedAbstract(abs)}
-                                className="px-3 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs shadow-2xs transition-colors"
-                              >
-                                Read Abstract
-                              </button>
+                              <div className="flex items-center justify-end gap-1.5">
+                                {/* View Abstract button */}
+                                <button
+                                  type="button"
+                                  onClick={() => setSelectedAbstract(abs)}
+                                  className="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-colors shadow-2xs"
+                                  title="View complete abstract text and details"
+                                >
+                                  View Abstract
+                                </button>
+
+                                {/* Approve button */}
+                                <button
+                                  type="button"
+                                  disabled={actionProcessing || (isApproved && emailStatus === 'sent')}
+                                  onClick={() => setAbstractToApprove(abs)}
+                                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all shadow-2xs ${
+                                    isApproved && emailStatus === 'sent'
+                                      ? 'bg-emerald-100 text-emerald-500 cursor-not-allowed border border-emerald-200'
+                                      : 'bg-emerald-600 hover:bg-emerald-700 text-white hover:shadow-sm'
+                                  }`}
+                                  title={
+                                    isApproved && emailStatus === 'sent'
+                                      ? 'Abstract already approved and email delivered'
+                                      : 'Approve abstract and send acceptance email'
+                                  }
+                                >
+                                  {isApproved ? 'Approved' : 'Approve'}
+                                </button>
+
+                                {/* Reject button */}
+                                <button
+                                  type="button"
+                                  disabled={actionProcessing || (isRejected && emailStatus === 'sent')}
+                                  onClick={() => {
+                                    setAbstractToReject(abs);
+                                    setRejectionReasonInput(abs.rejectionReason || '');
+                                  }}
+                                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all shadow-2xs ${
+                                    isRejected && emailStatus === 'sent'
+                                      ? 'bg-red-100 text-red-500 cursor-not-allowed border border-red-200'
+                                      : 'bg-red-600 hover:bg-red-700 text-white hover:shadow-sm'
+                                  }`}
+                                  title={
+                                    isRejected && emailStatus === 'sent'
+                                      ? 'Abstract already rejected and email delivered'
+                                      : 'Reject abstract and send rejection email'
+                                  }
+                                >
+                                  {isRejected ? 'Rejected' : 'Reject'}
+                                </button>
+                              </div>
                             </td>
                           </tr>
                         );
@@ -1111,7 +1396,6 @@ export default function AdminPage() {
         {/* ═══════════════════════════════════════════════════════════════ */}
         {activeTab === 'tracks' && (
           <div className="space-y-6">
-            {/* Add Track Form */}
             <div className="bg-white rounded-2xl border border-slate-200 shadow-xs p-6">
               <h2 className="text-base font-bold text-slate-900 mb-4">Add New Conference Track</h2>
               <form onSubmit={handleAddTrack} className="space-y-4">
@@ -1146,7 +1430,6 @@ export default function AdminPage() {
                   </div>
                 </div>
 
-                {/* Upload Track Image */}
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1.5">
                     Upload Track Image
@@ -1242,7 +1525,6 @@ export default function AdminPage() {
               </form>
             </div>
 
-            {/* Existing Tracks */}
             <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
               <div className="px-6 py-4 border-b border-slate-200 flex flex-wrap items-center justify-between gap-4">
                 <div>
@@ -1279,7 +1561,7 @@ export default function AdminPage() {
                     </thead>
                     <tbody className="divide-y divide-slate-200">
                       {tracks.map((track) => {
-                        const trackId = track._id || (track as any).id;
+                        const trackId = track._id;
                         const isDeleting = trackDeleteLoading === trackId;
                         return (
                           <tr key={trackId} className="hover:bg-slate-50/70 transition-colors">
@@ -1333,7 +1615,374 @@ export default function AdminPage() {
       </div>
 
       {/* ═══════════════════════════════════════════════════════════════ */}
-      {/* ─── MODAL: CANDIDATE FULL PROFILE ─── */}
+      {/* ─── MODAL 1: VIEW & READ COMPLETE ABSTRACT ─── */}
+      {/* ═══════════════════════════════════════════════════════════════ */}
+      {selectedAbstract && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-3xl w-full p-6 sm:p-8 shadow-2xl border border-slate-200 max-h-[92vh] overflow-y-auto">
+            {/* Modal Header */}
+            <div className="flex items-start justify-between border-b border-slate-200 pb-4 mb-4">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="font-mono font-bold text-teal-800 bg-teal-50 px-2.5 py-0.5 rounded border border-teal-200 text-xs">
+                    {selectedAbstract.submissionId}
+                  </span>
+                  <span
+                    className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
+                      selectedAbstract.status === 'Approved' || selectedAbstract.status === 'Accepted'
+                        ? 'bg-emerald-100 text-emerald-800'
+                        : selectedAbstract.status === 'Rejected'
+                        ? 'bg-red-100 text-red-800'
+                        : 'bg-amber-100 text-amber-800'
+                    }`}
+                  >
+                    {selectedAbstract.status}
+                  </span>
+                </div>
+                <h3 className="text-xl sm:text-2xl font-bold text-slate-900 leading-snug">
+                  {selectedAbstract.title}
+                </h3>
+                <p className="text-xs text-teal-700 font-semibold mt-1">
+                  {selectedAbstract.track}
+                  {selectedAbstract.secondaryTrack ? ` • Secondary: ${selectedAbstract.secondaryTrack}` : ''}
+                </p>
+              </div>
+              <button
+                onClick={() => setSelectedAbstract(null)}
+                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold flex items-center justify-center shrink-0 ml-4"
+                aria-label="Close modal"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Author Information */}
+            <div className="bg-slate-50 rounded-xl p-4 border border-slate-200 mb-5 text-xs space-y-2">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200/60 pb-2">
+                <div>
+                  <span className="text-slate-500 font-medium">Primary Author: </span>
+                  <span className="font-bold text-slate-900">{selectedAbstract.primaryAuthor?.name}</span>
+                  <span className="text-slate-500"> ({selectedAbstract.primaryAuthor?.email || selectedAbstract.userEmail})</span>
+                </div>
+                <div className="text-slate-600 font-medium">
+                  {selectedAbstract.primaryAuthor?.organization}, {selectedAbstract.primaryAuthor?.country}
+                </div>
+              </div>
+
+              {selectedAbstract.coAuthors?.length > 0 && (
+                <div>
+                  <span className="text-slate-500 font-semibold block mb-1">
+                    Co-Authors ({selectedAbstract.coAuthors.length}):
+                  </span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {selectedAbstract.coAuthors.map((ca, idx) => (
+                      <span key={idx} className="bg-white px-2 py-0.5 rounded border border-slate-200 text-slate-700">
+                        {ca.name} ({ca.organization}, {ca.country})
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Abstract Text Area Body */}
+            <div className="space-y-2 mb-5">
+              <div className="flex items-center justify-between">
+                <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                  Full Abstract Body Text
+                </h4>
+                <span className="text-xs font-mono text-slate-500">
+                  {selectedAbstract.wordCount} words
+                </span>
+              </div>
+              <div className="p-5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-800 leading-relaxed whitespace-pre-wrap font-sans">
+                {selectedAbstract.abstract}
+              </div>
+            </div>
+
+            {/* Keywords & Conflict */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs mb-5">
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                <span className="text-slate-500 font-semibold block mb-0.5">Keywords:</span>
+                <span className="font-medium text-slate-800">{selectedAbstract.keywords}</span>
+              </div>
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                <span className="text-slate-500 font-semibold block mb-0.5">Domain Conflicts:</span>
+                <span className="font-medium text-slate-800">{selectedAbstract.domainConflicts || 'None stated'}</span>
+              </div>
+            </div>
+
+            {/* Rejection Reason (if rejected) */}
+            {selectedAbstract.status === 'Rejected' && selectedAbstract.rejectionReason && (
+              <div className="mb-5 p-4 rounded-xl bg-red-50 border border-red-200 text-xs">
+                <strong className="text-red-900 block font-bold mb-1">Review Committee Feedback / Reason for Rejection:</strong>
+                <p className="text-red-800 leading-relaxed whitespace-pre-wrap">{selectedAbstract.rejectionReason}</p>
+              </div>
+            )}
+
+            {/* Email Notification Status & Logs */}
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs mb-6 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-slate-800">Email Notification Status:</span>
+                {selectedAbstract.emailNotification?.status === 'sent' ? (
+                  <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold">
+                    ✓ Delivered
+                  </span>
+                ) : selectedAbstract.emailNotification?.status === 'failed' ? (
+                  <span className="px-2 py-0.5 rounded bg-red-100 text-red-800 font-bold">
+                    ⚠️ Failed
+                  </span>
+                ) : (
+                  <span className="px-2 py-0.5 rounded bg-slate-200 text-slate-700">
+                    Not Sent Yet
+                  </span>
+                )}
+              </div>
+
+              {selectedAbstract.emailNotification?.sentAt && (
+                <div className="text-slate-600 text-[11px]">
+                  Sent on: {new Date(selectedAbstract.emailNotification.sentAt).toLocaleString()} to{' '}
+                  <span className="font-mono">{selectedAbstract.emailNotification.recipientEmail}</span>
+                </div>
+              )}
+
+              {selectedAbstract.emailNotification?.error && (
+                <div className="text-red-600 text-[11px] bg-red-50 p-2 rounded border border-red-200">
+                  Last error: {selectedAbstract.emailNotification.error}
+                </div>
+              )}
+
+              {(selectedAbstract.status === 'Approved' || selectedAbstract.status === 'Rejected') && (
+                <div className="pt-2 flex items-center justify-end">
+                  <button
+                    type="button"
+                    disabled={retryingEmailId === selectedAbstract._id}
+                    onClick={() => handleResendEmail(selectedAbstract)}
+                    className="px-3 py-1 rounded bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-300 font-semibold text-xs transition-colors"
+                  >
+                    {retryingEmailId === selectedAbstract._id ? 'Sending Email...' : '✉️ Resend Notification Email'}
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Modal Bottom Actions */}
+            <div className="border-t border-slate-200 pt-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  disabled={actionProcessing || (selectedAbstract.status === 'Approved' && selectedAbstract.emailNotification?.status === 'sent')}
+                  onClick={() => {
+                    setAbstractToApprove(selectedAbstract);
+                  }}
+                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
+                    selectedAbstract.status === 'Approved' && selectedAbstract.emailNotification?.status === 'sent'
+                      ? 'bg-emerald-100 text-emerald-500 cursor-not-allowed'
+                      : 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                  }`}
+                >
+                  {selectedAbstract.status === 'Approved' ? 'Approved' : 'Approve Abstract'}
+                </button>
+
+                <button
+                  type="button"
+                  disabled={actionProcessing || (selectedAbstract.status === 'Rejected' && selectedAbstract.emailNotification?.status === 'sent')}
+                  onClick={() => {
+                    setAbstractToReject(selectedAbstract);
+                    setRejectionReasonInput(selectedAbstract.rejectionReason || '');
+                  }}
+                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
+                    selectedAbstract.status === 'Rejected' && selectedAbstract.emailNotification?.status === 'sent'
+                      ? 'bg-red-100 text-red-500 cursor-not-allowed'
+                      : 'bg-red-600 hover:bg-red-700 text-white'
+                  }`}
+                >
+                  {selectedAbstract.status === 'Rejected' ? 'Rejected' : 'Reject Abstract'}
+                </button>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setSelectedAbstract(null)}
+                className="px-5 py-2 rounded-xl bg-slate-900 text-white font-bold text-xs"
+              >
+                Close Reader
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ═══════════════════════════════════════════════════════════════ */}
+      {/* ─── MODAL 2: CONFIRM APPROVAL POPUP ─── */}
+      {/* ═══════════════════════════════════════════════════════════════ */}
+      {abstractToApprove && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-200">
+            <div className="flex items-start gap-3.5 mb-4">
+              <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-xl shrink-0">
+                ✓
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-slate-900">
+                  Approve Abstract Submission?
+                </h3>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Are you sure you want to approve this abstract?
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-slate-50 rounded-xl p-4 border border-slate-200 text-xs space-y-2 mb-5">
+              <div>
+                <span className="text-slate-500">Submission ID: </span>
+                <span className="font-mono font-bold text-teal-800">{abstractToApprove.submissionId}</span>
+              </div>
+              <div>
+                <span className="text-slate-500">Participant: </span>
+                <span className="font-semibold text-slate-900">{abstractToApprove.primaryAuthor?.name}</span>
+              </div>
+              <div>
+                <span className="text-slate-500">Recipient Email: </span>
+                <span className="font-semibold text-slate-900 select-all">
+                  {abstractToApprove.primaryAuthor?.email || abstractToApprove.userEmail}
+                </span>
+              </div>
+              <div>
+                <span className="text-slate-500">Title: </span>
+                <span className="font-medium text-slate-900 italic">&ldquo;{abstractToApprove.title}&rdquo;</span>
+              </div>
+            </div>
+
+            <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs mb-6 leading-relaxed">
+              <strong>Email Automation Notice:</strong> Upon confirmation, the abstract status will update to <strong>Approved</strong> and an acceptance email with submission details will be sent immediately to the participant.
+            </div>
+
+            <div className="flex items-center justify-end gap-2.5">
+              <button
+                type="button"
+                disabled={actionProcessing}
+                onClick={() => setAbstractToApprove(null)}
+                className="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50 text-xs font-semibold transition-colors disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={actionProcessing}
+                onClick={() => handleApproveAbstract(abstractToApprove)}
+                className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 disabled:opacity-50"
+              >
+                {actionProcessing ? (
+                  <>
+                    <span className="w-3.5 h-3.5 rounded-full border-2 border-white border-t-transparent animate-spin" />
+                    <span>Processing Approval &amp; Sending Email...</span>
+                  </>
+                ) : (
+                  <span>Confirm &amp; Approve</span>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ═══════════════════════════════════════════════════════════════ */}
+      {/* ─── MODAL 3: CONFIRM REJECTION POPUP ─── */}
+      {/* ═══════════════════════════════════════════════════════════════ */}
+      {abstractToReject && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-200">
+            <div className="flex items-start gap-3.5 mb-4">
+              <div className="w-10 h-10 rounded-xl bg-red-100 text-red-700 flex items-center justify-center text-xl shrink-0">
+                ✕
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-slate-900">
+                  Reject Abstract Submission?
+                </h3>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Are you sure you want to reject this abstract?
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-slate-50 rounded-xl p-4 border border-slate-200 text-xs space-y-2 mb-4">
+              <div>
+                <span className="text-slate-500">Submission ID: </span>
+                <span className="font-mono font-bold text-red-700">{abstractToReject.submissionId}</span>
+              </div>
+              <div>
+                <span className="text-slate-500">Participant: </span>
+                <span className="font-semibold text-slate-900">{abstractToReject.primaryAuthor?.name}</span>
+              </div>
+              <div>
+                <span className="text-slate-500">Recipient Email: </span>
+                <span className="font-semibold text-slate-900 select-all">
+                  {abstractToReject.primaryAuthor?.email || abstractToReject.userEmail}
+                </span>
+              </div>
+              <div>
+                <span className="text-slate-500">Title: </span>
+                <span className="font-medium text-slate-900 italic">&ldquo;{abstractToReject.title}&rdquo;</span>
+              </div>
+            </div>
+
+            {/* Optional Rejection Reason Input */}
+            <div className="mb-4">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                Rejection Reason / Reviewer Feedback <span className="text-slate-400 font-normal lowercase">(optional)</span>
+              </label>
+              <textarea
+                rows={3}
+                value={rejectionReasonInput}
+                onChange={(e) => setRejectionReasonInput(e.target.value)}
+                placeholder="e.g. Scope does not align with the selected theme, or methodology requires substantial empirical data."
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:border-red-500 focus:ring-1 focus:ring-red-500 outline-none leading-relaxed"
+              />
+              <span className="text-[11px] text-slate-500 mt-1 block">
+                If provided, this feedback will be included in the rejection notification email to the author.
+              </span>
+            </div>
+
+            <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-900 text-xs mb-6 leading-relaxed">
+              <strong>Email Automation Notice:</strong> Upon confirmation, the abstract status will update to <strong>Rejected</strong> and a notification email will be sent immediately to the participant.
+            </div>
+
+            <div className="flex items-center justify-end gap-2.5">
+              <button
+                type="button"
+                disabled={actionProcessing}
+                onClick={() => {
+                  setAbstractToReject(null);
+                  setRejectionReasonInput('');
+                }}
+                className="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50 text-xs font-semibold transition-colors disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={actionProcessing}
+                onClick={() => handleRejectAbstract(abstractToReject, rejectionReasonInput)}
+                className="px-5 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 disabled:opacity-50"
+              >
+                {actionProcessing ? (
+                  <>
+                    <span className="w-3.5 h-3.5 rounded-full border-2 border-white border-t-transparent animate-spin" />
+                    <span>Processing Rejection &amp; Sending Email...</span>
+                  </>
+                ) : (
+                  <span>Confirm &amp; Reject</span>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ═══════════════════════════════════════════════════════════════ */}
+      {/* ─── MODAL 4: CANDIDATE FULL PROFILE ─── */}
       {/* ═══════════════════════════════════════════════════════════════ */}
       {selectedCandidate && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
@@ -1341,7 +1990,7 @@ export default function AdminPage() {
             <div className="flex items-center justify-between border-b border-slate-200 pb-4 mb-4">
               <div>
                 <h3 className="text-xl font-bold text-slate-900">{selectedCandidate.fullName}</h3>
-                <p className="text-xs text-slate-500">Registered Author & Delegate Profile</p>
+                <p className="text-xs text-slate-500">Registered Author &amp; Delegate Profile</p>
               </div>
               <button
                 onClick={() => setSelectedCandidate(null)}
@@ -1365,8 +2014,10 @@ export default function AdminPage() {
                 <span className="font-semibold text-slate-900">{selectedCandidate.institution}</span>
               </div>
               <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
-                <span className="text-slate-500 block mb-0.5">Country & Location</span>
-                <span className="font-semibold text-slate-900">{[selectedCandidate.city, selectedCandidate.country].filter(Boolean).join(', ') || 'India'}</span>
+                <span className="text-slate-500 block mb-0.5">Country &amp; Location</span>
+                <span className="font-semibold text-slate-900">
+                  {[selectedCandidate.city, selectedCandidate.country].filter(Boolean).join(', ') || 'India'}
+                </span>
               </div>
               <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
                 <span className="text-slate-500 block mb-0.5">Fee Category</span>
@@ -1390,9 +2041,8 @@ export default function AdminPage() {
               )}
             </div>
 
-            {/* Academic Profiles & Conflict of Interest */}
             <div className="mt-4 p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-2">
-              <h4 className="font-bold text-slate-800">Academic IDs & Profiles</h4>
+              <h4 className="font-bold text-slate-800">Academic IDs &amp; Profiles</h4>
               <div className="grid grid-cols-2 gap-2 text-slate-700">
                 <div>ORCID: <span className="font-mono">{selectedCandidate.orcidId || 'Not provided'}</span></div>
                 <div>Google Scholar: <span className="font-mono">{selectedCandidate.googleScholarId || 'Not provided'}</span></div>
@@ -1425,108 +2075,6 @@ export default function AdminPage() {
                   Reject Candidate
                 </button>
               </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ═══════════════════════════════════════════════════════════════ */}
-      {/* ─── MODAL: READ FULL ABSTRACT ─── */}
-      {/* ═══════════════════════════════════════════════════════════════ */}
-      {selectedAbstract && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-3xl w-full p-6 sm:p-8 shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-start justify-between border-b border-slate-200 pb-4 mb-4">
-              <div>
-                <span className="font-mono font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded border border-teal-200 text-xs">
-                  {selectedAbstract.submissionId}
-                </span>
-                <span className="ml-2 text-xs text-slate-500 font-semibold">{selectedAbstract.track}</span>
-                <h3 className="text-xl sm:text-2xl font-bold text-slate-900 mt-2 leading-snug">
-                  {selectedAbstract.title}
-                </h3>
-              </div>
-              <button
-                onClick={() => setSelectedAbstract(null)}
-                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold flex items-center justify-center shrink-0 ml-4"
-              >
-                ✕
-              </button>
-            </div>
-
-            {/* Author bar */}
-            <div className="bg-slate-50 rounded-xl p-4 border border-slate-200 mb-5 text-xs">
-              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200/60 pb-2 mb-2">
-                <div>
-                  <span className="text-slate-500">Primary Author: </span>
-                  <span className="font-bold text-slate-900">{selectedAbstract.primaryAuthor?.name}</span>
-                  <span className="text-slate-500"> ({selectedAbstract.primaryAuthor?.email})</span>
-                </div>
-                <div className="text-slate-600">
-                  {selectedAbstract.primaryAuthor?.organization}, {selectedAbstract.primaryAuthor?.country}
-                </div>
-              </div>
-
-              {selectedAbstract.coAuthors?.length > 0 && (
-                <div>
-                  <span className="text-slate-500 font-semibold block mb-1">Co-Authors:</span>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedAbstract.coAuthors.map((ca, idx) => (
-                      <span key={idx} className="bg-white px-2 py-1 rounded border border-slate-200 text-slate-700">
-                        {ca.name} ({ca.organization}, {ca.country})
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Abstract Text Area Body */}
-            <div className="space-y-3 mb-6">
-              <div className="flex items-center justify-between">
-                <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider">Abstract Text Content</h4>
-                <span className="text-xs font-mono text-slate-500">{selectedAbstract.wordCount} words</span>
-              </div>
-              <div className="p-5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-800 leading-relaxed whitespace-pre-wrap font-sans">
-                {selectedAbstract.abstract}
-              </div>
-            </div>
-
-            {/* Keywords & Conflict */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs mb-6">
-              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
-                <span className="text-slate-500 font-semibold block mb-1">Keywords:</span>
-                <span className="font-medium text-slate-800">{selectedAbstract.keywords}</span>
-              </div>
-              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
-                <span className="text-slate-500 font-semibold block mb-1">Domain Conflicts:</span>
-                <span className="font-medium text-slate-800">{selectedAbstract.domainConflicts || 'None stated'}</span>
-              </div>
-            </div>
-
-            {/* Status change actions */}
-            <div className="border-t border-slate-200 pt-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-slate-700">Change Status:</span>
-                <select
-                  value={selectedAbstract.status}
-                  onChange={(e) => updateAbstractStatus(selectedAbstract._id, e.target.value)}
-                  className="text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-300 outline-none bg-white"
-                >
-                  <option value="Submitted">Submitted</option>
-                  <option value="Under Review">Under Review</option>
-                  <option value="Revision">Revision</option>
-                  <option value="Accepted">Accepted</option>
-                  <option value="Rejected">Rejected</option>
-                </select>
-              </div>
-
-              <button
-                onClick={() => setSelectedAbstract(null)}
-                className="px-5 py-2 rounded-xl bg-slate-900 text-white font-bold text-xs"
-              >
-                Close Reader
-              </button>
             </div>
           </div>
         </div>

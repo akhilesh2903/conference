@@ -10,7 +10,7 @@ function checkAuth(request: Request): boolean {
   return username === process.env.ADMIN_USERNAME && password === process.env.ADMIN_PASSWORD;
 }
 
-export const OFFICIAL_4_TRACKS = [
+const OFFICIAL_4_TRACKS = [
   {
     trackNumber: '01',
     title: 'Advanced and Sustainable Materials',

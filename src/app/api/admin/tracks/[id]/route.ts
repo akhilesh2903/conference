@@ -17,7 +17,7 @@ function checkAuth(request: Request): boolean {
 
 export async function DELETE(
   request: Request,
-  context: { params: Promise<{ id: string }> | { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     if (!checkAuth(request)) {
