@@ -83,10 +83,11 @@ export async function POST(request: Request) {
       },
       { status: 201 }
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('CMT Registration error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Failed to create Microsoft CMT account';
     return NextResponse.json(
-      { error: error.message || 'Failed to create Microsoft CMT account' },
+      { error: errorMessage },
       { status: 500 }
     );
   }

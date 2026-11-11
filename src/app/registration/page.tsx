@@ -1,6 +1,6 @@
-﻿'use client';
+'use client';
 
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 
@@ -52,6 +52,16 @@ const countriesList = [
   'China', 'Brazil', 'South Africa', 'Sweden', 'Netherlands', 'Other'
 ];
 
+interface RegisteredUserData {
+  fullName?: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  institution?: string;
+  category?: string;
+  [key: string]: unknown;
+}
+
 function RegistrationContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -90,35 +100,45 @@ function RegistrationContent() {
   const [loginPassword, setLoginPassword] = useState('');
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitSuccess, setSubmitSuccess] = useState(false);
-  const [registeredUser, setRegisteredUser] = useState<any>(null);
+  const [submitSuccess, setSubmitSuccess] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('isRegistered') === 'true' || Boolean(localStorage.getItem('cmtUser'));
+    }
+    return false;
+  });
+  const [registeredUser, setRegisteredUser] = useState<RegisteredUserData | null>(() => {
+    if (typeof window !== 'undefined') {
+      const cmt = localStorage.getItem('cmtUser');
+      if (cmt) {
+        try {
+          return JSON.parse(cmt) as RegisteredUserData;
+        } catch {
+          return { fullName: localStorage.getItem('registeredName') || '' };
+        }
+      }
+      const regName = localStorage.getItem('registeredName');
+      if (regName) return { fullName: regName };
+    }
+    return null;
+  });
   const [errorMsg, setErrorMsg] = useState('');
-  const [captchaCode, setCaptchaCode] = useState('7K9M2');
+  const [captchaCode, setCaptchaCode] = useState(() => {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let code = '';
+    for (let i = 0; i < 5; i++) {
+      code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return code;
+  });
 
-  useEffect(() => {
-    // Generate fresh simple alphanumeric captcha
+  const refreshCaptcha = () => {
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     let code = '';
     for (let i = 0; i < 5; i++) {
       code += chars.charAt(Math.floor(Math.random() * chars.length));
     }
     setCaptchaCode(code);
-
-    const checkExisting = () => {
-      const isReg = localStorage.getItem('isRegistered') === 'true';
-      const cmt = localStorage.getItem('cmtUser');
-      if (isReg || cmt) {
-        setSubmitSuccess(true);
-        try {
-          if (cmt) setRegisteredUser(JSON.parse(cmt));
-          else setRegisteredUser({ fullName: localStorage.getItem('registeredName') });
-        } catch {
-          setRegisteredUser({ fullName: localStorage.getItem('registeredName') });
-        }
-      }
-    };
-    checkExisting();
-  }, []);
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('isRegistered');
@@ -227,8 +247,9 @@ function RegistrationContent() {
           router.push(redirectUrl);
         }, 800);
       }
-    } catch (err: any) {
-      setErrorMsg(err.message || 'Registration error occurred.');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Registration error occurred.';
+      setErrorMsg(msg);
     } finally {
       setIsSubmitting(false);
     }
@@ -272,8 +293,9 @@ function RegistrationContent() {
           router.push(redirectUrl);
         }, 600);
       }
-    } catch (err: any) {
-      setErrorMsg(err.message || 'Login failed.');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Login failed.';
+      setErrorMsg(msg);
     } finally {
       setIsSubmitting(false);
     }
@@ -760,9 +782,14 @@ function RegistrationContent() {
                     
                     <div className="space-y-4">
                       <div className="flex flex-col sm:flex-row sm:items-center gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
-                        <div className="px-5 py-2.5 bg-slate-900 text-teal-400 font-mono text-xl tracking-widest font-extrabold rounded-lg shadow-inner select-none text-center">
+                        <button
+                          type="button"
+                          onClick={refreshCaptcha}
+                          title="Click to generate new code"
+                          className="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-teal-400 font-mono text-xl tracking-widest font-extrabold rounded-lg shadow-inner select-none text-center cursor-pointer transition-colors"
+                        >
                           {captchaCode}
-                        </div>
+                        </button>
                         <div className="flex-1">
                           <label className="block text-xs font-semibold text-slate-700 mb-1">Enter Security Code *</label>
                           <input

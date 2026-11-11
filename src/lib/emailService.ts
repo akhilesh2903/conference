@@ -34,7 +34,7 @@ export function getMailTransporter() {
 
   if (!user || !pass) {
     throw new Error(
-      'SMTP credentials are not configured. Please define SMTP_USER and SMTP_PASS (e.g. Gmail App Password) in your .env.local file.'
+      'SMTP credentials are not configured. Please define SMTP_USER and SMTP_PASS (e.g. Gmail App Password) or an HTTP email API key (RESEND_API_KEY / BREVO_API_KEY).'
     );
   }
 
@@ -46,10 +46,153 @@ export function getMailTransporter() {
       user,
       pass,
     },
+    connectionTimeout: 10000,
+    greetingTimeout: 8000,
+    socketTimeout: 15000,
     tls: {
       rejectUnauthorized: process.env.NODE_ENV === 'production',
     },
   });
+}
+
+/**
+ * Returns a properly sanitized sender email header.
+ */
+export function getSenderAddress(): string {
+  const rawFrom = process.env.SMTP_FROM?.trim();
+  if (rawFrom && rawFrom.includes('@')) {
+    // Strip accidental wrapper quotes, e.g. '"ICMEMS 2027" <email>'
+    const cleaned = rawFrom.replace(/^["'](.*)["']$/, '$1').trim();
+    if (cleaned) return cleaned;
+  }
+  const name = process.env.CONFERENCE_NAME || 'ICMEMS 2027 Organizing Committee';
+  const email = process.env.SMTP_USER || 'icmems2027@gmail.com';
+  return `"${name}" <${email}>`;
+}
+
+/**
+ * Dispatches an email using the best available transport:
+ * 1. Resend HTTP REST API (if RESEND_API_KEY is configured — works on Render Free Tier via HTTPS 443)
+ * 2. Brevo HTTP REST API (if BREVO_API_KEY is configured — works on Render Free Tier via HTTPS 443)
+ * 3. Standard SMTP via Nodemailer (if SMTP_USER and SMTP_PASS are configured)
+ */
+async function dispatchEmail(params: {
+  recipientName: string;
+  recipientEmail: string;
+  subject: string;
+  htmlContent: string;
+  plainTextContent: string;
+  preheader: string;
+}): Promise<EmailSendResult> {
+  const { recipientName, recipientEmail, subject, htmlContent, plainTextContent, preheader } = params;
+
+  // 1. Check for Resend HTTPS API (bypasses Render port blocks)
+  if (process.env.RESEND_API_KEY) {
+    try {
+      const from = process.env.RESEND_FROM || getSenderAddress();
+      const res = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${process.env.RESEND_API_KEY.trim()}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          from,
+          to: [recipientEmail],
+          subject,
+          html: wrapEmailHtml(htmlContent, preheader),
+          text: plainTextContent,
+        }),
+      });
+
+      const data = (await res.json()) as { id?: string; message?: string };
+      if (!res.ok) {
+        throw new Error(data.message || `Resend API rejected request (${res.status})`);
+      }
+
+      return {
+        success: true,
+        messageId: data.id || `resend-${Date.now()}`,
+      };
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Resend HTTP API error';
+      console.error('[EmailService] Resend API error:', err);
+      return { success: false, error: msg };
+    }
+  }
+
+  // 2. Check for Brevo HTTPS API (bypasses Render port blocks)
+  if (process.env.BREVO_API_KEY) {
+    try {
+      const senderEmail = process.env.BREVO_SENDER_EMAIL || process.env.SMTP_USER || '4al23is006@gmail.com';
+      const senderName = process.env.BREVO_SENDER_NAME || process.env.CONFERENCE_NAME || 'ICMEMS 2027 Organizing Committee';
+      const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+        method: 'POST',
+        headers: {
+          accept: 'application/json',
+          'api-key': process.env.BREVO_API_KEY.trim(),
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({
+          sender: { name: senderName, email: senderEmail },
+          to: [{ email: recipientEmail, name: recipientName }],
+          subject,
+          htmlContent: wrapEmailHtml(htmlContent, preheader),
+          textContent: plainTextContent,
+        }),
+      });
+
+      const data = (await res.json()) as { messageId?: string; message?: string };
+      if (!res.ok) {
+        throw new Error(data.message || `Brevo API rejected request (${res.status})`);
+      }
+
+      return {
+        success: true,
+        messageId: data.messageId || `brevo-${Date.now()}`,
+      };
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Brevo HTTP API error';
+      console.error('[EmailService] Brevo API error:', err);
+      return { success: false, error: msg };
+    }
+  }
+
+  // 3. Fallback: SMTP via Nodemailer
+  try {
+    const transporter = getMailTransporter();
+    const fromAddress = getSenderAddress();
+
+    const mailOptions = {
+      from: fromAddress,
+      to: recipientEmail,
+      subject,
+      text: plainTextContent,
+      html: wrapEmailHtml(htmlContent, preheader),
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    return {
+      success: true,
+      messageId: info.messageId,
+    };
+  } catch (error: unknown) {
+    let errorMsg = error instanceof Error ? error.message : 'Failed to send email via SMTP transporter.';
+    if (
+      errorMsg.toLowerCase().includes('timeout') ||
+      errorMsg.includes('ETIMEDOUT') ||
+      errorMsg.includes('ESOCKETTIMEDOUT') ||
+      errorMsg.includes('ECONNREFUSED')
+    ) {
+      errorMsg =
+        'SMTP Connection timeout. Render Free Tier blocks outbound SMTP traffic on ports 25, 465, and 587. To send emails from Render, add RESEND_API_KEY or BREVO_API_KEY to your Render environment variables (both operate over HTTPS port 443), or upgrade Render to a paid plan.';
+    }
+    console.error(`[EmailService] Failed to send email to ${recipientEmail}:`, error);
+    return {
+      success: false,
+      error: errorMsg,
+    };
+  }
 }
 
 /**
@@ -188,31 +331,14 @@ Website: ${CONFERENCE_WEBSITE}
 Contact: ${CONFERENCE_EMAIL}
 `;
 
-  try {
-    const transporter = getMailTransporter();
-    const fromAddress = process.env.SMTP_FROM || `"${CONFERENCE_NAME} Organizing Committee" <${process.env.SMTP_USER}>`;
-
-    const mailOptions = {
-      from: fromAddress,
-      to: participantEmail,
-      subject,
-      text: plainTextContent,
-      html: wrapEmailHtml(htmlContent, preheader),
-    };
-
-    const info = await transporter.sendMail(mailOptions);
-    return {
-      success: true,
-      messageId: info.messageId,
-    };
-  } catch (error: unknown) {
-    const errorMsg = error instanceof Error ? error.message : 'Failed to send approval email via SMTP transporter.';
-    console.error(`[EmailService] Failed to send approval email to ${participantEmail}:`, error);
-    return {
-      success: false,
-      error: errorMsg,
-    };
-  }
+  return await dispatchEmail({
+    recipientName: participantName,
+    recipientEmail: participantEmail,
+    subject,
+    htmlContent,
+    plainTextContent,
+    preheader,
+  });
 }
 
 /**
@@ -299,30 +425,13 @@ Website: ${CONFERENCE_WEBSITE}
 Contact: ${CONFERENCE_EMAIL}
 `;
 
-  try {
-    const transporter = getMailTransporter();
-    const fromAddress = process.env.SMTP_FROM || `"${CONFERENCE_NAME} Organizing Committee" <${process.env.SMTP_USER}>`;
-
-    const mailOptions = {
-      from: fromAddress,
-      to: participantEmail,
-      subject,
-      text: plainTextContent,
-      html: wrapEmailHtml(htmlContent, preheader),
-    };
-
-    const info = await transporter.sendMail(mailOptions);
-    return {
-      success: true,
-      messageId: info.messageId,
-    };
-  } catch (error: unknown) {
-    const errorMsg = error instanceof Error ? error.message : 'Failed to send rejection email via SMTP transporter.';
-    console.error(`[EmailService] Failed to send rejection email to ${participantEmail}:`, error);
-    return {
-      success: false,
-      error: errorMsg,
-    };
-  }
+  return await dispatchEmail({
+    recipientName: participantName,
+    recipientEmail: participantEmail,
+    subject,
+    htmlContent,
+    plainTextContent,
+    preheader,
+  });
 }
 

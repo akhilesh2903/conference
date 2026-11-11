@@ -312,9 +312,9 @@ export async function getTracks(): Promise<FormattedTrack[]> {
     }
 
     // Natural sort by trackNumber
-    const sorted = [...dbTracks].sort((a: any, b: any) => {
-      const numA = parseInt(a.trackNumber, 10);
-      const numB = parseInt(b.trackNumber, 10);
+    const sorted = [...dbTracks].sort((a, b) => {
+      const numA = parseInt(String(a.trackNumber || ''), 10);
+      const numB = parseInt(String(b.trackNumber || ''), 10);
       if (!isNaN(numA) && !isNaN(numB)) {
         return numA - numB;
       }
@@ -324,7 +324,7 @@ export async function getTracks(): Promise<FormattedTrack[]> {
       });
     });
 
-    return sorted.map((track: any, idx: number) => {
+    return sorted.map((track, idx: number) => {
       const palette = THEME_PALETTES[idx % THEME_PALETTES.length];
       const rawNumber = String(track.trackNumber || idx + 1);
       const formattedNumber =

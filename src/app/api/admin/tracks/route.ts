@@ -31,9 +31,10 @@ export async function POST(request: Request) {
       image: image ? String(image).trim() : undefined,
     });
     return NextResponse.json({ success: true, track }, { status: 201 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Create track error:', error);
-    return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
+    const errorMessage = error instanceof Error ? error.message : 'Internal Server Error';
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }
 
@@ -44,14 +45,15 @@ export async function GET(request: Request) {
     }
     await connectToDatabase();
     const rawTracks = await Track.find({}).lean();
-    const tracks = [...rawTracks].sort((a: any, b: any) => {
-      const numA = parseInt(a.trackNumber, 10);
-      const numB = parseInt(b.trackNumber, 10);
+    const tracks = [...rawTracks].sort((a, b) => {
+      const numA = parseInt(String(a.trackNumber || ''), 10);
+      const numB = parseInt(String(b.trackNumber || ''), 10);
       if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
       return String(a.trackNumber || '').localeCompare(String(b.trackNumber || ''), undefined, { numeric: true, sensitivity: 'base' });
     });
     return NextResponse.json({ success: true, tracks });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Internal Server Error';
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }

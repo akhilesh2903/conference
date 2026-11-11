@@ -28,9 +28,10 @@ export async function GET(request: Request) {
     const candidates = await Candidate.find({}).sort({ createdAt: -1 });
     
     return NextResponse.json({ success: true, candidates });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Fetch candidates error:', error);
-    return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
+    const errorMessage = error instanceof Error ? error.message : 'Internal Server Error';
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }
 
@@ -62,8 +63,9 @@ export async function PATCH(request: Request) {
     }
 
     return NextResponse.json({ success: true, candidate: updated });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Update candidate error:', error);
-    return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
+    const errorMessage = error instanceof Error ? error.message : 'Internal Server Error';
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }

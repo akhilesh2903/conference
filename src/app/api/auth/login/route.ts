@@ -85,10 +85,11 @@ export async function POST(request: Request) {
       { error: 'No account found with this email. Please register.' },
       { status: 401 }
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Author Login error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Login failed';
     return NextResponse.json(
-      { error: error.message || 'Login failed' },
+      { error: errorMessage },
       { status: 500 }
     );
   }

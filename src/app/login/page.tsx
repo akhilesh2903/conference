@@ -1,6 +1,6 @@
-﻿'use client';
+'use client';
 
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 
@@ -44,26 +44,32 @@ function LoginContent() {
     agreedToTerms: false,
   });
 
-  const [securityCode, setSecurityCode] = useState('8K3P9');
+  const [securityCode, setSecurityCode] = useState(() => {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let code = '';
+    for (let i = 0; i < 5; i++) {
+      code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return code;
+  });
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
-  const [hasPreservedDraft, setHasPreservedDraft] = useState(false);
-
-  useEffect(() => {
-    // Check if user has an abstract draft waiting
-    if (typeof window !== 'undefined' && localStorage.getItem('abstractDraft')) {
-      setHasPreservedDraft(true);
+  const [hasPreservedDraft] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return Boolean(localStorage.getItem('abstractDraft'));
     }
+    return false;
+  });
 
-    // Generate random security code
+  const refreshSecurityCode = () => {
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     let code = '';
     for (let i = 0; i < 5; i++) {
       code += chars.charAt(Math.floor(Math.random() * chars.length));
     }
     setSecurityCode(code);
-  }, []);
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -101,8 +107,9 @@ function LoginContent() {
       setTimeout(() => {
         router.push(redirect);
       }, 700);
-    } catch (err: any) {
-      setErrorMsg(err.message || 'Login failed.');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Login failed.';
+      setErrorMsg(msg);
     } finally {
       setLoading(false);
     }
@@ -187,8 +194,9 @@ function LoginContent() {
       setTimeout(() => {
         router.push(redirect);
       }, 700);
-    } catch (err: any) {
-      setErrorMsg(err.message || 'Registration failed.');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Registration failed.';
+      setErrorMsg(msg);
     } finally {
       setLoading(false);
     }
@@ -491,9 +499,14 @@ function LoginContent() {
                   </h3>
                   <div className="space-y-4">
                     <div className="flex flex-col sm:flex-row sm:items-center gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
-                      <div className="px-5 py-2 bg-slate-900 text-teal-400 font-mono text-xl tracking-widest font-extrabold rounded-lg shadow-inner select-none text-center">
+                      <button
+                        type="button"
+                        onClick={refreshSecurityCode}
+                        title="Click to generate a new code"
+                        className="px-5 py-2 bg-slate-900 hover:bg-slate-800 text-teal-400 font-mono text-xl tracking-widest font-extrabold rounded-lg shadow-inner select-none text-center cursor-pointer transition-colors"
+                      >
                         {securityCode}
-                      </div>
+                      </button>
                       <div className="flex-1">
                         <label className="block text-xs font-semibold text-slate-700 mb-1">Enter Security Code *</label>
                         <input

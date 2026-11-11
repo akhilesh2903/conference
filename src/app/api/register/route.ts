@@ -87,7 +87,7 @@ export async function POST(request: Request) {
         domainConflicts: data.domainConflicts || '',
         agreedToTerms: true,
       });
-    } catch (e) {
+    } catch {
       // Ignore if CmtUser duplicate
     }
 
@@ -112,8 +112,9 @@ export async function POST(request: Request) {
       },
       { status: 201 }
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Registration error:', error);
-    return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
+    const errorMessage = error instanceof Error ? error.message : 'Internal Server Error';
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }

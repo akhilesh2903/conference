@@ -1,4 +1,4 @@
-import mongoose, { Schema, model, models } from 'mongoose';
+import { Schema, model, models } from 'mongoose';
 
 export interface ITrack {
   trackNumber: string;
@@ -17,7 +17,7 @@ const TrackSchema = new Schema<ITrack>({
 });
 
 if (models.Track) {
-  delete (models as any).Track;
+  delete (models as Record<string, unknown>).Track;
 }
 const Track = model<ITrack>('Track', TrackSchema);
 
