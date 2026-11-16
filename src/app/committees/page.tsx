@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import CommitteesHashScroll from '@/components/CommitteesHashScroll';
 
@@ -111,15 +112,76 @@ const conveners: LeaderMember[] = [
   },
 ];
 
+// ─── KEYNOTE SPEAKERS & ADVISORY FELLOWS ───
+interface KeynoteAdvisor {
+  role: string;
+  name: string;
+  affiliation: string;
+  subTitle: string;
+  image: string;
+  country: string;
+  flag: string;
+}
+
+const keynoteAdvisors: KeynoteAdvisor[] = [
+  {
+    role: 'Keynote Speaker & International Advisor',
+    name: 'Dr. Dhasiyan Arun Kumar',
+    affiliation: 'ASM Japan / Nagoya University',
+    subTitle: 'Semiconductor Growth & Advanced Nanomaterials',
+    image: '/speakers/dr-dhasiyan-arun-kumar.png',
+    country: 'Japan',
+    flag: '🇯🇵',
+  },
+  {
+    role: 'Keynote Speaker & International Advisor',
+    name: 'Dr. Bir Bahadur Sherpa',
+    affiliation: 'Kumamoto University',
+    subTitle: 'Materials Joining & Explosive Metallurgy',
+    image: '/speakers/dr-bir-bahadur-sherpa.png',
+    country: 'Japan',
+    flag: '🇯🇵',
+  },
+  {
+    role: 'Keynote Speaker & National Advisor',
+    name: 'Dr. G. Anandha Babu',
+    affiliation: 'SSN College of Engineering, Tamil Nadu',
+    subTitle: 'Piezoelectric Materials & Crystal Growth Centre',
+    image: '/speakers/dr-g-anandha-babu.png',
+    country: 'India',
+    flag: '🇮🇳',
+  },
+];
+
+interface CommitteeMember {
+  name: string;
+  affiliation: string;
+  country?: string;
+  flag?: string;
+  image?: string;
+}
+
 // ─── 2. INTERNATIONAL ADVISORY COMMITTEE ───
-const international = [
+const international: CommitteeMember[] = [
   { name: 'Prof. Jens Dittmer', affiliation: 'Le mans University', country: 'France', flag: 'FRA' },
   { name: 'Prof. Ivan Hetman', affiliation: 'Linköping University', country: 'Sweden', flag: 'SWE' },
   { name: 'Prof. Özlem Uguz Neli', affiliation: 'Stockholm University', country: 'Sweden', flag: 'SWE' },
-  { name: 'Dr. Dhasiyan Arun Kumar', affiliation: 'ASM Japan', country: 'Japan', flag: 'JPN' },
+  {
+    name: 'Dr. Dhasiyan Arun Kumar',
+    affiliation: 'ASM Japan / Nagoya University',
+    country: 'Japan',
+    flag: 'JPN',
+    image: '/speakers/dr-dhasiyan-arun-kumar.png',
+  },
   { name: 'Prof. Ir. Ts. Dr. Malathy A/P Batumalay', affiliation: 'INTI International University', country: 'Malaysia', flag: 'MYS' },
   { name: 'Dr. Shigeru Tanaka', affiliation: 'Kumamoto University', country: 'Japan', flag: 'JPN' },
-  { name: 'Dr. Bir Bahadur Sherpa', affiliation: 'Kumamoto University', country: 'Japan', flag: 'JPN' },
+  {
+    name: 'Dr. Bir Bahadur Sherpa',
+    affiliation: 'Kumamoto University',
+    country: 'Japan',
+    flag: 'JPN',
+    image: '/speakers/dr-bir-bahadur-sherpa.png',
+  },
   { name: 'Dr. I Wayan Budi Sentana', affiliation: 'Politeknik Negeri Bali (PNB)', country: 'Indonesia', flag: 'IDN' },
   { name: 'Dr. Ryuichi Tomoshige', affiliation: 'SoJo University', country: 'Japan', flag: 'JPN' },
   { name: 'Dr. Gurdip Kaur Saminder Singh', affiliation: 'Open University Malaysia (OUM)', country: 'Malaysia', flag: 'MYS' },
@@ -128,7 +190,7 @@ const international = [
 ];
 
 // ─── 3. NATIONAL ADVISORY COMMITTEE ───
-const national = [
+const national: CommitteeMember[] = [
   { name: 'Prof. Shriganesh S. Prabhu', affiliation: 'Tata Institute of Fundamental Research (TIFR), Mumbai' },
   { name: 'Prof. Achanta Venugopal', affiliation: 'Tata Institute of Fundamental Research (TIFR), Mumbai' },
   { name: 'Prof. Siddhartha P. Duttagupta', affiliation: 'Indian Institute of Technology (IIT) Bombay' },
@@ -140,7 +202,11 @@ const national = [
   { name: 'Balaji Shri Kamalakannan', affiliation: 'Alliance University, Bengaluru' },
   { name: 'Dr. Sunita Jadhav', affiliation: 'Bharati Vidyapeeth, Pune' },
   { name: 'Dr. Sanjog S. Nagarkar', affiliation: 'Indian Institute of Technology (IIT) Bombay' },
-  { name: 'Dr. G. Anandha Babu', affiliation: 'SSN College of Engineering, Tamil Nadu' },
+  {
+    name: 'Dr. G. Anandha Babu',
+    affiliation: 'SSN College of Engineering, Tamil Nadu',
+    image: '/speakers/dr-g-anandha-babu.png',
+  },
   { name: 'Dr. S. Janakiraman', affiliation: 'Indian Institute of Technology (IIT) Indore' },
   { name: 'Dr. K. Narayan Prabhu', affiliation: 'National Institute of Technology Karnataka (NITK), Surathkal' },
   { name: 'Dr. Arnab Datta', affiliation: 'Indian Institute of Technology (IIT) Bombay' },
@@ -224,6 +290,7 @@ export default function CommitteesPage() {
           <div className="flex items-center gap-2 mt-6 sm:mt-8 overflow-x-auto no-scrollbar pb-1 sm:pb-0 sm:flex-wrap sm:justify-center -mx-4 px-4 sm:mx-0 sm:px-0">
             {[
               { id: 'leadership', label: 'Leadership' },
+              { id: 'keynote', label: 'Keynote Speakers' },
               { id: 'international', label: 'International Advisory' },
               { id: 'national', label: 'National Advisory' },
               { id: 'organising', label: 'Organising Committee' },
@@ -420,6 +487,64 @@ export default function CommitteesPage() {
 
 
         {/* ═══════════════════════════════════════════════
+            SECTION 1.5: KEYNOTE SPEAKERS & ADVISORY FELLOWS
+        ═══════════════════════════════════════════════ */}
+        <section id="keynote" className="scroll-mt-24">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-6 sm:mb-8 gap-2 sm:gap-4 border-b border-slate-200 pb-3 sm:pb-4">
+            <div>
+              <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-teal-700 mb-1">
+                Distinguished Keynote Speakers
+              </div>
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-[#0a192f] tracking-tight">
+                Keynote Speakers &amp; Advisory Fellows
+              </h2>
+            </div>
+            <p className="text-xs text-slate-500 max-w-sm">
+              Eminent international and national researchers delivering plenary addresses and guiding the scientific tracks.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6">
+            {keynoteAdvisors.map((speaker) => (
+              <div
+                key={speaker.name}
+                className="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-sm hover:shadow-md transition-all flex flex-col items-center text-center group"
+              >
+                <div className="relative mb-4">
+                  <div className="w-28 h-36 sm:w-36 sm:h-44 rounded-2xl overflow-hidden border-2 border-teal-500/80 shadow-md bg-slate-100 relative">
+                    <Image
+                      src={speaker.image}
+                      alt={speaker.name}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                      className="object-cover object-top group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                  <div className="absolute top-2 right-2 bg-white/95 px-2 py-0.5 rounded-full text-[11px] font-bold text-slate-800 shadow-xs border border-slate-200 flex items-center gap-1">
+                    <span>{speaker.flag}</span>
+                    <span>{speaker.country}</span>
+                  </div>
+                </div>
+
+                <span className="inline-block text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-teal-50 text-teal-800 border border-teal-200 mb-2">
+                  {speaker.role}
+                </span>
+                <h3 className="text-base sm:text-lg font-bold text-[#0a192f] leading-snug">
+                  {speaker.name}
+                </h3>
+                <div className="text-xs font-semibold text-slate-700 mt-1">
+                  {speaker.affiliation}
+                </div>
+                <div className="text-[11px] text-teal-700 font-medium mt-1">
+                  {speaker.subTitle}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+
+        {/* ═══════════════════════════════════════════════
             SECTION 2: INTERNATIONAL ADVISORY COMMITTEE
         ═══════════════════════════════════════════════ */}
         <section id="international" className="scroll-mt-24">
@@ -441,10 +566,12 @@ export default function CommitteesPage() {
             {international.map((m, idx) => (
               <div
                 key={idx}
-                className="bg-white rounded-xl sm:rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-xs hover:shadow-md hover:border-teal-300 transition-all flex flex-col justify-between"
+                className={`bg-white rounded-xl sm:rounded-2xl border ${
+                  m.image ? 'border-teal-300/80 shadow-sm ring-1 ring-teal-200/50' : 'border-slate-200 shadow-xs'
+                } p-4 sm:p-5 hover:shadow-md hover:border-teal-400 transition-all flex flex-col justify-between`}
               >
                 <div>
-                  <div className="flex items-center justify-between gap-2 mb-2">
+                  <div className="flex items-center justify-between gap-2 mb-2.5">
                     <span className="px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase bg-teal-50 text-teal-800 border border-teal-100">
                       {m.country}
                     </span>
@@ -452,14 +579,30 @@ export default function CommitteesPage() {
                       {m.flag}
                     </span>
                   </div>
-                  <h3 className="text-xs sm:text-sm font-bold text-[#0a192f] leading-snug">
-                    {m.name}
-                  </h3>
-                  {m.affiliation && (
-                    <p className="text-[11px] sm:text-xs text-slate-500 mt-1 leading-relaxed">
-                      {m.affiliation}
-                    </p>
-                  )}
+
+                  <div className="flex items-start gap-3.5">
+                    {m.image && (
+                      <div className="relative w-16 h-20 sm:w-18 sm:h-22 rounded-xl overflow-hidden border-2 border-teal-400/80 shadow-xs shrink-0 bg-slate-100">
+                        <Image
+                          src={m.image}
+                          alt={m.name}
+                          fill
+                          sizes="80px"
+                          className="object-cover object-top"
+                        />
+                      </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-xs sm:text-sm font-bold text-[#0a192f] leading-snug">
+                        {m.name}
+                      </h3>
+                      {m.affiliation && (
+                        <p className="text-[11px] sm:text-xs text-slate-500 mt-1 leading-relaxed">
+                          {m.affiliation}
+                        </p>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}
@@ -489,21 +632,39 @@ export default function CommitteesPage() {
             {national.map((m, idx) => (
               <div
                 key={idx}
-                className="bg-white rounded-xl sm:rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-xs hover:shadow-md hover:border-blue-300 transition-all flex flex-col justify-between"
+                className={`bg-white rounded-xl sm:rounded-2xl border ${
+                  m.image ? 'border-blue-300/80 shadow-sm ring-1 ring-blue-200/50' : 'border-slate-200 shadow-xs'
+                } p-4 sm:p-5 hover:shadow-md hover:border-blue-400 transition-all flex flex-col justify-between`}
               >
                 <div>
-                  <div className="flex items-center gap-2 mb-1.5">
+                  <div className="flex items-center gap-2 mb-2">
                     <span className="w-2 h-2 rounded-full bg-blue-500" />
                     <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
                       India Advisory Council
                     </span>
                   </div>
-                  <h3 className="text-xs sm:text-sm font-bold text-[#0a192f] leading-snug">
-                    {m.name}
-                  </h3>
-                  <p className="text-[11px] sm:text-xs text-slate-500 mt-1 leading-relaxed">
-                    {m.affiliation}
-                  </p>
+
+                  <div className="flex items-start gap-3.5">
+                    {m.image && (
+                      <div className="relative w-16 h-20 sm:w-18 sm:h-22 rounded-xl overflow-hidden border-2 border-blue-400/80 shadow-xs shrink-0 bg-slate-100">
+                        <Image
+                          src={m.image}
+                          alt={m.name}
+                          fill
+                          sizes="80px"
+                          className="object-cover object-top"
+                        />
+                      </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-xs sm:text-sm font-bold text-[#0a192f] leading-snug">
+                        {m.name}
+                      </h3>
+                      <p className="text-[11px] sm:text-xs text-slate-500 mt-1 leading-relaxed">
+                        {m.affiliation}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}
