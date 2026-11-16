@@ -1,4 +1,38 @@
+import Image from 'next/image';
 import Link from 'next/link';
+
+const keynoteSpeakers = [
+  {
+    name: 'Dr. Dhasiyan Arun Kumar',
+    role: 'Keynote Speaker',
+    affiliation: 'ASM Japan / Nagoya University',
+    department: 'Semiconductor Growth & Nanomaterials',
+    country: 'Japan',
+    flag: '🇯🇵',
+    image: '/speakers/dr-dhasiyan-arun-kumar.png',
+    track: 'Theme 01 & 02: Advanced Materials & Clean Energy',
+  },
+  {
+    name: 'Dr. Bir Bahadur Sherpa',
+    role: 'Keynote Speaker',
+    affiliation: 'Kumamoto University',
+    department: 'Materials Joining & Explosive Metallurgy',
+    country: 'Japan',
+    flag: '🇯🇵',
+    image: '/speakers/dr-bir-bahadur-sherpa.png',
+    track: 'Theme 01 & 03: Materials Science & Engineering',
+  },
+  {
+    name: 'Dr. G. Anandha Babu',
+    role: 'Keynote Speaker',
+    affiliation: 'SSN College of Engineering / Shiv Nadar Univ.',
+    department: 'Crystal Growth & Piezoelectric Materials',
+    country: 'India',
+    flag: '🇮🇳',
+    image: '/speakers/dr-g-anandha-babu.png',
+    track: 'Theme 02: Energy Systems & Piezoelectrics',
+  },
+];
 
 const speakerTracks = [
   {
@@ -28,8 +62,10 @@ export default function SpeakersPreview() {
       aria-label="Keynote Speakers"
     >
       {/* ── Background Conference Watermark Icons ── */}
-      {/* 1. Keynote Podium & Mic Watermark (Top Right) */}
-      <div className="absolute -top-10 -right-10 w-80 h-80 pointer-events-none opacity-[0.045] text-teal-800 animate-float-a" aria-hidden>
+      <div
+        className="absolute -top-10 -right-10 w-80 h-80 pointer-events-none opacity-[0.045] text-teal-800 animate-float-a"
+        aria-hidden
+      >
         <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-full h-full">
           <ellipse cx="50" cy="30" rx="12" ry="16" />
           <line x1="38" y1="30" x2="62" y2="30" />
@@ -40,8 +76,10 @@ export default function SpeakersPreview() {
         </svg>
       </div>
 
-      {/* 2. Plenary Soundwave Watermark (Bottom Left) */}
-      <div className="absolute -bottom-10 -left-10 w-72 h-72 pointer-events-none opacity-[0.035] text-teal-900 animate-float-b" aria-hidden>
+      <div
+        className="absolute -bottom-10 -left-10 w-72 h-72 pointer-events-none opacity-[0.035] text-teal-900 animate-float-b"
+        aria-hidden
+      >
         <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-full h-full">
           <circle cx="50" cy="50" r="14" />
           <path d="M50 24 A26 26 0 0 1 76 50" strokeLinecap="round" />
@@ -49,9 +87,10 @@ export default function SpeakersPreview() {
           <path d="M50 4 A46 46 0 0 1 96 50" strokeLinecap="round" />
         </svg>
       </div>
+
       <div className="container-custom">
         {/* Header */}
-        <div className="max-w-3xl mx-auto text-center mb-14">
+        <div className="max-w-3xl mx-auto text-center mb-12 sm:mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-teal-50 text-teal-800 text-xs font-semibold tracking-wider uppercase mb-3">
             Scholarly Leadership
           </div>
@@ -59,62 +98,113 @@ export default function SpeakersPreview() {
             Distinguished Keynote Speakers
           </h2>
           <p className="text-slate-600 text-sm md:text-base mt-2 leading-relaxed">
-            ICMEMS 2027 brings together eminent researchers, distinguished academicians, and global industry practitioners to deliver plenary addresses.
+            ICMEMS 2027 convenes international pioneers, eminent researchers, and global practitioners to deliver plenary addresses.
           </p>
         </div>
 
-        {/* Keynote Program Sessions Preview */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl 2xl:max-w-7xl mx-auto mb-10">
-          {speakerTracks.map((item, idx) => (
+        {/* ── Keynote Speaker Cards ── */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 max-w-6xl 2xl:max-w-7xl mx-auto mb-16">
+          {keynoteSpeakers.map((speaker) => (
             <div
-              key={idx}
-              className="p-6 rounded-2xl border border-slate-200 bg-slate-50/60 hover:bg-white hover:shadow-md transition-all flex flex-col justify-between"
+              key={speaker.name}
+              className="bg-slate-50/70 hover:bg-white rounded-2xl border border-slate-200/90 hover:border-teal-300 hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col group"
             >
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-teal-700 bg-teal-50 px-2.5 py-1 rounded border border-teal-100">
-                    {item.theme}
-                  </span>
-                  <span className="text-[11px] font-medium text-slate-400">
-                    {item.format}
+              <div className="relative w-full h-64 bg-slate-200 overflow-hidden">
+                <Image
+                  src={speaker.image}
+                  alt={speaker.name}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  className="object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent opacity-85" />
+                <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-xs px-2.5 py-0.5 rounded-full text-xs font-bold text-slate-800 shadow-xs flex items-center gap-1 border border-white/50">
+                  <span>{speaker.flag}</span>
+                  <span>{speaker.country}</span>
+                </div>
+                <div className="absolute bottom-3 left-3">
+                  <span className="px-2.5 py-0.5 rounded-full bg-teal-600 text-white text-[10px] font-bold uppercase tracking-wider shadow-xs">
+                    {speaker.role}
                   </span>
                 </div>
-                <h3 className="text-base font-bold text-[#0a192f] mb-2 leading-snug">
-                  {item.area}
-                </h3>
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  {item.desc}
-                </p>
               </div>
 
-              <div className="mt-6 pt-4 border-t border-slate-200/80 flex items-center justify-between text-xs text-slate-500">
-                <span className="font-semibold text-teal-700">Final Confirmation</span>
-                <span>AIET Auditorium</span>
+              <div className="p-5 flex-1 flex flex-col justify-between">
+                <div>
+                  <h3 className="text-lg font-bold text-[#0a192f] group-hover:text-teal-700 transition-colors">
+                    {speaker.name}
+                  </h3>
+                  <p className="text-teal-800 text-xs font-semibold mt-1">
+                    {speaker.affiliation}
+                  </p>
+                  <p className="text-slate-500 text-xs mt-0.5">
+                    {speaker.department}
+                  </p>
+                  <p className="text-[11px] font-medium text-slate-700 bg-white border border-slate-200/80 rounded-lg p-2 mt-3 leading-snug">
+                    {speaker.track}
+                  </p>
+                </div>
+
+                <div className="mt-4 pt-3 border-t border-slate-200/70 flex items-center justify-between text-xs text-slate-500">
+                  <span className="inline-flex items-center gap-1.5 text-teal-700 font-semibold">
+                    <span className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse" />
+                    Plenary Speaker
+                  </span>
+                  <span>AIET Campus</span>
+                </div>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Announcement Box */}
-        <div className="max-w-3xl mx-auto p-6 md:p-8 rounded-2xl border border-slate-200 bg-slate-50 text-center shadow-xs">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-teal-100/70 text-teal-800 mb-4">
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
-            </svg>
+        {/* Keynote Program Sessions Preview */}
+        <div className="max-w-6xl 2xl:max-w-7xl mx-auto mb-10">
+          <div className="text-center mb-6">
+            <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400">
+              Thematic Track Plenary Formats
+            </h3>
           </div>
-          <h3 className="text-lg font-bold text-[#0a192f] mb-2">
-            Keynote Profiles Being Finalized
-          </h3>
-          <p className="text-xs md:text-sm text-slate-600 max-w-lg mx-auto mb-6 leading-relaxed">
-            The advisory committee is actively finalizing the roster of confirmed keynote speakers and session chairs from premier international universities and national research laboratories.
-          </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {speakerTracks.map((item, idx) => (
+              <div
+                key={idx}
+                className="p-6 rounded-2xl border border-slate-200 bg-slate-50/60 hover:bg-white hover:shadow-xs transition-all flex flex-col justify-between"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-teal-700 bg-teal-50 px-2.5 py-1 rounded border border-teal-100">
+                      {item.theme}
+                    </span>
+                    <span className="text-[11px] font-medium text-slate-400">
+                      {item.format}
+                    </span>
+                  </div>
+                  <h4 className="text-base font-bold text-[#0a192f] mb-2 leading-snug">
+                    {item.area}
+                  </h4>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    {item.desc}
+                  </p>
+                </div>
+
+                <div className="mt-6 pt-4 border-t border-slate-200/80 flex items-center justify-between text-xs text-slate-500">
+                  <span className="font-semibold text-teal-700">Auditorium Main Stage</span>
+                  <span>ICMEMS 2027</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Call to Action Button */}
+        <div className="text-center mt-12">
           <Link
             href="/speakers"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-300 hover:border-teal-500 hover:text-teal-700 bg-white text-slate-700 text-xs sm:text-sm font-semibold transition-colors shadow-xs"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-sm font-bold transition-all shadow-md hover:shadow-lg"
           >
-            View Speakers Page &amp; Program Structure
+            View Full Keynote Profiles &amp; Lecture Topics
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
             </svg>
           </Link>
         </div>

@@ -119,6 +119,7 @@ const international = [
   { name: 'Dr. Dhasiyan Arun Kumar', affiliation: 'ASM Japan', country: 'Japan', flag: 'JPN' },
   { name: 'Prof. Ir. Ts. Dr. Malathy A/P Batumalay', affiliation: 'INTI International University', country: 'Malaysia', flag: 'MYS' },
   { name: 'Dr. Shigeru Tanaka', affiliation: 'Kumamoto University', country: 'Japan', flag: 'JPN' },
+  { name: 'Dr. Bir Bahadur Sherpa', affiliation: 'Kumamoto University', country: 'Japan', flag: 'JPN' },
   { name: 'Dr. I Wayan Budi Sentana', affiliation: 'Politeknik Negeri Bali (PNB)', country: 'Indonesia', flag: 'IDN' },
   { name: 'Dr. Ryuichi Tomoshige', affiliation: 'SoJo University', country: 'Japan', flag: 'JPN' },
   { name: 'Dr. Gurdip Kaur Saminder Singh', affiliation: 'Open University Malaysia (OUM)', country: 'Malaysia', flag: 'MYS' },
