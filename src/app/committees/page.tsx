@@ -197,6 +197,10 @@ const national: CommitteeMember[] = [
   { name: 'Prof. Sathish B. Ogale', affiliation: 'Indian Institute of Science Education and Research (IISER), Pune' },
   { name: 'Prof. M. S. Ramachandra Rao', affiliation: 'Indian Institute of Technology (IIT) Madras' },
   { name: 'Prof. Prashant Kulkarni', affiliation: 'Defence Institute of Advanced Technology (DIAT), Pune' },
+  {
+    name: 'Dr. Suresh G Kulkarni',
+    affiliation: 'Former DRDO Scientist and Rtd Professor, Defence Institute of Advanced Technology (DIAT), Pune, India',
+  },
   { name: 'Dr. M. G. Ananda Kumar', affiliation: 'Central Power Research Institute (CPRI), Bengaluru' },
   { name: 'Dr. Ritanajali Majhi', affiliation: 'National Institute of Technology Karnataka (NITK), Surathkal' },
   { name: 'Balaji Shri Kamalakannan', affiliation: 'Alliance University, Bengaluru' },
@@ -206,6 +210,10 @@ const national: CommitteeMember[] = [
     name: 'Dr. G. Anandha Babu',
     affiliation: 'SSN College of Engineering, Tamil Nadu',
     image: '/speakers/dr-g-anandha-babu.png',
+  },
+  {
+    name: 'Dr. Dhruva Kumar',
+    affiliation: 'Sikkim Manipal University, Sikkim',
   },
   { name: 'Dr. S. Janakiraman', affiliation: 'Indian Institute of Technology (IIT) Indore' },
   { name: 'Dr. K. Narayan Prabhu', affiliation: 'National Institute of Technology Karnataka (NITK), Surathkal' },
